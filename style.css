@@ -1,0 +1,116 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 120px 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+}
+
+.id {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.id #clientIdDisplay {
+    font-size: 80px;
+    font-weight: bold;
+}
+
+.id #targetIdDisplay {
+    font-size: 60px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.id #targetIdDisplay input {
+    border: none;
+    border-bottom: 2px solid #007bff;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    width: 200px;
+}
+
+.id #targetIdDisplay input:focus {
+    outline: none;
+}
+
+button {
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 60px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.file {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.file #fileDisplay {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.file #dropzone {
+    border: 2px dashed #007bff;
+    border-radius: 5px;
+    width: 500px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    display: none;
+}
+
+.file #dropzone:hover {
+    background-color: #f0f0f0;
+}
+
+.file #dropzone span {
+    font-size: 80px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.file #dropzone p {
+    font-size: 30px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.file #fileInput {}
