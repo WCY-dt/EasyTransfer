@@ -1,4 +1,4 @@
-const socket = io.connect('http://localhost:3000');
+const socket = io.connect('https://easy-transfer.glitch.me/');
 const pc = new RTCPeerConnection();
 const clientId = Math.random().toString(36).substring(2, 6).toUpperCase(); // Generate a random client ID
 console.log('[client ID] ', clientId);
