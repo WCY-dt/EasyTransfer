@@ -1,0 +1,20 @@
+{
+  "name": "file-transfer-server",
+  "version": "1.0.0",
+  "description": "Server for file transfer",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "file",
+    "transfer",
+    "server"
+  ],
+  "author": "ch3nyang",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^4.7.5"
+  }
+}

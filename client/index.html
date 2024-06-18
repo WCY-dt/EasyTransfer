@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>WebRTC File Transfer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="id">
+        <div id="clientIdDisplay"></div>
+
+        <div id="targetIdDisplay">
+            <input type="text" id="targetIdInput" placeholder="XXXX">
+            <button id="connectButton"><span class="material-symbols-outlined">
+                link
+            </span></button>
+        </div>
+    </div>
+    
+    <div class="file">
+        <div id="fileDisplay">
+            <div id="dropzone">
+                <span class="material-symbols-outlined">
+                    cloud_upload
+                </span>
+                <p>Drop a file here</p>
+            </div>
+            <input type="file" id="fileInput" title="Choose a file to send">
+            <button id="sendButton"><span class="material-symbols-outlined">
+                send
+            </span></button>
+        </div>
+
+        <div id="progressDisplay">
+        </div>
+    </div>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="client.js"></script>
+    <script src="util.js"></script>
+</body>
+</html>
