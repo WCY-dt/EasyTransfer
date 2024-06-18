@@ -1,48 +1,44 @@
-let dropFrame = document.getElementById('dropzone');
-let fileInput = document.getElementById('fileInput');
-
-dropFrame.addEventListener('dragover', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+fileInput.addEventListener('change', function () {
+    if (this.files.length > 0) {
+        fileName.textContent = this.files[0].name;
+        // 改变字体大小
+        fileName.style.fontSize = '20px';
+    } else {
+        fileName.textContent = '拖拽或点击上传文件';
+    }
 });
 
-dropFrame.addEventListener('drop', (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+dropzone.onclick = () => fileInput.click();
+dropzone.ondragover = event => {
+    event.preventDefault();
+    dropzone.style.backgroundColor = 'lightgray';
+};
+dropzone.ondragleave = () => dropzone.style.backgroundColor = 'white';
+dropzone.ondrop = event => {
+    event.preventDefault();
+    fileInput.files = event.dataTransfer.files;
+    dropzone.style.backgroundColor = 'white';
+    var event = new Event('change');
+    fileInput.dispatchEvent(event);
+};
 
-    let items = e.dataTransfer.items;
-    let dt = new DataTransfer();
-
-    for (const item of items) {
-        const entry = item.webkitGetAsEntry();
-
-        if (entry.isFile) {
-            entry.file((file) => {
-                dt.items.add(file);
-            })
-
-        } else {
-            const reader = entry.createReader()
-            reader.readEntries((entries) => {
-                reHandleFile(entries, dt)
-            })
-        }
-    }
-
-    fileInput.files = dt.files;
-});
-
-const reHandleFile = (entries, dt) => {
-    for (const entry of entries) {
-        if (entry.isFile) {
-            entry.file((file) => {
-                dt.items.add(file);
-            })
-        } else {
-            const reader = entry.createReader()
-            reader.readEntries((entries) => {
-                reHandleFile(entries, dt)
-            })
-        }
-    }
+if (targetIdInput.value.length !== 4) {
+    connectButton.style.backgroundColor = 'gray';
+    connectButton.disabled = true;
+    connectButton.style.cursor = 'not-allowed';
 }
+
+// 当targetIdInput的值改变时，去除connectButton的行内样式，并去除disabled属性
+targetIdInput.addEventListener('input', () => {
+    connectButton.removeAttribute('style');
+    connectButton.removeAttribute('disabled');
+    connectButton.style.cursor = 'pointer';
+    if (targetIdInput.value.length !== 4) {
+        connectButton.style.backgroundColor = 'gray';
+        connectButton.disabled = true;
+        connectButton.style.cursor = 'not-allowed';
+    }
+});
+
+// download 隐藏
+download.style.display = 'none';

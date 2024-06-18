@@ -23,21 +23,27 @@
     <div class="file">
         <div id="fileDisplay">
             <div id="dropzone">
+                <input type="file" id="fileInput" title="Choose a file to send">
                 <span class="material-symbols-outlined">
-                    cloud_upload
+                    upload_file
                 </span>
-                <p>Drop a file here</p>
+                <p id="fileName">拖拽或点击上传文件</p>
+                <progress id="fileProgress" value="0" max="1">
+                </progress>
             </div>
-            <input type="file" id="fileInput" title="Choose a file to send">
-            <button id="sendButton"><span class="material-symbols-outlined">
-                send
-            </span></button>
         </div>
 
-        <div id="progressDisplay">
-        </div>
-    </div>
-    
+        <a href="javascript:void(0)" id="download" class="download">
+            <div id="downloadDisplay">
+                <p id="downloadName">文件名</p>
+                <progress id="downloadProgress" value="0" max="1">
+                </progress>
+            </div>
+            <button id="downloadButton" disabled><span class="material-symbols-outlined">
+                download
+            </span></button>
+        </a>
+    </div>    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
     <script src="client.js"></script>
