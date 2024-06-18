@@ -47,11 +47,19 @@ socket.on('offer', (offer, id) => {
         pc.setLocalDescription(answer);
         socket.emit('answer', answer, clientId, targetId);
     });
+    // 修改connectButton
+    connectButton.style.backgroundColor = 'green';
+    connectButton.disabled = true;
+    connectButton.style.cursor = 'not-allowed';
 });
 
 // 当接收到对方的answer时，设置为remote description
 socket.on('answer', (answer, id) => {
     pc.setRemoteDescription(new RTCSessionDescription(answer));
+    // 修改connectButton
+    connectButton.style.backgroundColor = 'green';
+    connectButton.disabled = true;
+    connectButton.style.cursor = 'not-allowed';
 });
 
 // 创建data channel，用于发送文件
@@ -66,7 +74,7 @@ sendChannel.onerror = (error) => {
     console.error('[data channel] error', error);
 };
 
-document.getElementById('sendButton').addEventListener('click', () => {
+document.getElementById('fileInput').addEventListener('change', () => {
     // Get the file
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
@@ -87,18 +95,19 @@ document.getElementById('sendButton').addEventListener('click', () => {
     fileReader.addEventListener('error', error => console.error('[error reading file] ', error));
     fileReader.addEventListener('abort', event => console.log('[file reading aborted] ', event));
     fileReader.addEventListener('load', e => {
-        // console.log('[fileRead.onload] ', e);
         sendChannel.send(e.target.result);
         offset += e.target.result.byteLength;
+        fileProgress.value = offset;
         if (offset < file.size) {
             readSlice(offset);
         }
     });
     const readSlice = o => {
-        // console.log('[readSlice] ', o);
         const slice = file.slice(offset, o + chunkSize);
         fileReader.readAsArrayBuffer(slice);
     };
+    // 计算文件总大小并更新进度条
+    fileProgress.max = file.size;
     readSlice(0);
 });
 
@@ -117,6 +126,9 @@ pc.ondatachannel = event => {
                 fileSize = parseInt(event.data);
             }
         } else {
+            // 取消 download 隐藏
+            document.getElementById('download').style.display = 'flex';
+
             receivedData.push(event.data);
             receivedSize += event.data.byteLength;
 
@@ -125,11 +137,11 @@ pc.ondatachannel = event => {
                 receivedData = [];
                 receivedSize = 0;
 
-                const downloadLink = document.createElement('a');
+                const downloadLink = document.getElementById('download');
                 downloadLink.href = URL.createObjectURL(receivedFile);
                 downloadLink.download = fileName;
-                downloadLink.textContent = 'Click here to download the file';
-                document.body.appendChild(downloadLink);
+                const downloadName = document.getElementById('downloadName');
+                downloadName.textContent = fileName;
 
                 console.log(`Received file ${fileName} with size ${fileSize}`);
             }
