@@ -1,17 +1,4 @@
 const dropzone = document.querySelector('#dropzone');
-dropzone.onclick = () => fileInput.click();
-dropzone.ondragover = event => {
-    event.preventDefault();
-    dropzone.style.backgroundColor = 'lightgray';
-};
-dropzone.ondragleave = () => dropzone.style.backgroundColor = 'white';
-dropzone.ondrop = event => {
-    event.preventDefault();
-    fileInput.files = event.dataTransfer.files;
-    dropzone.style.backgroundColor = 'white';
-    var event = new Event('change');
-    fileInput.dispatchEvent(event);
-};
 document.getElementById('fileInput').addEventListener('change', sendFiles);
 
 
@@ -28,14 +15,35 @@ const peerConnection = new RTCPeerConnection();
 // Data channel
 const sendChannel = peerConnection.createDataChannel('sendDataChannel');
 console.log('[send channel created]');
+// disable file input
+document.getElementById('fileInput').disabled = true;
 sendChannel.onopen = () => {
     console.log('[send channel] open');
+    dropzone.onclick = () => fileInput.click();
+    dropzone.ondragover = event => {
+        event.preventDefault();
+        dropzone.style.backgroundColor = 'lightgray';
+    };
+    dropzone.ondragleave = () => dropzone.style.backgroundColor = 'white';
+    dropzone.ondrop = event => {
+        event.preventDefault();
+        fileInput.files = event.dataTransfer.files;
+        dropzone.style.backgroundColor = 'white';
+        var event = new Event('change');
+        fileInput.dispatchEvent(event);
+    };
+    document.getElementById('fileInput').disabled = false;
 };
 sendChannel.onerror = (error) => {
     console.error('[send channel] error', error);
 };
 sendChannel.onclose = () => {
     console.log('[send channel] closed');
+    dropzone.onclick = null;
+    dropzone.ondragover = null;
+    dropzone.ondragleave = null;
+    dropzone.ondrop = null;
+    document.getElementById('fileInput').disabled = true;
 }
 
 // Register the client ID with the server
@@ -102,6 +110,7 @@ async function sendFiles() {
     const files = fileInput.files;
     if (!files.length) {
         console.error('[no file selected]');
+        return;
     }
 
     // Iterate through the files
@@ -113,8 +122,15 @@ async function sendFiles() {
 async function sendFile(file) {
     if (file.size === 0) {
         console.error('[empty file]');
+        return;
     }
     console.log(`File is ${[file.name, file.size, file.type, file.lastModified].join(' ')}`);
+
+    // Check if the sendChannel is open before sending files
+    if (sendChannel.readyState !== 'open') {
+        console.error('[send channel] is not open');
+        return;
+    }
 
     const fileName = document.getElementById('fileName');
     fileName.textContent = file.name;
