@@ -112,10 +112,15 @@ button:hover {
 
 .file #dropzone #fileName {
     margin: 0;
-    font-size: 30px;
-    line-height: 30px;
+    font-size: 20px;
+    line-height: 20px;
     font-weight: bold;
     color: #007bff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
 }
 
 progress {
@@ -159,9 +164,10 @@ progress::-webkit-progress-value {
     font-size: 20px;
     line-height: 40px;
     font-weight: bold;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: start;
+    width: 430px;
     color: black;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
 }
