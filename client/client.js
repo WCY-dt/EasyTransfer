@@ -1,3 +1,19 @@
+const dropzone = document.querySelector('#dropzone');
+dropzone.onclick = () => fileInput.click();
+dropzone.ondragover = event => {
+    event.preventDefault();
+    dropzone.style.backgroundColor = 'lightgray';
+};
+dropzone.ondragleave = () => dropzone.style.backgroundColor = 'white';
+dropzone.ondrop = event => {
+    event.preventDefault();
+    fileInput.files = event.dataTransfer.files;
+    dropzone.style.backgroundColor = 'white';
+    var event = new Event('change');
+    fileInput.dispatchEvent(event);
+};
+document.getElementById('fileInput').addEventListener('change', sendFiles); 
+
 const socket = io.connect('https://easy-transfer.glitch.me/');
 const pc = new RTCPeerConnection();
 const clientId = Math.random().toString(36).substring(2, 6).toUpperCase(); // Generate a random client ID
@@ -22,7 +38,7 @@ connectButton.addEventListener('click', () => {
     });
 });
 
-// 当有ICE candidate生成时，通过信令服务器发送给对方
+// When the ICE candidate is ready, send it to the target
 pc.onicecandidate = event => {
     if (event.candidate) {
         console.log('[ice candidate] ', event.candidate);
@@ -30,30 +46,32 @@ pc.onicecandidate = event => {
     }
 };
 
-// 当接收到对方的ICE candidate时，添加到自己的peer connection
+// When receiving an ICE candidate from the target, add it to the peer connection
 socket.on('candidate', candidate => {
     console.log('[received candidate] ', candidate);
     pc.addIceCandidate(new RTCIceCandidate(candidate));
 });
 
-// 当接收到对方的offer时，创建answer
+// When receiving an offer from the target, create an answer and send it back to the target
 socket.on('offer', (offer, id) => {
     targetId = id;
-    // 修改targetIdInput
+    // Display the target ID on the webpage
     document.getElementById('targetIdInput').value = targetId;
-    // 发送answer
+
+    // Send the answer to the target
     pc.setRemoteDescription(new RTCSessionDescription(offer));
     pc.createAnswer().then(answer => {
         pc.setLocalDescription(answer);
         socket.emit('answer', answer, clientId, targetId);
     });
-    // 修改connectButton
+
+    // Modify connectButton
     connectButton.style.backgroundColor = 'green';
     connectButton.disabled = true;
     connectButton.style.cursor = 'not-allowed';
 });
 
-// 当接收到对方的answer时，设置为remote description
+// Get the answer from the target and set it as the remote description
 socket.on('answer', (answer, id) => {
     pc.setRemoteDescription(new RTCSessionDescription(answer));
     // 修改connectButton
@@ -62,38 +80,59 @@ socket.on('answer', (answer, id) => {
     connectButton.style.cursor = 'not-allowed';
 });
 
-// 创建data channel，用于发送文件
+// Data channel
 const sendChannel = pc.createDataChannel('sendDataChannel');
-console.log('[data channel created]');
+console.log('[send channel created]');
 
 sendChannel.onopen = () => {
-    console.log('[data channel] open');
+    console.log('[send channel] open');
 };
 
 sendChannel.onerror = (error) => {
-    console.error('[data channel] error', error);
+    console.error('[send channel] error', error);
 };
 
-document.getElementById('fileInput').addEventListener('change', () => {
+sendChannel.onclose = () => {
+    console.log('[send channel] closed');
+}
+
+async function sendFiles() {
     // Get the file
     const fileInput = document.getElementById('fileInput');
-    const file = fileInput.files[0];
-    if (!file) {
+    const files = fileInput.files;
+    if (!files.length) {
         console.error('[no file selected]');
     }
+
+    // Iterate through the files
+    for (const file of files) {
+        await sendFile(file);
+    }
+}
+
+async function sendFile(file) {
     if (file.size === 0) {
         console.error('[empty file]');
     }
     console.log(`File is ${[file.name, file.size, file.type, file.lastModified].join(' ')}`);
+    
+    const fileName = document.getElementById('fileName');
+    fileName.textContent = file.name;
+
     // Send the file name and size
     sendChannel.send(file.name);
     sendChannel.send(file.size);
+
+    console.log(`Sending file ${file.name} with size ${file.size}`);
+
     // Send the file
     const chunkSize = 16384;
     fileReader = new FileReader();
     let offset = 0;
     fileReader.addEventListener('error', error => console.error('[error reading file] ', error));
     fileReader.addEventListener('abort', event => console.log('[file reading aborted] ', event));
+
+    // Send the file slice by slice
     fileReader.addEventListener('load', e => {
         sendChannel.send(e.target.result);
         offset += e.target.result.byteLength;
@@ -102,14 +141,32 @@ document.getElementById('fileInput').addEventListener('change', () => {
             readSlice(offset);
         }
     });
+
+    // Read the file slice by slice
     const readSlice = o => {
         const slice = file.slice(offset, o + chunkSize);
         fileReader.readAsArrayBuffer(slice);
     };
-    // 计算文件总大小并更新进度条
+
+    // Display the progress bar
     fileProgress.max = file.size;
     readSlice(0);
-});
+}
+
+document.getElementById('fileInput').addEventListener('change', sendFiles); 
+
+downloadFileHTML = `
+<a href="javascript:void(0)" class="download">
+    <div id="downloadDisplay">
+        <p id="downloadName">No file to download</p>
+        <progress id="downloadProgress" value="0" max="1">
+        </progress>
+    </div>
+    <button id="downloadButton" disabled><span class="material-symbols-outlined">
+        download
+    </span></button>
+</a>
+`;
 
 pc.ondatachannel = event => {
     const receiveChannel = event.channel;
@@ -117,33 +174,111 @@ pc.ondatachannel = event => {
     let receivedData = [];
     let fileName = '';
     let fileSize = 0;
+    let downloadElement = null;
+    let downloadName = null;
+    let downloadProgress = null;
+    let downloadButton = null;
 
-    receiveChannel.onmessage = event => {
+    receiveChannel.onopen = () => {
+        console.log('[reveive channel] open');
+    }
+
+    receiveChannel.onerror = error => {
+        console.error('[reveive channel] error', error);
+    }
+
+    receiveChannel.onclose = () => {
+        console.log('[reveive channel] closed');
+    }
+
+    let fileNameQueue = [];
+    let fileSizeQueue = [];
+
+    receiveChannel.onmessage = async event => {
+        console.log('[reveive channel] message', event.data);
         if (typeof event.data === 'string') {
-            if (!fileName) {
-                fileName = event.data;
-            } else if (!fileSize) {
-                fileSize = parseInt(event.data);
+            // if can parseInt, it is the file size
+            if (parseInt(event.data)) {
+                console.log(`Receiving file size ${event.data}`);
+                fileSizeQueue.push(parseInt(event.data));
+            } else {
+                // receive file name
+                console.log(`Receiving file ${event.data}`);
+                fileNameQueue.push(event.data);
             }
         } else {
-            // 取消 download 隐藏
-            document.getElementById('download').style.display = 'flex';
+            // if no file name, pop from queue
+            if (!fileName && fileNameQueue.length > 0) {
+                fileName = fileNameQueue.shift();
+                fileSize = fileSizeQueue.shift();                
 
+                // Insert download file HTML
+                document.getElementById('file').innerHTML += downloadFileHTML;
+                const downloadElements = document.getElementsByClassName('download');
+                downloadElement = downloadElements[downloadElements.length - 1];
+
+                // Set download file                
+                downloadProgress = downloadElement.querySelector('#downloadProgress');
+                downloadProgress.max = fileSize;
+                downloadName = downloadElement.querySelector('#downloadName');
+                downloadName.textContent = fileName;
+                downloadButton = downloadElement.querySelector('#downloadButton');
+                downloadButton.style.backgroundColor = 'gray';
+                downloadButton.disabled = true;
+                downloadButton.style.cursor = 'not-allowed';
+            }
+
+            // display download
+            downloadElement.style.display = 'flex';
+
+            // receive file
             receivedData.push(event.data);
             receivedSize += event.data.byteLength;
-
+            downloadProgress.value = receivedSize;
+            
+            // check if file is fully received
             if (receivedSize === fileSize) {
                 const receivedFile = new Blob(receivedData);
                 receivedData = [];
                 receivedSize = 0;
 
-                const downloadLink = document.getElementById('download');
-                downloadLink.href = URL.createObjectURL(receivedFile);
-                downloadLink.download = fileName;
-                const downloadName = document.getElementById('downloadName');
-                downloadName.textContent = fileName;
+                // set download link
+                downloadElement.href = URL.createObjectURL(receivedFile);
+                downloadElement.download = fileName;
+                downloadButton.style.backgroundColor = 'green';
+                downloadButton.removeAttribute('disabled');
+                downloadButton.style.cursor = 'pointer';
 
                 console.log(`Received file ${fileName} with size ${fileSize}`);
+
+                // Initialize file
+                receivedSize = 0;
+                receivedData = [];
+                fileName = '';
+                fileSize = 0;
+
+                // Re-attach dropzone event listeners
+                const dropzone = document.querySelector('#dropzone');
+                dropzone.onclick = () => fileInput.click();
+                dropzone.ondragover = event => {
+                    event.preventDefault();
+                    dropzone.style.backgroundColor = 'lightgray';
+                };
+                dropzone.ondragleave = () => dropzone.style.backgroundColor = 'white';
+                dropzone.ondrop = event => {
+                    event.preventDefault();
+                    fileInput.files = event.dataTransfer.files;
+                    dropzone.style.backgroundColor = 'white';
+                    var event = new Event('change');
+                    fileInput.dispatchEvent(event);
+                };
+                document.getElementById('fileInput').addEventListener('change', sendFiles); 
+
+                // click download button
+                await new Promise(resolve => {
+                    downloadElement.addEventListener('click', resolve);
+                    downloadElement.click();
+                });
             }
         }
     };
