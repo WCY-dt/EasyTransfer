@@ -12,57 +12,72 @@ dropzone.ondrop = event => {
     var event = new Event('change');
     fileInput.dispatchEvent(event);
 };
-document.getElementById('fileInput').addEventListener('change', sendFiles); 
+document.getElementById('fileInput').addEventListener('change', sendFiles);
 
-const socket = io.connect('https://easy-transfer.glitch.me/');
-const pc = new RTCPeerConnection();
-const clientId = Math.random().toString(36).substring(2, 6).toUpperCase(); // Generate a random client ID
+
+// Generate a random client ID
+const clientId = Math.random().toString(36).substring(2, 6).toUpperCase();
 console.log('[client ID] ', clientId);
-
-// Display the client ID on the webpage
 document.getElementById('clientIdDisplay').textContent = clientId;
 
-socket.emit('register', clientId); // Register the client ID with the server
+// Connect to the signaling server
+const socket = io.connect('https://easy-transfer.glitch.me/');
+const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+const peerConnection = new RTCPeerConnection();
 
-const connectButton = document.getElementById('connectButton');
+// Data channel
+const sendChannel = peerConnection.createDataChannel('sendDataChannel');
+console.log('[send channel created]');
+sendChannel.onopen = () => {
+    console.log('[send channel] open');
+};
+sendChannel.onerror = (error) => {
+    console.error('[send channel] error', error);
+};
+sendChannel.onclose = () => {
+    console.log('[send channel] closed');
+}
 
-let targetId = null;
+// Register the client ID with the server
+socket.emit('register', clientId);
 
-connectButton.addEventListener('click', () => {
-    targetId = document.getElementById('targetIdInput').value; // Get the target ID from the input field
-
-    // Create an offer and set it as the local description
-    pc.createOffer().then(offer => {
-        pc.setLocalDescription(offer);
-        socket.emit('offer', offer, clientId, targetId); // Send the offer to the target through the signaling server
-    });
-});
-
-// When the ICE candidate is ready, send it to the target
-pc.onicecandidate = event => {
+// Handle collected ICE candidates
+peerConnection.onicecandidate = (event) => {
     if (event.candidate) {
         console.log('[ice candidate] ', event.candidate);
         socket.emit('candidate', event.candidate, targetId);
     }
 };
 
-// When receiving an ICE candidate from the target, add it to the peer connection
-socket.on('candidate', candidate => {
+// Handle received ICE candidates
+socket.on('candidate', (candidate) => {
     console.log('[received candidate] ', candidate);
-    pc.addIceCandidate(new RTCIceCandidate(candidate));
+    peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+});
+
+// Create and send an offer to the target client
+let targetId = null;
+document.getElementById('connectButton').addEventListener('click', () => {
+    targetId = document.getElementById('targetIdInput').value;
+
+    peerConnection.createOffer().then((offer) => {
+        return peerConnection.setLocalDescription(offer);
+    }).then(() => {
+        socket.emit('offer', peerConnection.localDescription, clientId, targetId);
+    });
 });
 
 // When receiving an offer from the target, create an answer and send it back to the target
-socket.on('offer', (offer, id) => {
+socket.on('offer', (sdp, id) => {
     targetId = id;
-    // Display the target ID on the webpage
     document.getElementById('targetIdInput').value = targetId;
 
-    // Send the answer to the target
-    pc.setRemoteDescription(new RTCSessionDescription(offer));
-    pc.createAnswer().then(answer => {
-        pc.setLocalDescription(answer);
-        socket.emit('answer', answer, clientId, targetId);
+    peerConnection.setRemoteDescription(new RTCSessionDescription(sdp)).then(() => {
+        return peerConnection.createAnswer();
+    }).then((answer) => {
+        return peerConnection.setLocalDescription(answer);
+    }).then(() => {
+        socket.emit('answer', peerConnection.localDescription, clientId, targetId);
     });
 
     // Modify connectButton
@@ -72,29 +87,14 @@ socket.on('offer', (offer, id) => {
 });
 
 // Get the answer from the target and set it as the remote description
-socket.on('answer', (answer, id) => {
-    pc.setRemoteDescription(new RTCSessionDescription(answer));
-    // 修改connectButton
+socket.on('answer', (sdp, id) => {
+    peerConnection.setRemoteDescription(new RTCSessionDescription(sdp));
+
+    // Modify connectButton
     connectButton.style.backgroundColor = 'green';
     connectButton.disabled = true;
     connectButton.style.cursor = 'not-allowed';
 });
-
-// Data channel
-const sendChannel = pc.createDataChannel('sendDataChannel');
-console.log('[send channel created]');
-
-sendChannel.onopen = () => {
-    console.log('[send channel] open');
-};
-
-sendChannel.onerror = (error) => {
-    console.error('[send channel] error', error);
-};
-
-sendChannel.onclose = () => {
-    console.log('[send channel] closed');
-}
 
 async function sendFiles() {
     // Get the file
@@ -115,7 +115,7 @@ async function sendFile(file) {
         console.error('[empty file]');
     }
     console.log(`File is ${[file.name, file.size, file.type, file.lastModified].join(' ')}`);
-    
+
     const fileName = document.getElementById('fileName');
     fileName.textContent = file.name;
 
@@ -153,7 +153,7 @@ async function sendFile(file) {
     readSlice(0);
 }
 
-document.getElementById('fileInput').addEventListener('change', sendFiles); 
+document.getElementById('fileInput').addEventListener('change', sendFiles);
 
 downloadFileHTML = `
 <a href="javascript:void(0)" class="download">
@@ -168,8 +168,9 @@ downloadFileHTML = `
 </a>
 `;
 
-pc.ondatachannel = event => {
+peerConnection.ondatachannel = (event) => {
     const receiveChannel = event.channel;
+
     let receivedSize = 0;
     let receivedData = [];
     let fileName = '';
@@ -182,11 +183,9 @@ pc.ondatachannel = event => {
     receiveChannel.onopen = () => {
         console.log('[reveive channel] open');
     }
-
     receiveChannel.onerror = error => {
         console.error('[reveive channel] error', error);
     }
-
     receiveChannel.onclose = () => {
         console.log('[reveive channel] closed');
     }
@@ -210,7 +209,7 @@ pc.ondatachannel = event => {
             // if no file name, pop from queue
             if (!fileName && fileNameQueue.length > 0) {
                 fileName = fileNameQueue.shift();
-                fileSize = fileSizeQueue.shift();                
+                fileSize = fileSizeQueue.shift();
 
                 // Insert download file HTML
                 document.getElementById('file').innerHTML += downloadFileHTML;
@@ -235,7 +234,7 @@ pc.ondatachannel = event => {
             receivedData.push(event.data);
             receivedSize += event.data.byteLength;
             downloadProgress.value = receivedSize;
-            
+
             // check if file is fully received
             if (receivedSize === fileSize) {
                 const receivedFile = new Blob(receivedData);
@@ -272,7 +271,7 @@ pc.ondatachannel = event => {
                     var event = new Event('change');
                     fileInput.dispatchEvent(event);
                 };
-                document.getElementById('fileInput').addEventListener('change', sendFiles); 
+                document.getElementById('fileInput').addEventListener('change', sendFiles);
 
                 // click download button
                 await new Promise(resolve => {
