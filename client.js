@@ -10,10 +10,10 @@ document.getElementById('clientIdDisplay').textContent = clientId;
 // Connect to the signaling server
 const socket = io.connect('https://easy-transfer.glitch.me/');
 const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-const peerConnection = new RTCPeerConnection();
+const peerConnection = new RTCPeerConnection(configuration);
 
 // Data channel
-const sendChannel = peerConnection.createDataChannel('sendDataChannel');
+const sendChannel = peerConnection.createDataChannel('fileTransfer');
 console.log('[send channel created]');
 // disable file input
 document.getElementById('fileInput').disabled = true;
