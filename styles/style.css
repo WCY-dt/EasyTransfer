@@ -2,6 +2,7 @@
 @import url('id.css');
 @import url('upload.css');
 @import url('download.css');
+@import url('footer.css');
 
 * {
   box-sizing: border-box;
