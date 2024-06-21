@@ -1,4 +1,4 @@
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'
 import { useDataStore } from '../dataStore.js'
 
 export default {
@@ -6,7 +6,7 @@ export default {
     return {
       fileName: 'Drop file here or click to upload',
       fileSize: 0,
-      chunkSize: 16384,
+      chunkSize: 16384, // 16KB
       offset: 0,
     }
   },
@@ -54,20 +54,20 @@ export default {
         console.log(`[INFO] File reading aborted: ${event}`)
       })
 
-      fileReader.addEventListener('load', e => {
+      fileReader.addEventListener('load', async (e) => {
         this.sendData(e.target.result)
-        this.offset += e.target.result.byteLength;
+        this.offset += e.target.result.byteLength
         fileProgress.value = this.offset
         if (this.offset < this.fileSize) {
           readSlice(this.offset)
         }
-      });
+      })
 
-      const readSlice = o => {
+      const readSlice = (o) => {
         const slice = file.slice(this.offset, o + this.chunkSize)
         fileReader.readAsArrayBuffer(slice)
-      };
-      
+      }
+
       readSlice(0)
     },
 
@@ -81,16 +81,19 @@ export default {
     onClick() {
       if (!this.isConnectSuccess) return
       this.$refs.fileInput.click()
-    }
+    },
   },
 
   setup() {
     const dataStore = useDataStore()
-
-    const { isConnectSuccess } = storeToRefs(dataStore);
+    const { sendChannel, isConnectSuccess } = storeToRefs(dataStore)
 
     const getChannelState = () => {
       return dataStore.getChannelState()
+    }
+
+    const getChannelAmount = () => {
+      return dataStore.getChannelAmount()
     }
 
     const sendData = (data) => {
@@ -98,8 +101,10 @@ export default {
     }
 
     return {
+      sendChannel,
       isConnectSuccess,
       getChannelState,
+      getChannelAmount,
       sendData,
     }
   },
@@ -110,8 +115,7 @@ export default {
         @change="sendFiles" ref="fileInput" :disabled="!isConnectSuccess">
       <span class="mdi mdi-cloud-upload-outline"></span>
       <p id="fileName">{{ fileName }}</p>
-      <progress id="fileProgress" :value="offset" :max="fileSize">
-      </progress>
+      <progress id="fileProgress" :value="offset" :max="fileSize"></progress>
     </div>
-  `
+  `,
 }

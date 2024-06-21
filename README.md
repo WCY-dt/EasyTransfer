@@ -14,13 +14,15 @@ It is built with webRTC, and does not upload your files to any server.
 
 ## Notes
 
-- Large file transfer is still under testing, please report if you encounter any problems.
 - Signaling and data may be leaked, please do not transfer private files.
 - This project is hosted on a free server, please do not abuse it.
 
 ## TODO
 
-- [ ] Optimize large file transfers
+- [x] Support large file transmission
+- [ ] Optimize transmission speed
+- [ ] Support photo transmission
+- [ ] Support plain text transmission
 
 ## Acknowledgements
 
