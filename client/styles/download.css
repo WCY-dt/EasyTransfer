@@ -1,0 +1,82 @@
+.downloadFile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: calc(min(30rem, 100%));
+}
+
+a.downloadFileItem {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid;
+  border-radius: 0.25rem;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+a.downloadFileItem #downloadDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+a.downloadFileItem #downloadDisplay p {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+a.downloadFileItem #downloadDisplay progress {
+  width: 100%;
+  height: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+}
+
+a.downloadFileItem.success {
+  border-color: var(--success-color);
+  background-color: var(--success-light-color);
+  color: var(--success-color);
+}
+
+a.downloadFileItem.success:hover {
+  background-color: var(--success-color);
+  color: var(--light-color);
+}
+
+a.downloadFileItem.success #downloadDisplay progress::-webkit-progress-value {
+  background-color: var(--success-color);
+  transition: all 0.3s ease-in-out;
+}
+
+a.downloadFileItem.success:hover #downloadDisplay progress::-webkit-progress-value {
+  background-color: var(--light-color);
+}
+
+a.downloadFileItem.loading {
+  border-color: var(--primary-color);
+  background-color: var(--primary-light-color);
+  color: var(--primary-color);
+  cursor: not-allowed;
+}
+
+a.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-value {
+  background-color: var(--primary-color);
+  transition: all 0.3s ease-in-out;
+}
+
+a.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-bar {
+  background-color: var(--light-color);
+}
