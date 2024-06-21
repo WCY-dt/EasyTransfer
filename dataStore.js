@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { io } from 'socket.io'
 
@@ -8,10 +8,15 @@ export const useDataStore = defineStore('data', {
     candidateQueue: [],
     sendChannel: null,
     isConnectSuccess: ref(false),
+    chunkQueue: [],
   }),
   actions: {
     getChannelState() {
       return this.sendChannel.readyState
+    },
+
+    getChannelAmount() {
+      return this.sendChannel.bufferedAmount
     },
 
     setPeerConnection(newConnection) {
@@ -19,7 +24,7 @@ export const useDataStore = defineStore('data', {
     },
 
     setConnectSuccess(status) {
-      this.isConnectSuccess = status;
+      this.isConnectSuccess = status
     },
 
     sendOffer(clientId, targetId, socket) {
@@ -37,16 +42,26 @@ export const useDataStore = defineStore('data', {
           console.log(`[INFO] Sending candidate to ${targetId}`)
           socket.emit('candidate', event.candidate, targetId)
         }
-      };
+      }
     },
 
     sendData(data) {
-      this.sendChannel.send(data)
+      if (this.sendChannel.bufferedAmount < 1024 * 1024) { // 1MB buffer threshold
+        this.sendChannel.send(data)
+      } else {
+        this.chunkQueue.push(data)
+      }
+    },
+
+    processQueue() {
+      while (this.chunkQueue.length > 0 && this.sendChannel.bufferedAmount < 1024 * 1024) {
+        this.sendChannel.send(this.chunkQueue.shift())
+      }
     },
 
     addIceCandidate() {
       while (this.candidateQueue.length) {
-        this.peerConnection.addIceCandidate(new RTCIceCandidate(this.candidateQueue.shift()));
+        this.peerConnection.addIceCandidate(new RTCIceCandidate(this.candidateQueue.shift()))
       }
     },
 
@@ -64,13 +79,17 @@ export const useDataStore = defineStore('data', {
         console.log(`[INFO] Data channel closed`)
         this.setConnectSuccess(false)
       }
+
+      this.sendChannel.onbufferedamountlow = () => {
+        this.processQueue()
+      }
     },
 
     handleOffer(sdp, clientId, targetId, socket) {
       this.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp)).then(() => {
-        return this.peerConnection.createAnswer();
+        return this.peerConnection.createAnswer()
       }).then((answer) => {
-        return this.peerConnection.setLocalDescription(answer);
+        return this.peerConnection.setLocalDescription(answer)
       }).then(() => {
         socket.emit('answer', this.peerConnection.localDescription, clientId, targetId)
       }).then(() => {
@@ -81,15 +100,15 @@ export const useDataStore = defineStore('data', {
     handleAnswer(sdp) {
       this.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp)).then(() => {
         this.addIceCandidate()
-      })
+      });
     },
 
     handleCandidate(candidate) {
       if (this.peerConnection.remoteDescription) {
         this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
       } else {
-        this.candidateQueue.push(candidate);
+        this.candidateQueue.push(candidate)
       }
     },
-  }
+  },
 })
