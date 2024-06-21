@@ -1,0 +1,53 @@
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem;
+  border: 2px dashed var(--primary-color);
+  border-radius: 0.25rem;
+  color: var(--primary-color);
+  background-color: var(--primary-light-color);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.dropzone input {
+  display: none;
+}
+
+.dropzone span {
+  font-size: 6rem;
+  line-height: 6rem;
+}
+
+.dropzone p {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+  margin: 0;
+}
+
+.dropzone progress {
+  width: 100%;
+  height: 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: var(--light-color);
+}
+
+.dropzone progress::-webkit-progress-bar {
+  background-color: var(--light-color);
+}
+
+.dropzone progress::-webkit-progress-value {
+  background-color: var(--primary-color);
+}
+
+.dropzone.disabled {
+  border-color: var(--secondary-color);
+  background-color: var(--secondary-light-color);
+  color: var(--secondary-color);
+  cursor: not-allowed;
+}
