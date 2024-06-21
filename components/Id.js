@@ -59,7 +59,11 @@ export default {
 
   methods: {
     generateId() { // Generate a random 4 character string
-      return Math.random().toString(36).substring(2, 6).toUpperCase()
+      let id;
+      do {
+        id = Math.random().toString(36).substring(2, 6).toUpperCase();
+      } while (id.includes('0') || id.includes('1') || id.includes('O') || id.includes('I') || id.includes('L'));
+      return id;
     },
 
     connectSignalServer(server) { // Connect to the signal server
