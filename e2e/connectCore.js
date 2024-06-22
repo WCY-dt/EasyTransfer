@@ -45,6 +45,7 @@ class ConnectCore {
   socket = null;
   clientId = '';
   targetId = '';
+  setRegistered = null;
   peerConnection = null;
   candidateQueue = [];
   
@@ -53,7 +54,8 @@ class ConnectCore {
    * 
    * @returns {void}
    */
-  constructor() {
+  constructor(setRegistered) {
+    this.setRegistered = setRegistered
     // Connect to the signal server
     this.socket = io.connect(this.signalServerUrl)
     // Establish the peer connection
@@ -112,6 +114,19 @@ class ConnectCore {
   }
 
   handleServerMsg() { // Handle messages from the signal server
+    this.socket.on('success', (id) => {
+      if (id === this.clientId) {
+        console.log(`[INFO] ===Client registered with id ${id}===`)
+        this.setRegistered(true)
+      }
+    })
+
+    this.socket.on('disconnect', () => {
+      console.log('[INFO] ===Disconnected from the signal server===');
+      this.setRegistered(false);
+      window.location.reload();
+    });
+
     this.socket.on('offer', (sdp, id) => {
       console.log(`[INFO] ===Connecting to ${id}===`)
       

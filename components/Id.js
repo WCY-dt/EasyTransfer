@@ -8,6 +8,7 @@ export default {
       clientId: '',
       targetId: '',
       enableConnect: false,
+      isConnecting: false,
       copied: false,
     }
   },
@@ -15,9 +16,9 @@ export default {
   computed: {
     buttonStatus() {
       return {
-        disabled: !this.enableConnect && !this.isConnectSuccess,
-        ready: this.enableConnect && !this.isConnectSuccess,
-        success: !this.enableConnect && this.isConnectSuccess,
+        disabled: (!this.enableConnect && !this.isConnectSuccess) || !this.registered,
+        ready: this.enableConnect && !this.isConnectSuccess && this.registered,
+        success: !this.enableConnect && this.isConnectSuccess && this.registered,
       }
     }
   },
@@ -38,6 +39,7 @@ export default {
       if (newValue) {
         this.enableConnect = false;
       }
+      this.isConnecting = false
     }
   },
 
@@ -52,7 +54,7 @@ export default {
 
     validateInput(value) { // Check if the input is 4 characters long
       this.enableConnect = (value.length === 4)
-      this.isConnectSuccess = false;
+      this.isConnectSuccess = false
     },
 
     copyId() { // Copy the clientId to the clipboard
@@ -64,6 +66,7 @@ export default {
     },
 
     connectTarget() { // Connect to the targetId
+      this.isConnecting = true
       this.dataStore.connectCore.connectTarget(this.targetId)
     },
   },
@@ -73,12 +76,13 @@ export default {
     
     dataStore.establishPeerConnection()
 
-    const { connectCore, isConnectSuccess } = storeToRefs(dataStore)
+    const { connectCore, isConnectSuccess, registered } = storeToRefs(dataStore)
 
     return {
       dataStore,
       connectCore,
       isConnectSuccess,
+      registered
     }
   },
 
@@ -100,8 +104,9 @@ export default {
           <input type="text" id="targetIdInput" placeholder="code" maxlength="4"
             v-model="connectCore.targetId">
           <button id="connectButton"
-            :disabled="!enableConnect" @click="connectTarget">
-            <span class="mdi mdi-connection"></span>
+            :disabled="!enableConnect || !registered" @click="connectTarget">
+            <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
+            <span v-else class="mdi mdi-connection"></span>
           </button>
       </div>
     </div>
