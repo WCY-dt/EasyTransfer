@@ -122,3 +122,17 @@
   line-height: 3rem;
   margin: auto;
 }
+
+@media (hover: none) {
+  .id #clientId:hover {
+    color: var(--primary-color);
+  }
+
+  .id #clientId .cover {
+    display: none;
+  }
+
+  .id #targetId.ready button:hover {
+    background-color: var(--primary-color);
+  }
+}

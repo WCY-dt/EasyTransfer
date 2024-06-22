@@ -80,3 +80,14 @@ a.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-value {
 a.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-bar {
   background-color: var(--light-color);
 }
+
+@media (hover: none) {
+  a.downloadFileItem.success:hover {
+    background-color: var(--success-light-color);
+    color: var(--success-color);
+  }
+
+  a.downloadFileItem.success:hover #downloadDisplay progress::-webkit-progress-value {
+    background-color: var(--success-color);
+  }
+}

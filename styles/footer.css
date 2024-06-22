@@ -24,3 +24,10 @@ footer p a:hover {
     color: var(--primary-dark-color);
     text-decoration: underline;
 }
+
+@media (hover: none) {
+    footer p a:hover {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+}
