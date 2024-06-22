@@ -7,10 +7,10 @@
  * @method getChannelState - Get the state of the data channel
  */
 class SendCore {
-  sendProgress = 0
-  maxBufferedAmount = 1024 * 16 // 16KB is a safe value for most browsers
-  sendChannel = null
-  chunkQueue = []
+  sendProgress = 0;
+  maxBufferedAmount = 1024 * 16; // 16KB is a safe value for most browsers
+  sendChannel = null;
+  chunkQueue = [];
 
   /**
    * @description Constructor for the SendCore class
@@ -21,7 +21,7 @@ class SendCore {
    * @returns {void}
    */
   constructor(peerConnection, setConnectSuccess) {
-    this.#establishDataChannel(peerConnection, setConnectSuccess)
+    this.establishDataChannel(peerConnection, setConnectSuccess)
   }
 
   /**
@@ -45,7 +45,7 @@ class SendCore {
     return this.sendChannel.readyState;
   }
 
-  #establishDataChannel(peerConnection, setConnectSuccess) {
+  establishDataChannel(peerConnection, setConnectSuccess) {
     this.sendChannel = peerConnection.createDataChannel(
       'fileTransfer', 
       { ordered: true, maxRetransmits: 2 }

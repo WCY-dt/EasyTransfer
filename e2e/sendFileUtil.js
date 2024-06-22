@@ -1,14 +1,14 @@
 class SendFileUtil {
   constructor() {
-    this.sendCore = null
+    this.sendCore = null;
 
-    this.currentFileType = ''
-    this.currentFileName = 'Drop file here or click to upload'
-    this.currentFileSize = 0
+    this.currentFileType = '';
+    this.currentFileName = 'Drop file here or click to upload';
+    this.currentFileSize = 0;
 
-    this.chunkSize = 16384
-    this.fileReader = null
-    this.offset = 0
+    this.chunkSize = 16384;
+    this.fileReader = null;
+    this.offset = 0;
   }
 
   async sendFiles(files, sendCore) { // Send the file meta and content

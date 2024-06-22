@@ -1,25 +1,25 @@
 class ReceiveFileUtil {
   constructor() {
-    this.addDownloadFileItem = null
-    this.updateFileProgress = null
-    this.updateFileUrl = null
-    this.updateFileSuccess = null
+    this.addDownloadFileItem = null;
+    this.updateFileProgress = null;
+    this.updateFileUrl = null;
+    this.updateFileSuccess = null;
 
-    this.currentFileType = ''
-    this.currentFileName = ''
-    this.currentFileSize = 0
-    this.currentFileProgress = 0
-    this.currentFileUrl = ''
+    this.currentFileType = '';
+    this.currentFileName = '';
+    this.currentFileSize = 0;
+    this.currentFileProgress = 0;
+    this.currentFileUrl = '';
     
-    this.fileTypeQueue = []
-    this.fileNameQueue = []
-    this.fileSizeQueue = []
+    this.fileTypeQueue = [];
+    this.fileNameQueue = [];
+    this.fileSizeQueue = [];
 
-    this.receiveChannel = null
+    this.receiveChannel = null;
 
-    this.currentReceivingFileNo = -1
+    this.currentReceivingFileNo = -1;
 
-    this.receivedData = []
+    this.receivedData = [];
   }
 
   receiveFiles(connectCore, addDownloadFileItem, updateFileProgress, updateFileUrl, updateFileSuccess) {

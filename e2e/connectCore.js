@@ -14,8 +14,8 @@ import { io } from 'socket.io'
  */
 class ConnectCore {
   /* Member variables */
-  #signalServerUrl = 'https://easy-transfer.glitch.me/'
-  #peerConnectionConfiguration = {
+  signalServerUrl = 'https://easy-transfer.glitch.me/';
+  peerConnectionConfiguration = {
     iceServers: [
       {
         urls: "stun:stun.relay.metered.ca:80",
@@ -41,12 +41,12 @@ class ConnectCore {
         credential: "0dGvvEm7eq2UaqlW",
       },
     ]
-  }
-  socket = null
-  clientId = ''
-  targetId = ''
-  peerConnection = null
-  #candidateQueue = []
+  };
+  socket = null;
+  clientId = '';
+  targetId = '';
+  peerConnection = null;
+  candidateQueue = [];
   
   /**
    * @description Initialize the connection core
@@ -55,11 +55,11 @@ class ConnectCore {
    */
   constructor() {
     // Connect to the signal server
-    this.socket = io.connect(this.#signalServerUrl)
+    this.socket = io.connect(this.signalServerUrl)
     // Establish the peer connection
-    this.peerConnection = new RTCPeerConnection(this.#peerConnectionConfiguration)
+    this.peerConnection = new RTCPeerConnection(this.peerConnectionConfiguration)
     // Handle messages from the signal server
-    this.#handleServerMsg()
+    this.handleServerMsg()
 
     console.log('[INFO] ===Connection core initialized===')
   }
@@ -111,19 +111,19 @@ class ConnectCore {
     }
   }
 
-  #handleServerMsg() { // Handle messages from the signal server
+  handleServerMsg() { // Handle messages from the signal server
     this.socket.on('offer', (sdp, id) => {
       console.log(`[INFO] ===Connecting to ${id}===`)
       
       this.targetId = id
-      this.#handleOffer(sdp)
+      this.handleOffer(sdp)
       this.sendIceCandidate()
 
       console.log(`[INFO] Received offer from ${this.targetId}`)
     })
 
     this.socket.on('answer', (sdp, id) => {
-      this.#handleAnswer(sdp)
+      this.handleAnswer(sdp)
 
       console.log(`[INFO] Received answer from ${this.targetId}`)
     })
@@ -131,11 +131,11 @@ class ConnectCore {
     this.socket.on('candidate', (candidate) => {
       console.log(`[INFO] Received candidate from ${this.targetId}`)
 
-      this.#handleCandidate(candidate)
+      this.handleCandidate(candidate)
     });
   }
 
-  #handleOffer(sdp) { // Handle the offer from the target peer
+  handleOffer(sdp) { // Handle the offer from the target peer
     this.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp)).then(() => {
       return this.peerConnection.createAnswer()
     }).then((answer) => {
@@ -145,29 +145,29 @@ class ConnectCore {
 
       console.log(`[INFO] Sending answer to ${this.targetId}`)
     }).then(() => {
-      this.#addIceCandidate()
+      this.addIceCandidate()
     });
   }
 
-  #handleAnswer(sdp) { // Handle the answer from the target peer
+  handleAnswer(sdp) { // Handle the answer from the target peer
     this.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp)).then(() => {
-      this.#addIceCandidate()
+      this.addIceCandidate()
     });
   }
 
-  #handleCandidate(candidate) { // Handle the ICE candidate from the target peer
+  handleCandidate(candidate) { // Handle the ICE candidate from the target peer
     if (this.peerConnection.remoteDescription) {
       this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
 
       console.log(`[INFO] Added ${this.targetId} to ICE candidate`)
     } else {
-      this.#candidateQueue.push(candidate)
+      this.candidateQueue.push(candidate)
     }
   }
 
-  #addIceCandidate() { // Add the ICE candidate to the peer connection
-    while (this.#candidateQueue.length) {
-      this.peerConnection.addIceCandidate(new RTCIceCandidate(this.#candidateQueue.shift()))
+  addIceCandidate() { // Add the ICE candidate to the peer connection
+    while (this.candidateQueue.length) {
+      this.peerConnection.addIceCandidate(new RTCIceCandidate(this.candidateQueue.shift()))
     }
 
     console.log(`[INFO] Added ${this.targetId} to ICE candidate`)
