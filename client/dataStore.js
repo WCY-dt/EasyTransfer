@@ -1,114 +1,33 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { io } from 'socket.io'
+import ConnectCore from './e2e/connectCore.js'
+import SendCore from './e2e/sendCore.js'
+import SendFileUtil from './e2e/sendFileUtil.js'
+import ReceiveFileUtil from './e2e/receiveFileUtil.js'
 
 export const useDataStore = defineStore('data', {
   state: () => ({
-    peerConnection: ref(null),
-    candidateQueue: [],
-    sendChannel: null,
+    connectCore: ref(null),
+    sendCore: ref(null),
+    sendFileUtil: ref(null),
+    receiveFileUtil: ref(null),
+
     isConnectSuccess: ref(false),
-    chunkQueue: [],
   }),
   actions: {
-    getChannelState() {
-      return this.sendChannel.readyState
+    establishPeerConnection() { // Establish the peer connection
+      this.connectCore = new ConnectCore()
+      this.sendCore = new SendCore(
+        this.connectCore.peerConnection, 
+        this.setConnectSuccess
+      )
+      this.sendFileUtil = new SendFileUtil()
+      this.receiveFileUtil = new ReceiveFileUtil()
     },
 
-    getChannelAmount() {
-      return this.sendChannel.bufferedAmount
-    },
-
-    setPeerConnection(newConnection) {
-      this.peerConnection = newConnection
-    },
-
-    setConnectSuccess(status) {
+    setConnectSuccess(status) { // Set the connection status
       this.isConnectSuccess = status
-    },
-
-    sendOffer(clientId, targetId, socket) {
-      this.peerConnection.createOffer().then((offer) => {
-        return this.peerConnection.setLocalDescription(offer)
-      }).then(() => {
-        console.log(`[INFO] Sending offer to ${targetId}`)
-        socket.emit('offer', this.peerConnection.localDescription, clientId, targetId)
-      })
-    },
-
-    sendIceCandidate(targetId, socket) {
-      this.peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-          console.log(`[INFO] Sending candidate to ${targetId}`)
-          socket.emit('candidate', event.candidate, targetId)
-        }
-      }
-    },
-
-    sendData(data) {
-      if (this.sendChannel.bufferedAmount < 1024 * 1024) { // 1MB buffer threshold
-        this.sendChannel.send(data)
-      } else {
-        this.chunkQueue.push(data)
-      }
-    },
-
-    processQueue() {
-      while (this.chunkQueue.length > 0 && this.sendChannel.bufferedAmount < 1024 * 1024) {
-        this.sendChannel.send(this.chunkQueue.shift())
-      }
-    },
-
-    addIceCandidate() {
-      while (this.candidateQueue.length) {
-        this.peerConnection.addIceCandidate(new RTCIceCandidate(this.candidateQueue.shift()))
-      }
-    },
-
-    addDataChannel() {
-      this.sendChannel = this.peerConnection.createDataChannel('fileTransfer')
-
-      this.sendChannel.onopen = () => {
-        console.log(`[INFO] Data channel opened`)
-        this.setConnectSuccess(true)
-      }
-
-      this.sendChannel.onerror = (error) => { }
-
-      this.sendChannel.onclose = () => {
-        console.log(`[INFO] Data channel closed`)
-        this.setConnectSuccess(false)
-      }
-
-      this.sendChannel.onbufferedamountlow = () => {
-        this.processQueue()
-      }
-    },
-
-    handleOffer(sdp, clientId, targetId, socket) {
-      this.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp)).then(() => {
-        return this.peerConnection.createAnswer()
-      }).then((answer) => {
-        return this.peerConnection.setLocalDescription(answer)
-      }).then(() => {
-        socket.emit('answer', this.peerConnection.localDescription, clientId, targetId)
-      }).then(() => {
-        this.addIceCandidate()
-      });
-    },
-
-    handleAnswer(sdp) {
-      this.peerConnection.setRemoteDescription(new RTCSessionDescription(sdp)).then(() => {
-        this.addIceCandidate()
-      });
-    },
-
-    handleCandidate(candidate) {
-      if (this.peerConnection.remoteDescription) {
-        this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
-      } else {
-        this.candidateQueue.push(candidate)
-      }
     },
   },
 })

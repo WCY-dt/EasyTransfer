@@ -4,7 +4,7 @@
 
 EasyTransfer is a free, simple, and easy-to-use P2P file transfer tool. You only need to visit a simple web page to connect to **any device** in **any network** using a device code.
 
-It is built with webRTC, and does not upload your files to any server.
+It is built using webRTC, **no need to scan codes**, **no need to share URL links**, **no need to upload files to the server**.
 
 ## How to use
 
@@ -20,7 +20,7 @@ It is built with webRTC, and does not upload your files to any server.
 ## TODO
 
 - [x] Support large file transmission
-- [ ] Optimize transmission speed
+- [x] Optimize transmission speed
 - [ ] Support photo transmission
 - [ ] Support plain text transmission
 
