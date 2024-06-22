@@ -31,6 +31,9 @@ export default {
     connectCore: {
       deep: true,
       handler(newVal) {
+        if (newVal.targetId !== newVal.targetId.toUpperCase()) {
+          this.connectCore.targetId = newVal.targetId.toUpperCase();
+        }
         this.targetId = newVal.targetId;
       }
     },
