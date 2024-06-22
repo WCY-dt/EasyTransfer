@@ -14,16 +14,23 @@ export const useDataStore = defineStore('data', {
     receiveFileUtil: ref(null),
 
     isConnectSuccess: ref(false),
+    registered: ref(false),
   }),
   actions: {
     establishPeerConnection() { // Establish the peer connection
-      this.connectCore = new ConnectCore()
+      this.connectCore = new ConnectCore(
+        this.setRegistered
+      )
       this.sendCore = new SendCore(
         this.connectCore.peerConnection, 
         this.setConnectSuccess
       )
       this.sendFileUtil = new SendFileUtil()
       this.receiveFileUtil = new ReceiveFileUtil()
+    },
+
+    setRegistered(status) { // Set the registration status
+      this.registered = status
     },
 
     setConnectSuccess(status) { // Set the connection status

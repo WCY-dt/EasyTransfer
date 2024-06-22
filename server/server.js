@@ -14,6 +14,7 @@ io.on('connection', socket => {
     socket.on('register', clientId => {
         console.log('[register] ', clientId);
         clients[clientId] = socket; // Register the client ID
+        clients[clientId].emit('success', clientId); // Send the registered client ID back to the client
     });
 
     socket.on('offer', (sdp, srcId, targetId) => {
