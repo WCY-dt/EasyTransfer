@@ -43,8 +43,9 @@ class ConnectCore {
     ]
   };
   socket = null;
-  clientId = '';
+  clientId = 'LOADING';
   targetId = '';
+  setClienId = null;
   setRegistered = null;
   peerConnection = null;
   candidateQueue = [];
@@ -54,7 +55,8 @@ class ConnectCore {
    * 
    * @returns {void}
    */
-  constructor(setRegistered) {
+  constructor(setClientId, setRegistered) {
+    this.setClientId = setClientId
     this.setRegistered = setRegistered
     // Connect to the signal server
     this.socket = io.connect(this.signalServerUrl)
@@ -72,11 +74,10 @@ class ConnectCore {
    * @param {String} id - The id of the client
    * @returns {void}
    */
-  registerClient(id) {
-    this.clientId = id
-    this.socket.emit('register', this.clientId)
+  registerClient() {
+    this.socket.emit('register')
 
-    console.log(`[INFO] ===Registering client with id ${this.clientId}===`)
+    console.log(`[INFO] ===Registering client===`)
   }
 
   /**
@@ -115,10 +116,10 @@ class ConnectCore {
 
   handleServerMsg() { // Handle messages from the signal server
     this.socket.on('success', (id) => {
-      if (id === this.clientId) {
-        console.log(`[INFO] ===Client registered with id ${id}===`)
-        this.setRegistered(true)
-      }
+      console.log(`[INFO] ===Client registered with id ${id}===`)
+      this.clientId = id
+      this.setClientId(id)
+      this.setRegistered(true)
     })
 
     this.socket.on('disconnect', () => {

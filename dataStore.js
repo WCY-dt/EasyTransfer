@@ -13,12 +13,15 @@ export const useDataStore = defineStore('data', {
     sendFileUtil: ref(null),
     receiveFileUtil: ref(null),
 
+    clientId: ref('LOADING'),
+
     isConnectSuccess: ref(false),
     registered: ref(false),
   }),
   actions: {
     establishPeerConnection() { // Establish the peer connection
       this.connectCore = new ConnectCore(
+        this.setClientId,
         this.setRegistered
       )
       this.sendCore = new SendCore(
@@ -27,6 +30,10 @@ export const useDataStore = defineStore('data', {
       )
       this.sendFileUtil = new SendFileUtil()
       this.receiveFileUtil = new ReceiveFileUtil()
+    },
+
+    setClientId(id) { // Set the client ID
+      this.clientId = id
     },
 
     setRegistered(status) { // Set the registration status

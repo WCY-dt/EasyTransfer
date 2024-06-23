@@ -1,18 +1,16 @@
 .id {
   font-family: var(--code-font-family);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .id #clientId {
   position: relative;
-  color: var(--primary-color);
   font-size: 6rem;
   font-weight: 900;
   text-align: center;
   transition: all 0.1s ease-in-out;
-}
-
-.id #clientId:hover {
-  color: var(--primary-light-color);
 }
 
 .id #clientId .cover {
@@ -36,6 +34,26 @@
 
 .id #clientId:hover .cover {
   opacity: 1;
+}
+
+.id #clientId.ready {
+  color: var(--primary-color);
+}
+
+.id #clientId.ready:hover {
+  color: var(--primary-light-color);
+}
+
+.id #clientId.disabled {
+  color: var(--secondary-color);
+}
+
+.id #clientId.disabled:hover {
+  color: var(--secondary-color);
+}
+
+.id #clientId.disabled .cover {
+  display: none;
 }
 
 .id #targetId {
