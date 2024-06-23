@@ -32,9 +32,6 @@ export default {
     onCameraClick() { // Handle camera click event
       if (!this.isConnectSuccess) return
 
-      this.showCamera = true
-      this.showStream = true
-
       navigator.mediaDevices
         .getUserMedia({
           audio: false,
@@ -44,8 +41,12 @@ export default {
         }).then((stream) => {
           window.stream = stream;
           this.$refs.stream.srcObject = stream
+          this.showCamera = true
+          this.showStream = true
         }).catch((error) => {
           console.error(`[ERR] GetUserMedia error: ${error}`)
+          this.showCamera = false
+          this.showStream = false
           alert('Please allow camera access to use this feature')
         })
     },
