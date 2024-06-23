@@ -2,6 +2,8 @@
 
 [English](README.md) | 简体中文
 
+👉**立即体验：[EasyTransfer](https://file.ch3nyang.top/)**
+
 EasyTransfer是一个免费、简单、易用的 P2P 文件传输工具。您仅需要访问一个简单的网页，就可以使用设备代码连接到**任何网络**中的**任何设备**。
 
 它使用 webRTC 构建，**无需扫码**、**无需分享 URL 链接**、**无需上传文件到服务器**。
@@ -14,8 +16,15 @@ EasyTransfer是一个免费、简单、易用的 P2P 文件传输工具。您仅
 
 ## 注意事项
 
-- 信令及数据可能存在泄漏风险，请勿传输隐私文件。
+- 加密传输正在开发中，当前信令及数据可能存在泄漏风险，请勿传输隐私文件。
 - 本项目全部托管在免费的服务器上，请不要滥用。
+
+## 自行部署
+
+1. [fork](https://github.com/WCY-dt/EasyTransfer/fork) 本项目。
+2. 将整个项目导入到 [glitch](https://glitch.com/) 中或您自己的服务器中。
+3. 修改 [`./client/e2e/connectCore.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/e2e/connectCore.js) 中的 `signalServerUrl` 和 `iceServers` 为您自己的地址。
+4. 开启 GitHub Pages，并选择 `gh-pages` 分支作为源。
 
 ## TODO
 
