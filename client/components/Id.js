@@ -95,13 +95,14 @@ export default {
         </div>
       </div>
       <div id="targetId" :class="buttonStatus">
-          <input type="text" id="targetIdInput" placeholder="code" maxlength="4"
-            v-model="connectCore.targetId">
-          <button id="connectButton"
-            :disabled="!enableConnect || !registered" @click="connectTarget">
-            <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
-            <span v-else class="mdi mdi-connection"></span>
-          </button>
+        <span class="info">Enter the peer's code</span>
+        <input type="text" id="targetIdInput" placeholder="code" maxlength="4"
+          v-model="connectCore.targetId">
+        <button id="connectButton"
+          :disabled="!enableConnect || !registered" @click="connectTarget">
+          <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
+          <span v-else class="mdi mdi-connection"></span>
+        </button>
       </div>
     </div>
   `
