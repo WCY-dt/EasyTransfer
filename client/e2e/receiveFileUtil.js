@@ -69,6 +69,7 @@ class ReceiveFileUtil {
     } else {
       if (data === 'file'
         || data === 'text'
+        || data === 'photo'
       ) {
         console.log(`[INFO] Received type: ${data}`)
         this.fileTypeQueue.push(data)

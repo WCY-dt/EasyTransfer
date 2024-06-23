@@ -21,8 +21,10 @@ It is built using webRTC, **no need to scan codes**, **no need to share URL link
 
 - [x] Support large file transmission
 - [x] Optimize transmission speed
-- [ ] Support photo transmission
+- [x] Support photo transmission
 - [x] Support plain text transmission
+- [ ] Support breakpoint resume
+- [ ] Encrypted transmission
 
 ## Acknowledgements
 

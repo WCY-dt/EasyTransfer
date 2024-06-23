@@ -11,8 +11,10 @@ class SendFileUtil {
     this.offset = 0;
   }
 
-  async sendFiles(files, sendCore) { // Send the file meta and content
+  async sendFiles(files, type, sendCore) { // Send the file meta and content
     console.log(`[INFO] ===Sending ${files.length} files===`)
+
+    console.log(`files: ${files}`)
 
     this.sendCore = sendCore
 
@@ -24,28 +26,29 @@ class SendFileUtil {
     }
 
     for (let i = 0; i < fileNum; i++) {
-      await this.sendFileMeta(files[i])
+      await this.sendFileMeta(files[i], type)
     }
 
     for (let i = 0; i < fileNum; i++) {
-      await this.sendFileContent(files[i])
+      await this.sendFileContent(files[i], type)
     }
   }
 
-  async sendFileMeta(file) { // Send the type, name, and size of the file
+  async sendFileMeta(file, type) { // Send the type, name, and size of the file
+    console.log(`file: ${file}`)
     if (!this.checkSendAvailability(file.size)) return
 
-    await this.sendCore.sendData('file')
+    await this.sendCore.sendData(type)
     await this.sendCore.sendData(file.name)
     await this.sendCore.sendData(file.size)
 
-    console.log(`[INFO] Sent meta: ${'file'} | ${file.name} | ${file.size}`)
+    console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
   }
 
-  async sendFileContent(file) { // Send the content of the file
+  async sendFileContent(file, type) { // Send the content of the file
     if (!this.checkSendAvailability(file.size)) return
 
-    this.currentFileType = 'file'
+    this.currentFileType = type
     this.currentFileName = file.name
     this.currentFileSize = file.size
 

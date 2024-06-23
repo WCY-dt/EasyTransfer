@@ -81,6 +81,98 @@
   background-color: var(--primary-color);
 }
 
+.cameradisplay {
+  position: fixed;
+  padding: 1rem;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  background-color: var(--primary-light-color);
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* shadow */
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.3), 0 0 0.5rem rgba(0, 0, 0, 0.5);
+}
+
+.cameradisplay button {
+  position: absolute;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.3s ease-in-out;
+}
+
+.cameradisplay #close {
+  top: 2rem;
+  right: 2rem;
+  font-size: 2rem;
+  background-color: transparent;
+  color: var(--prime-color);
+}
+
+.cameradisplay #close:hover {
+  color: var(--primary-dark-color);
+}
+
+.cameradisplay #stream {
+  border-radius: 0.25rem;
+  max-width: 94vw;
+  max-height: 94vh;
+  width: auto;
+  height: auto;
+}
+
+.cameradisplay #snapshot {
+  width: 4rem;
+  height: 4rem;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  font-size: 2rem;
+  background-color: var(--primary-color);
+  color: var(--light-color);
+}
+
+.cameradisplay #snapshot:hover {
+  background-color: var(--primary-dark-color);
+}
+
+.cameradisplay #photo {
+  border-radius: 0.25rem;
+  max-width: 94vw;
+  max-height: 94vh;
+  width: auto;
+  height: auto;
+}
+
+.cameradisplay #send {
+  width: 6rem;
+  height: 3rem;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 0.25rem;
+  font-size: 2rem;
+  background-color: var(--primary-color);
+  color: var(--light-color);
+}
+
+.cameradisplay #send:hover {
+  background-color: var(--primary-dark-color);
+}
+
+.cameradisplay #send.mdi-check-bold {
+  background-color: var(--success-color);
+}
+
+.cameradisplay #send.mdi-check-bold:hover {
+  background-color: var(--success-color);
+}
+
 .camera span {
   font-size: 4rem;
   line-height: 4rem;
@@ -174,6 +266,18 @@
   .camera:not(.disabled):hover {
     color: var(--primary-color);
     background-color: var(--light-color);
+  }
+
+  .cameradisplay #close:hover {
+    color: var(--primary-color);
+  }
+
+  .cameradisplay #snapshot:hover {
+    background-color: var(--primary-color);
+  }
+
+  .cameradisplay #send:hover {
+    background-color: var(--primary-color);
   }
 
   .text:not(.disabled) button:hover {

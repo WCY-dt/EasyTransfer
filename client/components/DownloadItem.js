@@ -32,29 +32,27 @@ export default {
     }
   },
 
-  watch: {
-    success(newValue) {
-      if (newValue) {
-        this.$refs.downloadLink.click();
-      }
-    }
-  },
-
   methods: {
     onTextClick() {
       navigator.clipboard.writeText(this.name)
       this.copied = true;
       setTimeout(() => {
         this.copied = false;
-      }, 2000);
+      }, 1000);
     }
   },
 
   template: /*html*/`
-    <a v-if="type==='file'" ref="downloadLink" :href="url" class="downloadFileItem file" :download="name" :class="{ success: success, loading: !success }">
+    <a v-if="type==='file' || type==='photo'" ref="downloadLink" :href="url" class="downloadFileItem file" :download="name" :class="{ success: success, loading: !success }">
       <div id="downloadDisplay">
         <p id="downloadName">{{ name }}</p>
         <progress id="downloadProgress" :value="progress" :max="size"></progress>
+        <img v-if="type==='photo'"
+          id="downloadContent"
+          :src="url"
+          alt="Photo"
+          v-if="success"
+        />
       </div>
     </a>
     <div v-if="type==='text'" class="downloadFileItem text" :class="{ success: success, loading: !success }" @click="onTextClick">
