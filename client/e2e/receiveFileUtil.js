@@ -64,14 +64,16 @@ class ReceiveFileUtil {
 
   async handleFileMeta(data) {
     if (parseInt(data)) {
-      console.log(`[INFO] Received file size: ${data}`)
+      console.log(`[INFO] Received size: ${data}`)
       this.fileSizeQueue.push(parseInt(data))
     } else {
-      if (data === 'file') {
-        console.log(`[INFO] Received file type: ${data}`)
+      if (data === 'file'
+        || data === 'text'
+      ) {
+        console.log(`[INFO] Received type: ${data}`)
         this.fileTypeQueue.push(data)
       } else {
-        console.log(`[INFO] Received file name: ${data}`)
+        console.log(`[INFO] Received name: ${data}`)
         this.fileNameQueue.push(data)
       }
     }
@@ -79,7 +81,7 @@ class ReceiveFileUtil {
     if (this.fileNameQueue.length === this.fileSizeQueue.length
       && this.fileNameQueue.length === this.fileTypeQueue.length
     ) {
-      console.log(`[INFO] ===New file to receive ${this.fileTypeQueue[this.fileTypeQueue.length - 1]} | ${this.fileNameQueue[this.fileNameQueue.length - 1]} | ${this.fileSizeQueue[this.fileSizeQueue.length - 1]}===`)
+      console.log(`[INFO] ===New to receive ${this.fileTypeQueue[this.fileTypeQueue.length - 1]} | ${this.fileNameQueue[this.fileNameQueue.length - 1]} | ${this.fileSizeQueue[this.fileSizeQueue.length - 1]}===`)
 
       this.addDownloadFileItem(
         "javascript:void(0)",
@@ -88,6 +90,15 @@ class ReceiveFileUtil {
         0,
         this.fileTypeQueue[this.fileTypeQueue.length - 1]
       )
+
+      if (this.fileTypeQueue[this.fileTypeQueue.length - 1] === 'text') {
+        this.fileTypeQueue.shift()
+        this.fileNameQueue.shift()
+        this.fileSizeQueue.shift()
+        this.currentReceivingFileNo++
+
+        this.updateFileSuccess(this.currentReceivingFileNo, true)
+      }
     }
   }
 
