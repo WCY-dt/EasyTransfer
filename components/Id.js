@@ -56,7 +56,7 @@ export default {
       this.copied = true;
       setTimeout(() => {
         this.copied = false;
-      }, 2000);
+      }, 1000);
     },
 
     connectTarget() { // Connect to the targetId

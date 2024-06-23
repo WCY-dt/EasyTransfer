@@ -6,12 +6,15 @@ export default {
     return {
       textInput: '',
       textSent: false,
+      photoSent: false,
+      showCamera: false,
+      showStream: false,
     }
   },
 
   methods: {
     async sendFiles() { // Send the file meta and content
-      this.sendFileUtil.sendFiles(this.$refs.fileInput.files, this.sendCore)
+      this.sendFileUtil.sendFiles(this.$refs.fileInput.files, 'file', this.sendCore)
     },
 
     onFileDrop(event) { // Handle file drop event
@@ -28,7 +31,63 @@ export default {
 
     onCameraClick() { // Handle camera click event
       if (!this.isConnectSuccess) return
-      this.sendFileUtil.takePhoto(this.sendCore)
+
+      this.showCamera = true
+      this.showStream = true
+
+      navigator.mediaDevices
+        .getUserMedia({
+          audio: false,
+          video: true
+        }).then((stream) => {
+          window.stream = stream;
+          this.$refs.stream.srcObject = stream
+        }).catch((error) => {
+          console.error(`[ERR] GetUserMedia error: ${error}`)
+        })
+    },
+
+    onSnapshotClick() { // Handle snapshot click event
+      console.log('Taking snapshot')
+      this.$refs.photo.width = this.$refs.stream.videoWidth
+      this.$refs.photo.height = this.$refs.stream.videoHeight
+      this.$refs.photo.getContext('2d').drawImage(this.$refs.stream, 0, 0, this.$refs.photo.width, this.$refs.photo.height)
+      window.stream.getTracks().forEach(track => track.stop())
+      this.showStream = false
+    },
+
+    onCameraCloseClick() { // Handle camera close click event
+      window.stream.getTracks().forEach(track => track.stop())
+      this.showCamera = false
+      this.showStream = false
+    },
+
+    async processAndSendPhoto() {
+      this.$refs.photo.toBlob(async function (blob) {
+        const timestamp = new Date().getTime();
+
+        const file = new File(
+          [blob], 
+          `image_${timestamp}.png`, 
+          { type: "image/png" }
+        );
+        console.log(file);
+
+        await this.sendFileUtil.sendFiles([file], 'photo', this.sendCore);
+      }.bind(this), 'image/png');
+    },
+
+
+    async onCameraSendClick() { // Handle camera send click event
+      if (!this.isConnectSuccess) return
+
+      this.processAndSendPhoto.call(this);
+
+      this.photoSent = true
+      setTimeout(() => {
+        this.photoSent = false
+        this.onCameraCloseClick()
+      }, 1000)
     },
 
     onTextClick() { // Handle text send event
@@ -38,7 +97,7 @@ export default {
       setTimeout(() => {
         this.textSent = false
         this.textInput = ''
-      }, 2000)
+      }, 1000)
     },
   },
 
@@ -58,6 +117,14 @@ export default {
 
   template: /*html*/`
     <div id="upload" class="upload">
+      <div v-show="showCamera" id="cameradisplay" class="cameradisplay">
+        <button id="close" class="mdi mdi-close" @click="onCameraCloseClick"></button>
+        <video v-show="showStream" id="stream" ref="stream" autoplay></video>
+        <button v-show="showStream" id="snapshot" class="mdi mdi-camera" @click="onSnapshotClick"></button>
+        <canvas v-show="!showStream" id="photo" ref="photo"></canvas>
+        <button v-show="!showStream" id="send" class="mdi" @click="onCameraSendClick" :class="{ 'mdi-send' : !photoSent, 'mdi-check-bold' : photoSent }"></button>
+      </div>
+
       <div id="dropzone" class="dropzone" @dragover.prevent @drop="onFileDrop" @click="onFileClick" :class="{ disabled : !isConnectSuccess, active : isConnectSuccess }">
         <input type="file" id="fileInput" title="Choose a file to send" multiple
           @change="sendFiles" ref="fileInput" :disabled="!isConnectSuccess">
@@ -65,7 +132,7 @@ export default {
         <p id="fileName">{{ sendFileUtil.currentFileName }}</p>
         <progress id="fileProgress" :value="sendFileUtil.offset" :max="sendFileUtil.currentFileSize"></progress>
       </div>
-      <div id="camera" class="camera disabled" :class="{ disabled : !isConnectSuccess, active : isConnectSuccess }" @click="onCameraClick">
+      <div id="camera" class="camera" :class="{ disabled : !isConnectSuccess, active : isConnectSuccess }" @click="onCameraClick">
         <span class="mdi mdi-camera"></span>
       </div>
       <div id="text" class="text" :class="{ disabled : !isConnectSuccess, active : isConnectSuccess }">
