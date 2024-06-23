@@ -5,7 +5,7 @@ import ConnectCore from './e2e/connectCore.js'
 import SendCore from './e2e/sendCore.js'
 import SendFileUtil from './e2e/sendFileUtil.js'
 import SendTextUtil from './e2e/sendTextUtil.js'
-import ReceiveFileUtil from './e2e/receiveFileUtil.js'
+import ReceiveUtil from './e2e/receiveUtil.js'
 
 export const useDataStore = defineStore('data', {
   state: () => ({
@@ -13,7 +13,7 @@ export const useDataStore = defineStore('data', {
     sendCore: ref(null),
     sendFileUtil: ref(null),
     sendTextUtil: ref(null),
-    receiveFileUtil: ref(null),
+    receiveUtil: ref(null),
 
     clientId: ref('LOADING'),
 
@@ -32,7 +32,7 @@ export const useDataStore = defineStore('data', {
       )
       this.sendFileUtil = new SendFileUtil()
       this.sendTextUtil = new SendTextUtil()
-      this.receiveFileUtil = new ReceiveFileUtil()
+      this.receiveUtil = new ReceiveUtil()
     },
 
     setClientId(id) { // Set the client ID

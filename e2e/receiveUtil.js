@@ -1,4 +1,4 @@
-class ReceiveFileUtil {
+class ReceiveUtil {
   constructor() {
     this.addDownloadFileItem = null;
     this.updateFileProgress = null;
@@ -67,9 +67,9 @@ class ReceiveFileUtil {
       console.log(`[INFO] Received size: ${data}`)
       this.fileSizeQueue.push(parseInt(data))
     } else {
-      if (data === 'file'
-        || data === 'text'
-        || data === 'photo'
+      if (data === 'TRANSFER_TYPE_FILE'
+        || data === 'TRANSFER_TYPE_TEXT'
+        || data === 'TRANSFER_TYPE_PHOTO'
       ) {
         console.log(`[INFO] Received type: ${data}`)
         this.fileTypeQueue.push(data)
@@ -92,7 +92,7 @@ class ReceiveFileUtil {
         this.fileTypeQueue[this.fileTypeQueue.length - 1]
       )
 
-      if (this.fileTypeQueue[this.fileTypeQueue.length - 1] === 'text') {
+      if (this.fileTypeQueue[this.fileTypeQueue.length - 1] === 'TRANSFER_TYPE_TEXT') {
         this.fileTypeQueue.shift()
         this.fileNameQueue.shift()
         this.fileSizeQueue.shift()
@@ -141,4 +141,4 @@ class ReceiveFileUtil {
   }
 }
 
-export default ReceiveFileUtil;
+export default ReceiveUtil;
