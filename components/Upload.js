@@ -38,7 +38,9 @@ export default {
       navigator.mediaDevices
         .getUserMedia({
           audio: false,
-          video: true
+          video: {
+            facingMode: 'environment' // 'user' for front camera, 'environment' for back camera
+          }
         }).then((stream) => {
           window.stream = stream;
           this.$refs.stream.srcObject = stream
@@ -119,7 +121,7 @@ export default {
     <div id="upload" class="upload">
       <div v-show="showCamera" id="cameradisplay" class="cameradisplay">
         <button id="close" class="mdi mdi-close" @click="onCameraCloseClick"></button>
-        <video v-show="showStream" id="stream" ref="stream" autoplay></video>
+        <video v-show="showStream" id="stream" ref="stream" autoplay playsinline></video>
         <button v-show="showStream" id="snapshot" class="mdi mdi-camera" @click="onSnapshotClick"></button>
         <canvas v-show="!showStream" id="photo" ref="photo"></canvas>
         <button v-show="!showStream" id="send" class="mdi" @click="onCameraSendClick" :class="{ 'mdi-send' : !photoSent, 'mdi-check-bold' : photoSent }"></button>
