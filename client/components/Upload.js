@@ -14,7 +14,7 @@ export default {
 
   methods: {
     async sendFiles() { // Send the file meta and content
-      this.sendFileUtil.sendFiles(this.$refs.fileInput.files, 'file', this.sendCore)
+      this.sendFileUtil.sendFiles(this.$refs.fileInput.files, 'TRANSFER_TYPE_FILE', this.sendCore)
     },
 
     onFileDrop(event) { // Handle file drop event
@@ -77,7 +77,7 @@ export default {
         );
         console.log(file);
 
-        await this.sendFileUtil.sendFiles([file], 'photo', this.sendCore);
+        await this.sendFileUtil.sendFiles([file], 'TRANSFER_TYPE_PHOTO', this.sendCore);
       }.bind(this), 'image/png');
     },
 

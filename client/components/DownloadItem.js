@@ -18,7 +18,7 @@ export default {
     },
     type: {
       type: String,
-      default: "file"
+      default: "TRANSFER_TYPE_FILE"
     },
     success: {
       type: Boolean,
@@ -43,19 +43,18 @@ export default {
   },
 
   template: /*html*/`
-    <a v-if="type==='file' || type==='photo'" ref="downloadLink" :href="url" class="downloadFileItem file" :download="name" :class="{ success: success, loading: !success }">
+    <a v-if="type==='TRANSFER_TYPE_FILE' || type==='TRANSFER_TYPE_PHOTO'" ref="downloadLink" :href="url" class="downloadFileItem file" :download="name" :class="{ success: success, loading: !success }">
       <div id="downloadDisplay">
         <p id="downloadName">{{ name }}</p>
         <progress id="downloadProgress" :value="progress" :max="size"></progress>
-        <img v-if="type==='photo'"
+        <img v-if="type==='TRANSFER_TYPE_PHOTO' && success"
           id="downloadContent"
           :src="url"
           alt="Photo"
-          v-if="success"
         />
       </div>
     </a>
-    <div v-if="type==='text'" class="downloadFileItem text" :class="{ success: success, loading: !success }" @click="onTextClick">
+    <div v-if="type==='TRANSFER_TYPE_TEXT'" class="downloadFileItem text" :class="{ success: success, loading: !success }" @click="onTextClick">
       <div id="downloadDisplay">
         <p id="downloadContent">{{ name }}</p>
         <div class="cover">

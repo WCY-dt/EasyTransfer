@@ -42,7 +42,7 @@ export default {
   watch: {
     isConnectSuccess(newValue) {
       if (newValue) {
-        this.receiveFileUtil.receiveFiles(this.connectCore, this.addDownloadFileItem, this.updateFileProgress, this.updateFileUrl, this.updateFileSuccess)
+        this.receiveUtil.receiveFiles(this.connectCore, this.addDownloadFileItem, this.updateFileProgress, this.updateFileUrl, this.updateFileSuccess)
       }
     }
   },
@@ -50,12 +50,12 @@ export default {
   setup() {
     const dataStore = useDataStore()
 
-    const { connectCore, receiveFileUtil, isConnectSuccess } = storeToRefs(dataStore)
+    const { connectCore, receiveUtil, isConnectSuccess } = storeToRefs(dataStore)
 
     return {
       dataStore,
       connectCore,
-      receiveFileUtil,
+      receiveUtil,
       isConnectSuccess,
     }
   },
