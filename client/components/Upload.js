@@ -46,6 +46,7 @@ export default {
           this.$refs.stream.srcObject = stream
         }).catch((error) => {
           console.error(`[ERR] GetUserMedia error: ${error}`)
+          alert('Please allow camera access to use this feature')
         })
     },
 
