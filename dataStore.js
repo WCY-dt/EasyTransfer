@@ -4,6 +4,7 @@ import { io } from 'socket.io'
 import ConnectCore from './e2e/connectCore.js'
 import SendCore from './e2e/sendCore.js'
 import SendFileUtil from './e2e/sendFileUtil.js'
+import SendTextUtil from './e2e/sendTextUtil.js'
 import ReceiveFileUtil from './e2e/receiveFileUtil.js'
 
 export const useDataStore = defineStore('data', {
@@ -11,6 +12,7 @@ export const useDataStore = defineStore('data', {
     connectCore: ref(null),
     sendCore: ref(null),
     sendFileUtil: ref(null),
+    sendTextUtil: ref(null),
     receiveFileUtil: ref(null),
 
     clientId: ref('LOADING'),
@@ -29,6 +31,7 @@ export const useDataStore = defineStore('data', {
         this.setConnectSuccess
       )
       this.sendFileUtil = new SendFileUtil()
+      this.sendTextUtil = new SendTextUtil()
       this.receiveFileUtil = new ReceiveFileUtil()
     },
 

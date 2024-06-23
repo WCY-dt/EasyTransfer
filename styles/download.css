@@ -6,7 +6,7 @@
   width: calc(min(30rem, 100%));
 }
 
-a.downloadFileItem {
+.downloadFileItem {
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -20,7 +20,7 @@ a.downloadFileItem {
   transition: all 0.3s ease-in-out;
 }
 
-a.downloadFileItem #downloadDisplay {
+.downloadFileItem #downloadDisplay {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -28,66 +28,111 @@ a.downloadFileItem #downloadDisplay {
   width: 100%;
 }
 
-a.downloadFileItem #downloadDisplay p {
+.downloadFileItem #downloadDisplay p {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
+  transition: all 0.3s ease-in-out;
 }
 
-a.downloadFileItem #downloadDisplay progress {
+.downloadFileItem #downloadDisplay p#downloadName {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.downloadFileItem #downloadDisplay p#downloadContent {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.downloadFileItem #downloadDisplay progress {
   width: 100%;
   height: 0.5rem;
   border: none;
   border-radius: 0.25rem;
 }
 
-a.downloadFileItem.success {
+.downloadFileItem.success {
   border-color: var(--success-color);
   background-color: var(--success-light-color);
   color: var(--success-color);
 }
 
-a.downloadFileItem.success:hover {
+.downloadFileItem.file.success:hover {
   background-color: var(--success-color);
   color: var(--light-color);
 }
 
-a.downloadFileItem.success #downloadDisplay progress::-webkit-progress-value {
+.downloadFileItem.success #downloadDisplay progress::-webkit-progress-value {
   background-color: var(--success-color);
   transition: all 0.3s ease-in-out;
 }
 
-a.downloadFileItem.success:hover #downloadDisplay progress::-webkit-progress-value {
+.downloadFileItem.success:hover #downloadDisplay progress::-webkit-progress-value {
   background-color: var(--light-color);
 }
 
-a.downloadFileItem.loading {
+.downloadFileItem.loading {
   border-color: var(--primary-color);
   background-color: var(--primary-light-color);
   color: var(--primary-color);
   cursor: not-allowed;
 }
 
-a.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-value {
+.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-value {
   background-color: var(--primary-color);
   transition: all 0.3s ease-in-out;
 }
 
-a.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-bar {
+.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-bar {
   background-color: var(--light-color);
 }
 
+.downloadFileItem.text.success {
+  position: relative;
+}
+
+.downloadFileItem.text.success .cover {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--success-color);
+  font-size: 1.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.downloadFileItem.text.success:hover p {
+  opacity: 0.2;
+}
+
+.downloadFileItem.text.success:hover .cover {
+  opacity: 1;
+}
+
 @media (hover: none) {
-  a.downloadFileItem.success:hover {
+  .downloadFileItem.success:hover {
     background-color: var(--success-light-color);
     color: var(--success-color);
   }
 
-  a.downloadFileItem.success:hover #downloadDisplay progress::-webkit-progress-value {
+  .downloadFileItem.success:hover #downloadDisplay progress::-webkit-progress-value {
     background-color: var(--success-color);
+  }
+
+  .downloadFileItem.text.success:hover p {
+    opacity: 1;
+  }
+
+  .downloadFileItem.text.success:hover .cover {
+    opacity: 0;
   }
 }
