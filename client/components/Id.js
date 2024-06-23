@@ -5,7 +5,6 @@ import { useDataStore } from '../dataStore.js'
 export default {
   data() {
     return {
-      clientId: '',
       targetId: '',
       enableConnect: false,
       isConnecting: false,
@@ -47,14 +46,6 @@ export default {
   },
 
   methods: {
-    generateId() { // Generate a random 4 character string
-      let id;
-      do {
-        id = Math.random().toString(36).substring(2, 6).toUpperCase();
-      } while (id.includes('0') || id.includes('1') || id.includes('O') || id.includes('I') || id.includes('L'));
-      return id;
-    },
-
     validateInput(value) { // Check if the input is 4 characters long
       this.enableConnect = (value.length === 4)
       this.isConnectSuccess = false
@@ -79,25 +70,25 @@ export default {
     
     dataStore.establishPeerConnection()
 
-    const { connectCore, isConnectSuccess, registered } = storeToRefs(dataStore)
+    const { connectCore, clientId, isConnectSuccess, registered } = storeToRefs(dataStore)
 
     return {
       dataStore,
       connectCore,
+      clientId,
       isConnectSuccess,
       registered
     }
   },
 
   mounted() {
-    this.clientId = this.generateId()
-    this.connectCore.registerClient(this.clientId)
+    this.connectCore.registerClient()
   },
 
   template: /*html*/`
     <div class="id">
-      <div id="clientId" @click="copyId">
-        {{ connectCore.clientId }}
+      <div id="clientId" @click="copyId" :class="this.clientId === 'LOADING' ? 'disabled' : 'ready'">
+        {{ this.clientId }}
         <div class="cover">
           <span class="mdi mdi-check-bold" v-if="copied"></span>
           <span class="mdi mdi-content-copy" v-else></span>
