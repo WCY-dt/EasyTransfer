@@ -1,12 +1,19 @@
 # EasyTransfer
 
-[简体中文](README_cn.md) | English
+[简体中文](README-ZH_cn.md) | English
 
 👉**EXPERIENCE NOW: [EasyTransfer](https://file.ch3nyang.top/)**
 
-EasyTransfer is a free, simple, and easy-to-use P2P file transfer tool. You only need to visit a simple web page to connect to **any device** in **any network** using a device code.
+EasyTransfer is a free, anonymous, encrypted (*TODO*), and easy-to-use E2EE file transfer tool. You only need to visit a simple web page to connect to **any device** in **any network** using a device code.
 
-It is built using webRTC, **no need to scan codes**, **no need to share URL links**, **no need to upload files to the server**.
+It is built using webRTC and Vue.js, and there is
+
+- **NO** need to install any software
+- **NO** need to register an account
+- **NO** need to scan QR codes
+- **NO** need to share URL links
+- **NO** need to upload files to the server[^1]
+- **NO** need to worry about the network environment
 
 ## How to use
 
@@ -33,9 +40,12 @@ It is built using webRTC, **no need to scan codes**, **no need to share URL link
 - [x] Support photo transmission
 - [x] Support plain text transmission
 - [ ] Support breakpoint resume
-- [ ] Encrypted transmission
+- [ ] Support Encrypted transmission
+- [ ] Support multiple devices
 
 ## Acknowledgements
 
 - Thanks to [metered](https://www.metered.ca/) for providing free STUN and TURN servers.
 - Thanks to [glitch](https://glitch.com/) for providing free signaling servers.
+
+[^1]: If the communicating peers need to penetrate the intranet, the file may be uploaded to the free TURN server provided by this project. You can avoid this by deploying a trusted TURN server yourself.
