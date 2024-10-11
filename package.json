@@ -15,6 +15,6 @@
   "author": "ch3nyang",
   "license": "MIT",
   "dependencies": {
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.8.0"
   }
 }
