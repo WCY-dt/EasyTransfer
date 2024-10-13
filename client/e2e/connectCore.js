@@ -45,7 +45,11 @@ class ConnectCore {
   socket = null;
   clientId = 'LOADING';
   targetId = '';
+  pubKey = '';
+  privKey = '';
   setClienId = null;
+  setPubKey = null;
+  setPrivKey = null;
   setRegistered = null;
   peerConnection = null;
   candidateQueue = [];
@@ -55,8 +59,10 @@ class ConnectCore {
    * 
    * @returns {void}
    */
-  constructor(setClientId, setRegistered) {
+  constructor(setClientId, setPubKey, setPrivKey, setRegistered) {
     this.setClientId = setClientId
+    this.setPubKey = setPubKey
+    this.setPrivKey = setPrivKey
     this.setRegistered = setRegistered
     // Connect to the signal server
     this.socket = io.connect(this.signalServerUrl)
@@ -74,10 +80,37 @@ class ConnectCore {
    * @param {String} id - The id of the client
    * @returns {void}
    */
-  registerClient() {
-    this.socket.emit('register')
+  async registerClient() {
+    // Generate public-private key pair
+    const keyPair = await window.crypto.subtle.generateKey(
+      {
+        name: "RSA-OAEP",
+        modulusLength: 2048,
+        publicExponent: new Uint8Array([1, 0, 1]),
+        hash: "SHA-256"
+      },
+      true,
+      ["encrypt", "decrypt"]
+    );
+
+    this.pubKey = keyPair.publicKey;
+    this.privKey = keyPair.privateKey;
+    this.setPrivKey(this.privKey);
+
+    // Export the public key to send to the server
+    const exportedPubKey = await window.crypto.subtle.exportKey(
+      "spki",
+      this.pubKey
+    );
+
+    // Convert the exported key to a base64 string
+    const pubKeyBase64 = btoa(String.fromCharCode(...new Uint8Array(exportedPubKey)));
+
+    // Emit the public key to the signal server
+    this.socket.emit('register', pubKeyBase64);
 
     console.log(`[INFO] ===Registering client===`)
+    console.log(`[INFO] Public key: ${pubKeyBase64}`)
   }
 
   /**
@@ -128,17 +161,22 @@ class ConnectCore {
       window.location.reload();
     });
 
-    this.socket.on('offer', (sdp, id) => {
+    this.socket.on('offer', (sdp, id, key) => {
       console.log(`[INFO] ===Connecting to ${id}===`)
+      console.log(`[INFO] Peer public key: ${key}`)
       
       this.targetId = id
+      this.setPubKey(key)
       this.handleOffer(sdp)
       this.sendIceCandidate()
 
       console.log(`[INFO] Received offer from ${this.targetId}`)
     })
 
-    this.socket.on('answer', (sdp, id) => {
+    this.socket.on('answer', (sdp, id, key) => {
+      console.log(`[INFO] Peer public key: ${key}`)
+
+      this.setPubKey(key)
       this.handleAnswer(sdp)
 
       console.log(`[INFO] Received answer from ${this.targetId}`)

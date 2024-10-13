@@ -17,6 +17,9 @@ export const useDataStore = defineStore('data', {
 
     clientId: ref('LOADING'),
 
+    pubKey: ref(''), // Public key of the peer
+    privKey: ref(''), // Private key of itself
+
     isConnectSuccess: ref(false),
     registered: ref(false),
   }),
@@ -24,6 +27,8 @@ export const useDataStore = defineStore('data', {
     establishPeerConnection() { // Establish the peer connection
       this.connectCore = new ConnectCore(
         this.setClientId,
+        this.setPubKey,
+        this.setPrivKey,
         this.setRegistered
       )
       this.sendCore = new SendCore(
@@ -37,6 +42,14 @@ export const useDataStore = defineStore('data', {
 
     setClientId(id) { // Set the client ID
       this.clientId = id
+    },
+
+    setPubKey(key) { // Set the public key
+      this.pubKey = key
+    },
+
+    setPrivKey(key) { // Set the private key
+      this.privKey = key
     },
 
     setRegistered(status) { // Set the registration status

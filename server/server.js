@@ -7,6 +7,7 @@ const io = require('socket.io')(port, {
 });
 
 const clients = {}; // Store client IDs and their corresponding sockets
+const pubKeys = {}; // Store client IDs and their corresponding public keys
 
 const generateId = () => { // Generate a random 4 character string
     let id;
@@ -29,21 +30,22 @@ const generateId = () => { // Generate a random 4 character string
 io.on('connection', socket => {
     console.log('[client connected] ', socket.id);
 
-    socket.on('register', () => {
+    socket.on('register', (pubKeyBase64) => {
         const clientId = generateId();
-        console.log('[register] ', clientId);
+        console.log('[register] ', clientId, ' * ', pubKeyBase64);
         clients[clientId] = socket;
+        pubKeys[clientId] = pubKeyBase64;
         clients[clientId].emit('success', clientId);
     });
 
     socket.on('offer', (sdp, srcId, targetId) => {
         console.log('[offer] ', srcId, ' --> ', targetId);
-        clients[targetId].emit('offer', sdp, srcId);
+        clients[targetId].emit('offer', sdp, srcId, pubKeys[srcId]);
     });
 
     socket.on('answer', (sdp, srcId, targetId) => {
         console.log('[answer] ', srcId, ' --> ', targetId);
-        clients[targetId].emit('answer', sdp, srcId);
+        clients[targetId].emit('answer', sdp, srcId, pubKeys[srcId]);
     });
 
     socket.on('candidate', (candidate, targetId) => {
@@ -56,6 +58,7 @@ io.on('connection', socket => {
         for (const clientId in clients) {
             if (clients[clientId] === socket) {
                 delete clients[clientId];
+                delete pubKeys[clientId];
                 break;
             }
         }
