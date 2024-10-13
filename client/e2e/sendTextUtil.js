@@ -14,11 +14,11 @@ class SendTextUtil {
   async sendTextContent(text) { // Send the type, name, and size of the file
     if (!this.checkSendAvailability(text)) return
 
-    await this.sendCore.sendData('TRANSFER_TYPE_TEXT')
-    await this.sendCore.sendData(text)
-    await this.sendCore.sendData(text.length)
+    await this.sendCore.sendData('CONTENT_META' + 'TRANSFER_TYPE_TEXT')
+    await this.sendCore.sendData('CONTENT_META' + text)
+    await this.sendCore.sendData('CONTENT_META' + text.length)
 
-    console.log(`[INFO] Sent content: ${'TRANSFER_TYPE_FILE'} | ${text} | ${text.length}`)
+    console.log(`[INFO] Sent content: ${'TRANSFER_TYPE_TEXT'} | ${text} | ${text.length}`)
   }
 
   checkSendAvailability(text) { // Check if the text is empty or the data channel is open

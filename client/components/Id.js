@@ -81,8 +81,8 @@ export default {
     }
   },
 
-  mounted() {
-    this.connectCore.registerClient()
+  async mounted() {
+    await this.connectCore.registerClient()
   },
 
   template: /*html*/`

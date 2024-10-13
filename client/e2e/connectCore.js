@@ -161,25 +161,35 @@ class ConnectCore {
       window.location.reload();
     });
 
-    this.socket.on('offer', (sdp, id, key) => {
+    this.socket.on('offer', (sdp, id, keyBase64) => {
       console.log(`[INFO] ===Connecting to ${id}===`)
-      console.log(`[INFO] Peer public key: ${key}`)
-      
-      this.targetId = id
-      this.setPubKey(key)
-      this.handleOffer(sdp)
-      this.sendIceCandidate()
+      console.log(`[INFO] Peer public key: ${keyBase64}`)
 
-      console.log(`[INFO] Received offer from ${this.targetId}`)
+      const keyArray = new Uint8Array(atob(keyBase64).split('').map(c => c.charCodeAt(0)))
+      this.convertToCryptoKey(keyArray).then((key) => {
+        this.targetId = id
+        this.setPubKey(key)
+        this.handleOffer(sdp)
+        this.sendIceCandidate()
+
+        console.log(`[INFO] Received offer from ${this.targetId}`)
+      }).catch((error) => {
+        console.error(`[ERR] Error converting key: ${error}`)
+      });          
     })
 
-    this.socket.on('answer', (sdp, id, key) => {
-      console.log(`[INFO] Peer public key: ${key}`)
+    this.socket.on('answer', (sdp, id, keyBase64) => {
+      console.log(`[INFO] Peer public key: ${keyBase64}`)
 
-      this.setPubKey(key)
-      this.handleAnswer(sdp)
+      const keyArray = new Uint8Array(atob(keyBase64).split('').map(c => c.charCodeAt(0)))
+      this.convertToCryptoKey(keyArray).then((key) => {
+        this.setPubKey(key)
+        this.handleAnswer(sdp)
 
-      console.log(`[INFO] Received answer from ${this.targetId}`)
+        console.log(`[INFO] Received answer from ${this.targetId}`)
+      }).catch((error) => {
+        console.error(`[ERR] Error converting key: ${error}`)
+      });
     })
 
     this.socket.on('candidate', (candidate) => {
@@ -225,6 +235,19 @@ class ConnectCore {
     }
 
     console.log(`[INFO] Added ${this.targetId} to ICE candidate`)
+  }
+
+  async convertToCryptoKey(keyArray) {
+    return window.crypto.subtle.importKey(
+      "spki",
+      keyArray,
+      {
+        name: "RSA-OAEP",
+        hash: "SHA-256"
+      },
+      true,
+      ["encrypt"]
+    );
   }
 }
 

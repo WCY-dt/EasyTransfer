@@ -17,8 +17,8 @@ export const useDataStore = defineStore('data', {
 
     clientId: ref('LOADING'),
 
-    pubKey: ref(''), // Public key of the peer
-    privKey: ref(''), // Private key of itself
+    pubKey: ref(null), // Public key of the peer
+    privKey: ref(null), // Private key of itself
 
     isConnectSuccess: ref(false),
     registered: ref(false),
@@ -33,19 +33,30 @@ export const useDataStore = defineStore('data', {
       )
       this.sendCore = new SendCore(
         this.connectCore.peerConnection, 
-        this.setConnectSuccess
+        this.setConnectSuccess,
+        this.getPubKey
       )
       this.sendFileUtil = new SendFileUtil()
       this.sendTextUtil = new SendTextUtil()
-      this.receiveUtil = new ReceiveUtil()
+      this.receiveUtil = new ReceiveUtil(
+        this.getPrivKey
+      )
     },
 
     setClientId(id) { // Set the client ID
       this.clientId = id
     },
 
+    getPubKey() { // Get the public key
+      return this.pubKey
+    },
+
     setPubKey(key) { // Set the public key
       this.pubKey = key
+    },
+
+    getPrivKey() { // Get the private key
+      return this.privKey
     },
 
     setPrivKey(key) { // Set the private key

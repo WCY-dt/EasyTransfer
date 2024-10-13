@@ -38,9 +38,9 @@ class SendFileUtil {
     console.log(`file: ${file}`)
     if (!this.checkSendAvailability(file.size)) return
 
-    await this.sendCore.sendData(type)
-    await this.sendCore.sendData(file.name)
-    await this.sendCore.sendData(file.size)
+    await this.sendCore.sendData('CONTENT_META' + type)
+    await this.sendCore.sendData('CONTENT_META' + file.name)
+    await this.sendCore.sendData('CONTENT_META' + file.size)
 
     console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
   }

@@ -6,7 +6,7 @@
 
 ![Sample](./sample.jpeg)
 
-EasyTransfer is a free, anonymous, encrypted (*TODO*), and easy-to-use E2EE file transfer tool. You only need to visit a simple web page to connect to **any device** in **any network** using a device code.
+EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer tool. You only need to visit a simple web page to connect to **any device** in **any network** using a device code.
 
 It is built using webRTC and Vue.js, and there is
 
@@ -25,7 +25,6 @@ It is built using webRTC and Vue.js, and there is
 
 ## Notes
 
-- Encrypted transmission is under development. Currently, there may be a risk of signaling and data leakage. Please do not transfer private files.
 - This project is hosted on a free server. Please do not abuse it.
 
 ## Self-deployment
@@ -42,7 +41,7 @@ It is built using webRTC and Vue.js, and there is
 - [x] Support photo transmission
 - [x] Support plain text transmission
 - [ ] Support breakpoint resume
-- [ ] Support Encrypted transmission
+- [x] Support Encrypted transmission
 - [ ] Support multiple devices
 
 ## Acknowledgements
