@@ -1,5 +1,10 @@
 class ReceiveUtil {
-  constructor() {
+  getPrivKey = null;
+  privKey = null;
+
+  constructor(privKey) {
+    this.getPrivKey = privKey;
+
     this.addDownloadFileItem = null;
     this.updateFileProgress = null;
     this.updateFileUrl = null;
@@ -55,10 +60,25 @@ class ReceiveUtil {
   }
 
   async handleReceiveChannelMsg(event) {
-    if (typeof event.data === 'string') {
-      await this.handleFileMeta(event.data)
+    if (!this.privKey) {
+      this.privKey = await this.getPrivKey()
+    }
+
+    const decryptedDataArray = await window.crypto.subtle.decrypt(
+      {
+        name: "RSA-OAEP"
+      },
+      this.privKey,
+      event.data
+    );
+
+    const decryptedData = new TextDecoder().decode(decryptedDataArray)
+
+    if (typeof decryptedData === 'string' && decryptedData.startsWith('CONTENT_META')) {
+      const data = decryptedData.slice(12)
+      await this.handleFileMeta(data)
     } else {
-      await this.handleFileContent(event.data)
+      await this.handleFileContent(decryptedDataArray)
     }
   }
 
@@ -114,9 +134,12 @@ class ReceiveUtil {
     }
 
     // receive file
+    console.log(`[INFO] data: ${data}`)
     this.receivedData.push(data)
     this.currentFileProgress += data.byteLength
     this.updateFileProgress(this.currentReceivingFileNo, this.currentFileProgress)
+
+    console.log(`[INFO] Received ${this.currentFileProgress} of ${this.currentFileSize}`)
 
     // check if file is fully received
     if (this.currentFileProgress === this.currentFileSize) {

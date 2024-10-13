@@ -11,6 +11,8 @@ class SendCore {
   maxBufferedAmount = 1024 * 16; // 16KB is a safe value for most browsers
   sendChannel = null;
   chunkQueue = [];
+  getPubKey = null;
+  pubKey = null;
 
   /**
    * @description Constructor for the SendCore class
@@ -20,8 +22,9 @@ class SendCore {
    * 
    * @returns {void}
    */
-  constructor(peerConnection, setConnectSuccess) {
+  constructor(peerConnection, setConnectSuccess, getPubKey) {
     this.establishDataChannel(peerConnection, setConnectSuccess)
+    this.getPubKey = getPubKey
   }
 
   /**
@@ -74,9 +77,26 @@ class SendCore {
   }
   
   async processQueue() {
+    if (!this.pubKey) {
+      this.pubKey = await this.getPubKey()
+    }
+
     while (this.chunkQueue.length > 0 && this.sendChannel.bufferedAmount <= this.maxBufferedAmount) {
-      const chunk = this.chunkQueue.shift()
-      this.sendChannel.send(chunk)
+      let chunk = this.chunkQueue.shift()
+
+      if (!(chunk instanceof ArrayBuffer) && !(ArrayBuffer.isView(chunk))) {
+        chunk = new TextEncoder().encode(chunk)
+      }
+
+      const encryptedChunk = await window.crypto.subtle.encrypt(
+        {
+          name: "RSA-OAEP"
+        },
+        this.pubKey,
+        chunk
+      );
+
+      this.sendChannel.send(encryptedChunk)
 
       if (chunk.byteLength) {
         this.sendProgress += chunk.byteLength
