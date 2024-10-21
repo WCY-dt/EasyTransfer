@@ -32,7 +32,7 @@ export const useConnectStore = defineStore('connect', () => {
     ],
   }
   let socket = null
-  let peerConnection = null
+  const peerConnection = ref(null)
   const registered = ref(false)
   const clientId = ref('LOADING')
   const targetId = ref('')
@@ -41,12 +41,12 @@ export const useConnectStore = defineStore('connect', () => {
   let candidateQueue = []
   const isConnectSuccess = ref(false)
   const sendChannel = ref(null)
-  const maxBufferedAmount = 1024 * 16
+  const maxBufferedAmount = ref(1024 * 16)
   const maxRetransmits = 2
 
   function initializeConnection() {
     socket = io.connect(signalServerUrl)
-    peerConnection = new RTCPeerConnection(peerConnectionConfiguration)
+    peerConnection.value = new RTCPeerConnection(peerConnectionConfiguration)
     handleServerMsg()
     establishDataChannel()
     console.log('[INFO] ===Connection core initialized===')
@@ -90,15 +90,15 @@ export const useConnectStore = defineStore('connect', () => {
     console.log(`[INFO] ===Connecting to ${targetId.value}===`)
 
     console.log(`[INFO] Sending offer to ${targetId.value}`)
-    peerConnection
+    peerConnection.value
       .createOffer()
       .then(offer => {
-        return peerConnection.setLocalDescription(offer)
+        return peerConnection.value.setLocalDescription(offer)
       })
       .then(() => {
         socket.emit(
           'offer',
-          peerConnection.localDescription,
+          peerConnection.value.localDescription,
           clientId.value,
           targetId.value,
         )
@@ -110,7 +110,7 @@ export const useConnectStore = defineStore('connect', () => {
   function sendIceCandidate() {
     // Send the ICE candidate to the target peer
     console.log('[INFO] ===Sending ICE candidate===')
-    peerConnection.onicecandidate = event => {
+    peerConnection.value.onicecandidate = event => {
       if (event.candidate) {
         socket.emit('candidate', event.candidate, targetId.value)
 
@@ -147,18 +147,18 @@ export const useConnectStore = defineStore('connect', () => {
           targetId.value = id
           pubKey.value = key
 
-          peerConnection
+          peerConnection.value
             .setRemoteDescription(new RTCSessionDescription(sdp))
             .then(() => {
-              return peerConnection.createAnswer()
+              return peerConnection.value.createAnswer()
             })
             .then(answer => {
-              return peerConnection.setLocalDescription(answer)
+              return peerConnection.value.setLocalDescription(answer)
             })
             .then(() => {
               socket.emit(
                 'answer',
-                peerConnection.localDescription,
+                peerConnection.value.localDescription,
                 clientId.value,
                 targetId.value,
               )
@@ -190,7 +190,7 @@ export const useConnectStore = defineStore('connect', () => {
         .then(key => {
           pubKey.value = key
 
-          peerConnection
+          peerConnection.value
             .setRemoteDescription(new RTCSessionDescription(sdp))
             .then(() => {
               addIceCandidate()
@@ -206,8 +206,8 @@ export const useConnectStore = defineStore('connect', () => {
     socket.on('candidate', candidate => {
       console.log(`[INFO] Received candidate from ${targetId.value}`)
 
-      if (peerConnection.remoteDescription) {
-        peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+      if (peerConnection.value.remoteDescription) {
+        peerConnection.value.addIceCandidate(new RTCIceCandidate(candidate))
 
         console.log(`[INFO] Added ${targetId.value} to ICE candidate`)
       } else {
@@ -219,7 +219,7 @@ export const useConnectStore = defineStore('connect', () => {
   function addIceCandidate() {
     // Add the ICE candidate to the peer connection
     while (candidateQueue.length) {
-      peerConnection.addIceCandidate(
+      peerConnection.value.addIceCandidate(
         new RTCIceCandidate(candidateQueue.shift()),
       )
     }
@@ -241,12 +241,12 @@ export const useConnectStore = defineStore('connect', () => {
   }
 
   function establishDataChannel() {
-    sendChannel.value = peerConnection.createDataChannel('fileTransfer', {
+    sendChannel.value = peerConnection.value.createDataChannel('fileTransfer', {
       ordered: true,
       maxRetransmits: maxRetransmits,
     })
 
-    sendChannel.value.bufferedAmountLowThreshold = maxBufferedAmount
+    sendChannel.value.bufferedAmountLowThreshold = maxBufferedAmount.value
 
     sendChannel.value.onopen = () => {
       console.log(`[INFO] Data channel opened`)
@@ -268,15 +268,23 @@ export const useConnectStore = defineStore('connect', () => {
     }
   }
 
+  function getSendChannelState() {
+    return sendChannel.value.readyState
+  }
+
   return {
+    peerConnection,
     isConnectSuccess,
     registered,
     clientId,
     targetId,
+    pubKey,
     privKey,
     sendChannel,
+    maxBufferedAmount,
     initializeConnection,
     registerClient,
     connectTarget,
+    getSendChannelState,
   }
 })

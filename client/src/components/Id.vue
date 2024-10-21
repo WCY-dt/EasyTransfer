@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useConnectStore } from '../stores/connect.js'
+import { useConnectStore } from '@/stores/connect'
 
 const connectStore = useConnectStore()
 connectStore.initializeConnection()

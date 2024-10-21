@@ -61,3 +61,37 @@ body {
     font-size: 12px;
   }
 }
+
+footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+footer p {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  font-size: 1.2rem;
+  color: var(--secondary-color);
+}
+
+footer p a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+}
+
+footer p a:hover {
+  color: var(--primary-dark-color);
+  text-decoration: underline;
+}
+
+@media (hover: none) {
+  footer p a:hover {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+}
