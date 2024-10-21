@@ -1,52 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <title>EasyTransfer - Share files easily</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer tool. You only need to visit a simple web page to connect to any device in any network using a device code.">
-  <meta name="keywords" content="EasyTransfer, file transfer, P2P, webRTC, file sharing, file exchange, file transfer tool, web crypto api">
-  <meta name="author" content="Ch3nyang">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <meta property="og:title" content="EasyTransfer - Share files easily">
-  <meta property="og:description"
-    content="EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer tool. You only need to visit a simple web page to connect to any device in any network using a device code.">
-
-  <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
-  <link rel="stylesheet" href="styles/style.css">
-
-  <script type="importmap">
-    {
-      "imports": {
-        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.prod.js",
-        "pinia": "https://cdn.jsdelivr.net/npm/pinia@2.1.7/+esm",
-        "socket.io": "https://unpkg.com/socket.io-client@4.7.5/dist/socket.io.esm.min.js"
-      }
-    }
-  </script>
-</head>
-
-<body>
-  <div id="app"></div>
-  <footer>
-    <p>© 2024 EasyTransfer. All rights reserved.</p>
-    <p>
-      View on <a href="https://github.com/WCY-dt/EasyTransfer"><span class="mdi mdi-github"></span>GitHub</a>
-    </p>
-  </footer>
-
-  <script type="module">
-    import { createApp } from 'vue'
-    import { createPinia } from 'pinia'
-    import App from './App.js'
-
-    const app = createApp(App)
-    const pinia = createPinia()
-
-    app.use(pinia).mount('#app')
-  </script>
-</body>
-
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <footer>
+      <p>© 2024 EasyTransfer. All rights reserved.</p>
+      <p>
+        View on <a href="https://github.com/WCY-dt/EasyTransfer"><span class="mdi mdi-github"></span>GitHub</a>
+      </p>
+    </footer>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
