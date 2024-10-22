@@ -65,7 +65,7 @@ export const useReceiveStore = defineStore('receive', () => {
 
   function establishReceiveChannel() {
     receiveChannel.onopen = () => {
-      console.log(`[INFO] Receive channel opened`)
+      // console.log(`[INFO] Receive channel opened`)
     }
 
     receiveChannel.onerror = error => {
@@ -73,7 +73,7 @@ export const useReceiveStore = defineStore('receive', () => {
     }
 
     receiveChannel.onclose = () => {
-      console.log(`[INFO] Receive channel closed`)
+      // console.log(`[INFO] Receive channel closed`)
     }
 
     receiveChannel.onmessage = async event => {
@@ -105,7 +105,7 @@ export const useReceiveStore = defineStore('receive', () => {
 
   async function handleFileMeta(data) {
     if (parseInt(data)) {
-      console.log(`[INFO] Received size: ${data}`)
+      // console.log(`[INFO] Received size: ${data}`)
       fileSizeQueue.push(parseInt(data))
     } else {
       if (
@@ -113,10 +113,10 @@ export const useReceiveStore = defineStore('receive', () => {
         data === 'TRANSFER_TYPE_TEXT' ||
         data === 'TRANSFER_TYPE_PHOTO'
       ) {
-        console.log(`[INFO] Received type: ${data}`)
+        // console.log(`[INFO] Received type: ${data}`)
         fileTypeQueue.push(data)
       } else {
-        console.log(`[INFO] Received name: ${data}`)
+        // console.log(`[INFO] Received name: ${data}`)
         fileNameQueue.push(data)
       }
     }
@@ -125,9 +125,9 @@ export const useReceiveStore = defineStore('receive', () => {
       fileNameQueue.length === fileSizeQueue.length &&
       fileNameQueue.length === fileTypeQueue.length
     ) {
-      console.log(
-        `[INFO] ===New to receive ${fileTypeQueue[fileTypeQueue.length - 1]} | ${fileNameQueue[fileNameQueue.length - 1]} | ${fileSizeQueue[fileSizeQueue.length - 1]}===`,
-      )
+      // console.log(
+      //   `[INFO] ===New to receive ${fileTypeQueue[fileTypeQueue.length - 1]} | ${fileNameQueue[fileNameQueue.length - 1]} | ${fileSizeQueue[fileSizeQueue.length - 1]}===`,
+      // )
 
       addDownloadFileItem(
         'javascript:void(0)',
@@ -155,18 +155,18 @@ export const useReceiveStore = defineStore('receive', () => {
       currentFileSize = fileSizeQueue.shift()
       currentReceivingFileNo++
 
-      console.log(
-        `[INFO] ===Receiving file ${currentFileType} | ${currentFileName} | ${currentFileSize}===`,
-      )
+      // console.log(
+      //   `[INFO] ===Receiving file ${currentFileType} | ${currentFileName} | ${currentFileSize}===`,
+      // )
     }
 
     // receive file
-    console.log(`[INFO] data: ${data}`)
+    // console.log(`[INFO] data: ${data}`)
     receivedData.push(data)
     currentFileProgress += data.byteLength
     updateFileProgress(currentReceivingFileNo, currentFileProgress)
 
-    console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize}`)
+    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize}`)
 
     // check if file is fully received
     if (currentFileProgress === currentFileSize) {
@@ -174,7 +174,7 @@ export const useReceiveStore = defineStore('receive', () => {
       updateFileUrl(currentReceivingFileNo, currentFileUrl)
       updateFileSuccess(currentReceivingFileNo, true)
 
-      console.log(`[INFO] File ${currentFileName} received successfully`)
+      // console.log(`[INFO] File ${currentFileName} received successfully`)
 
       initReceiveBuffer()
     }

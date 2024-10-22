@@ -49,7 +49,7 @@ export const useConnectStore = defineStore('connect', () => {
     peerConnection.value = new RTCPeerConnection(peerConnectionConfiguration)
     handleServerMsg()
     establishDataChannel()
-    console.log('[INFO] ===Connection core initialized===')
+    // console.log('[INFO] ===Connection core initialized===')
   }
 
   async function registerClient() {
@@ -82,14 +82,14 @@ export const useConnectStore = defineStore('connect', () => {
     // Emit the public key to the signal server
     socket.emit('register', pubKeyBase64)
 
-    console.log(`[INFO] ===Registering client===`)
-    console.log(`[INFO] Public key: ${pubKeyBase64}`)
+    // console.log(`[INFO] ===Registering client===`)
+    // console.log(`[INFO] Public key: ${pubKeyBase64}`)
   }
 
   function connectTarget() {
-    console.log(`[INFO] ===Connecting to ${targetId.value}===`)
+    // console.log(`[INFO] ===Connecting to ${targetId.value}===`)
 
-    console.log(`[INFO] Sending offer to ${targetId.value}`)
+    // console.log(`[INFO] Sending offer to ${targetId.value}`)
     peerConnection.value
       .createOffer()
       .then(offer => {
@@ -109,12 +109,12 @@ export const useConnectStore = defineStore('connect', () => {
 
   function sendIceCandidate() {
     // Send the ICE candidate to the target peer
-    console.log('[INFO] ===Sending ICE candidate===')
+    // console.log('[INFO] ===Sending ICE candidate===')
     peerConnection.value.onicecandidate = event => {
       if (event.candidate) {
         socket.emit('candidate', event.candidate, targetId.value)
 
-        console.log(`[INFO] Sending candidate to ${targetId.value}`)
+        // console.log(`[INFO] Sending candidate to ${targetId.value}`)
       }
     }
   }
@@ -122,20 +122,20 @@ export const useConnectStore = defineStore('connect', () => {
   function handleServerMsg() {
     // Handle messages from the signal server
     socket.on('success', id => {
-      console.log(`[INFO] ===Client registered with id ${id}===`)
+      // console.log(`[INFO] ===Client registered with id ${id}===`)
       clientId.value = id
       registered.value = true
     })
 
     socket.on('disconnect', () => {
-      console.log('[INFO] ===Disconnected from the signal server===')
+      // console.log('[INFO] ===Disconnected from the signal server===')
       registered.value = false
       window.location.reload()
     })
 
     socket.on('offer', (sdp, id, keyBase64) => {
-      console.log(`[INFO] ===Connecting to ${id}===`)
-      console.log(`[INFO] Peer public key: ${keyBase64}`)
+      // console.log(`[INFO] ===Connecting to ${id}===`)
+      // console.log(`[INFO] Peer public key: ${keyBase64}`)
 
       const keyArray = new Uint8Array(
         atob(keyBase64)
@@ -163,7 +163,7 @@ export const useConnectStore = defineStore('connect', () => {
                 targetId.value,
               )
 
-              console.log(`[INFO] Sending answer to ${targetId.value}`)
+              // console.log(`[INFO] Sending answer to ${targetId.value}`)
             })
             .then(() => {
               addIceCandidate()
@@ -171,7 +171,7 @@ export const useConnectStore = defineStore('connect', () => {
 
           sendIceCandidate()
 
-          console.log(`[INFO] Received offer from ${targetId.value}`)
+          // console.log(`[INFO] Received offer from ${targetId.value}`)
         })
         .catch(error => {
           console.error(`[ERR] Error converting key: ${error}`)
@@ -179,7 +179,7 @@ export const useConnectStore = defineStore('connect', () => {
     })
 
     socket.on('answer', (sdp, id, keyBase64) => {
-      console.log(`[INFO] Peer public key: ${keyBase64}`)
+      // console.log(`[INFO] Peer public key: ${keyBase64}`)
 
       const keyArray = new Uint8Array(
         atob(keyBase64)
@@ -196,7 +196,7 @@ export const useConnectStore = defineStore('connect', () => {
               addIceCandidate()
             })
 
-          console.log(`[INFO] Received answer from ${targetId.value}`)
+          // console.log(`[INFO] Received answer from ${targetId.value}`)
         })
         .catch(error => {
           console.error(`[ERR] Error converting key: ${error}`)
@@ -204,12 +204,12 @@ export const useConnectStore = defineStore('connect', () => {
     })
 
     socket.on('candidate', candidate => {
-      console.log(`[INFO] Received candidate from ${targetId.value}`)
+      // console.log(`[INFO] Received candidate from ${targetId.value}`)
 
       if (peerConnection.value.remoteDescription) {
         peerConnection.value.addIceCandidate(new RTCIceCandidate(candidate))
 
-        console.log(`[INFO] Added ${targetId.value} to ICE candidate`)
+        // console.log(`[INFO] Added ${targetId.value} to ICE candidate`)
       } else {
         candidateQueue.push(candidate)
       }
@@ -224,7 +224,7 @@ export const useConnectStore = defineStore('connect', () => {
       )
     }
 
-    console.log(`[INFO] Added ${targetId.value} to ICE candidate`)
+    // console.log(`[INFO] Added ${targetId.value} to ICE candidate`)
   }
 
   async function convertToCryptoKey(keyArray) {
@@ -249,7 +249,7 @@ export const useConnectStore = defineStore('connect', () => {
     sendChannel.value.bufferedAmountLowThreshold = maxBufferedAmount
 
     sendChannel.value.onopen = () => {
-      console.log(`[INFO] Data channel opened`)
+      // console.log(`[INFO] Data channel opened`)
       isConnectSuccess.value = true
     }
 
@@ -259,7 +259,7 @@ export const useConnectStore = defineStore('connect', () => {
     }
 
     sendChannel.value.onclose = () => {
-      console.log(`[INFO] Data channel closed`)
+      // console.log(`[INFO] Data channel closed`)
       isConnectSuccess.value = false
     }
   }

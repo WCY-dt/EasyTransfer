@@ -40,7 +40,7 @@ function onCameraClick() {
 }
 
 function onSnapshotClick() {
-  console.log('Taking snapshot')
+  // console.log('Taking snapshot')
   photo.value.width = stream.value.videoWidth
   photo.value.height = stream.value.videoHeight
   photo.value
@@ -63,7 +63,7 @@ async function processAndSendPhoto() {
     const file = new File([blob], `image_${timestamp}.png`, {
       type: 'image/png',
     })
-    console.log(file)
+    // console.log(file)
 
     await sendStore.sendFiles([file], 'TRANSFER_TYPE_PHOTO', sendCore.value)
   }, 'image/png')

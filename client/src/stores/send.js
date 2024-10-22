@@ -67,9 +67,9 @@ export const useSendStore = defineStore('send', () => {
 
   async function sendFiles(files, type) {
     // Send the file meta and content
-    console.log(`[INFO] ===Sending ${files.length} files===`)
+    // console.log(`[INFO] ===Sending ${files.length} files===`)
 
-    console.log(`files: ${files}`)
+    // console.log(`files: ${files}`)
 
     const fileNum = files.length
 
@@ -89,14 +89,14 @@ export const useSendStore = defineStore('send', () => {
 
   async function sendFileMeta(file, type) {
     // Send the type, name, and size of the file
-    console.log(`file: ${file}`)
+    // console.log(`file: ${file}`)
     if (!checkSendFileAvailability(file.size)) return
 
     await sendData('CONTENT_META' + type)
     await sendData('CONTENT_META' + file.name)
     await sendData('CONTENT_META' + file.size)
 
-    console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
+    // console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
   }
 
   async function sendFileContent(file, type) {
@@ -106,7 +106,7 @@ export const useSendStore = defineStore('send', () => {
     currentFileName.value = file.name
     currentFileSize.value = file.size
 
-    console.log(`[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value}`)
+    // console.log(`[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value}`)
 
     await addFileReader()
 
@@ -147,7 +147,7 @@ export const useSendStore = defineStore('send', () => {
     })
 
     fileReader.addEventListener('abort', event => {
-      console.log(`[INFO] File reading aborted: ${event}`)
+      // console.log(`[INFO] File reading aborted: ${event}`)
     })
   }
 
@@ -168,7 +168,7 @@ export const useSendStore = defineStore('send', () => {
 
   async function sendText(text) {
     // Send the file meta and content
-    console.log(`[INFO] ===Sending text===`)
+    // console.log(`[INFO] ===Sending text===`)
 
     await sendTextContent(text)
   }
@@ -181,9 +181,9 @@ export const useSendStore = defineStore('send', () => {
     await sendData('CONTENT_META' + text)
     await sendData('CONTENT_META' + text.length)
 
-    console.log(
-      `[INFO] Sent content: ${'TRANSFER_TYPE_TEXT'} | ${text} | ${text.length}`,
-    )
+    // console.log(
+    //   `[INFO] Sent content: ${'TRANSFER_TYPE_TEXT'} | ${text} | ${text.length}`,
+    // )
   }
 
   function checkSendTextAvailability(text) { // Check if the text.valuepty or the data channel is open
