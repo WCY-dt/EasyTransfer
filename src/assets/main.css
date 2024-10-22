@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
-@import url('id.css');
-@import url('upload.css');
-@import url('download.css');
-@import url('footer.css');
+@import url('https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css');
 
 * {
   box-sizing: border-box;
@@ -28,8 +25,8 @@
   --light-color: #f8f9fa;
   --dark-color: #343a40;
 
-  --normal-font-family: "Open Sans", sans-serif;
-  --code-font-family: "Source Code Pro", monospace;
+  --normal-font-family: 'Open Sans', sans-serif;
+  --code-font-family: 'Source Code Pro', monospace;
 
   font-size: 16px;
 }
@@ -62,5 +59,39 @@ body {
 @media (max-width: 425px) {
   :root {
     font-size: 12px;
+  }
+}
+
+footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+footer p {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  font-size: 1.2rem;
+  color: var(--secondary-color);
+}
+
+footer p a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+}
+
+footer p a:hover {
+  color: var(--primary-dark-color);
+  text-decoration: underline;
+}
+
+@media (hover: none) {
+  footer p a:hover {
+    color: var(--primary-color);
+    text-decoration: none;
   }
 }

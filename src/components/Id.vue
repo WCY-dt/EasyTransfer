@@ -1,3 +1,98 @@
+<script setup>
+import { ref, computed, watch, onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useConnectStore } from '@/stores/connect'
+
+const connectStore = useConnectStore()
+connectStore.initializeConnection()
+
+const { isConnectSuccess, registered, clientId, targetId } =
+  storeToRefs(connectStore)
+
+const enableConnect = ref(false)
+const isConnecting = ref(false)
+const copied = ref(false)
+
+const buttonStatus = computed(() => ({
+  disabled:
+    (!enableConnect.value && !isConnectSuccess.value) || !registered.value,
+  ready: enableConnect.value && !isConnectSuccess.value && registered.value,
+  success: !enableConnect.value && isConnectSuccess.value && registered.value,
+}))
+
+watch(targetId, newVal => {
+  if (newVal !== newVal.toUpperCase()) {
+    targetId.value = newVal.toUpperCase()
+  }
+  validateInput(newVal)
+})
+
+watch(isConnectSuccess, newValue => {
+  if (newValue) {
+    enableConnect.value = false
+  }
+  isConnecting.value = false
+})
+
+function validateInput(value) {
+  enableConnect.value = value.length === 4
+  isConnectSuccess.value = false
+}
+
+function copyId() {
+  navigator.clipboard.writeText(clientId.value)
+  copied.value = true
+  setTimeout(() => {
+    copied.value = false
+  }, 1000)
+}
+
+function connectTarget() {
+  isConnecting.value = true
+  targetId.value = targetId.value.toUpperCase()
+  connectStore.connectTarget()
+}
+
+onMounted(async () => {
+  await connectStore.registerClient()
+})
+</script>
+
+<template>
+  <div class="id">
+    <div
+      id="clientId"
+      @click="copyId"
+      :class="clientId === 'LOADING' ? 'disabled' : 'ready'"
+    >
+      {{ clientId }}
+      <div class="cover">
+        <span class="mdi mdi-check-bold" v-if="copied"></span>
+        <span class="mdi mdi-content-copy" v-else></span>
+      </div>
+    </div>
+    <div id="targetId" :class="buttonStatus">
+      <span class="info">Enter the peer's code</span>
+      <input
+        type="text"
+        id="targetIdInput"
+        placeholder="code"
+        maxlength="4"
+        v-model="targetId"
+      />
+      <button
+        id="connectButton"
+        :disabled="!enableConnect || !registered"
+        @click="connectTarget"
+      >
+        <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
+        <span v-else class="mdi mdi-connection"></span>
+      </button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
 .id {
   font-family: var(--code-font-family);
   display: flex;
@@ -183,3 +278,4 @@
     background-color: var(--primary-color);
   }
 }
+</style>

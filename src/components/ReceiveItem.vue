@@ -1,11 +1,88 @@
-.downloadFile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  width: calc(min(30rem, 100%));
-}
+<script setup>
+import { ref } from 'vue'
 
+const props = defineProps({
+  url: {
+    type: String,
+    default: 'javascript:void(0)',
+  },
+  name: {
+    type: String,
+    default: 'No file to download',
+  },
+  size: {
+    type: Number,
+    default: 1,
+  },
+  progress: {
+    type: Number,
+    default: 0,
+  },
+  type: {
+    type: String,
+    default: 'TRANSFER_TYPE_FILE',
+  },
+  success: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const copied = ref(false)
+
+function onTextClick() {
+  navigator.clipboard.writeText(props.name)
+  copied.value = true
+  setTimeout(() => {
+    copied.value = false
+  }, 1000)
+}
+</script>
+
+<template>
+  <a
+    v-if="
+      props.type === 'TRANSFER_TYPE_FILE' ||
+      props.type === 'TRANSFER_TYPE_PHOTO'
+    "
+    ref="downloadLink"
+    :href="props.url"
+    class="downloadFileItem file"
+    :download="props.name"
+    :class="{ success: props.success, loading: !props.success }"
+  >
+    <div id="downloadDisplay">
+      <p id="downloadName">{{ props.name }}</p>
+      <progress
+        id="downloadProgress"
+        :value="props.progress"
+        :max="props.size"
+      ></progress>
+      <img
+        v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success"
+        id="downloadContent"
+        :src="props.url"
+        alt="Photo"
+      />
+    </div>
+  </a>
+  <div
+    v-if="props.type === 'TRANSFER_TYPE_TEXT'"
+    class="downloadFileItem text"
+    :class="{ success: props.success, loading: !props.success }"
+    @click="onTextClick"
+  >
+    <div id="downloadDisplay">
+      <p id="downloadContent">{{ props.name }}</p>
+      <div class="cover">
+        <span class="mdi mdi-check-bold" v-if="copied"></span>
+        <span class="mdi mdi-content-copy" v-else></span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
 .downloadFileItem {
   text-decoration: none;
   display: flex;
@@ -17,7 +94,7 @@
   border-radius: 0.25rem;
   width: 100%;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .downloadFileItem #downloadDisplay {
@@ -34,7 +111,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 100%;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .downloadFileItem #downloadDisplay p#downloadName {
@@ -67,10 +144,12 @@
 
 .downloadFileItem.success #downloadDisplay progress::-webkit-progress-value {
   background-color: var(--success-color);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
-.downloadFileItem.success:hover #downloadDisplay progress::-webkit-progress-value {
+.downloadFileItem.success:hover
+  #downloadDisplay
+  progress::-webkit-progress-value {
   background-color: var(--light-color);
 }
 
@@ -83,7 +162,7 @@
 
 .downloadFileItem.loading #downloadDisplay progress::-webkit-progress-value {
   background-color: var(--primary-color);
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .downloadFileItem.loading #downloadDisplay progress::-webkit-progress-bar {
@@ -107,7 +186,7 @@
   background-color: transparent;
   color: var(--success-color);
   font-size: 1.5rem;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .downloadFileItem.text.success:hover p {
@@ -124,7 +203,9 @@
     color: var(--success-color);
   }
 
-  .downloadFileItem.success:hover #downloadDisplay progress::-webkit-progress-value {
+  .downloadFileItem.success:hover
+    #downloadDisplay
+    progress::-webkit-progress-value {
     background-color: var(--success-color);
   }
 
@@ -136,3 +217,4 @@
     opacity: 0;
   }
 }
+</style>
