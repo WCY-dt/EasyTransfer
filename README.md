@@ -43,6 +43,7 @@ It is built using webRTC and Vue.js, and there is
 - [ ] Support breakpoint resume
 - [x] Support Encrypted transmission
 - [ ] Support multiple devices
+- [ ] Use AES instead of RSA encryption to improve transmission speed
 
 ## Acknowledgements
 
