@@ -41,7 +41,7 @@ export const useConnectStore = defineStore('connect', () => {
   let candidateQueue = []
   const isConnectSuccess = ref(false)
   const sendChannel = ref(null)
-  const maxBufferedAmount = ref(1024 * 16)
+  const maxBufferedAmount = 1024 * 16
   const maxRetransmits = 2
 
   function initializeConnection() {
@@ -57,7 +57,7 @@ export const useConnectStore = defineStore('connect', () => {
     const keyPair = await window.crypto.subtle.generateKey(
       {
         name: 'RSA-OAEP',
-        modulusLength: 2048,
+        modulusLength: 4096,
         publicExponent: new Uint8Array([1, 0, 1]),
         hash: 'SHA-256',
       },
@@ -246,7 +246,7 @@ export const useConnectStore = defineStore('connect', () => {
       maxRetransmits: maxRetransmits,
     })
 
-    sendChannel.value.bufferedAmountLowThreshold = maxBufferedAmount.value
+    sendChannel.value.bufferedAmountLowThreshold = maxBufferedAmount
 
     sendChannel.value.onopen = () => {
       console.log(`[INFO] Data channel opened`)
@@ -261,10 +261,6 @@ export const useConnectStore = defineStore('connect', () => {
     sendChannel.value.onclose = () => {
       console.log(`[INFO] Data channel closed`)
       isConnectSuccess.value = false
-    }
-
-    sendChannel.value.onbufferedamountlow = async () => {
-      await processQueue()
     }
   }
 

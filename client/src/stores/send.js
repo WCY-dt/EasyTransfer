@@ -4,10 +4,13 @@ import { useConnectStore } from './connect.js'
 
 export const useSendStore = defineStore('send', () => {
   const connectStore = useConnectStore()
-  const { pubKey, sendChannel, maxBufferedAmount } = storeToRefs(connectStore)
+  const { pubKey, sendChannel } = storeToRefs(connectStore)
 
-  let sendProgress = 0
   let chunkQueue = []
+
+  sendChannel.value.onbufferedamountlow = async () => {
+    await processQueue()
+  }
 
   async function sendData(data) {
     chunkQueue.push(data)
@@ -18,7 +21,7 @@ export const useSendStore = defineStore('send', () => {
   async function processQueue() {
     while (
       chunkQueue.length > 0 &&
-      sendChannel.value.bufferedAmount <= maxBufferedAmount.value
+      sendChannel.value.bufferedAmount <= connectStore.maxBufferedAmount
     ) {
       let chunk = chunkQueue.shift()
 
@@ -26,26 +29,39 @@ export const useSendStore = defineStore('send', () => {
         chunk = new TextEncoder().encode(chunk)
       }
 
-      const encryptedChunk = await window.crypto.subtle.encrypt(
-        {
-          name: 'RSA-OAEP',
-        },
-        pubKey.value,
-        chunk,
-      )
+      if (!(pubKey.value instanceof CryptoKey)) {
+        console.error('[ERR] Invalid public key')
+        break
+      }
+
+      if (!pubKey.value.usages.includes("encrypt")) {
+        console.error("[ERR] Public key cannot be used for encryption.")
+        break
+      }
+
+      let encryptedChunk = null
+
+      try {
+        encryptedChunk = await window.crypto.subtle.encrypt(
+          {
+            name: 'RSA-OAEP',
+          },
+          pubKey.value,
+          chunk
+        )
+      } catch (error) {
+        console.error(`[ERR] Error encrypting chunk: ${error}`)
+        break
+      }
 
       sendChannel.value.send(encryptedChunk)
-
-      if (chunk.byteLength) {
-        sendProgress += chunk.byteLength
-      }
     }
   }
 
   let currentFileType = ''
   const currentFileName = ref('Drop file here or click to upload')
   const currentFileSize = ref(0)
-  const chunkSize = 16384
+  const chunkSize = 446 // 4096-bit RSA key with SHA-256
   let fileReader = null
   const offset = ref(0)
 
@@ -92,36 +108,26 @@ export const useSendStore = defineStore('send', () => {
 
     console.log(`[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value}`)
 
-    if (fileReader === null) {
-      await addFileReader()
-    }
+    await addFileReader()
 
-    const readAndSendSlice = o => {
+    const readAndSendSlice = (o) => {
       return new Promise((resolve, reject) => {
         if (o >= currentFileSize.value) {
           resolve()
           return
         }
 
-        fileReader.onload = async e => {
-          try {
-            await sendData(e.target.result)
-            offset.value += e.target.result.byteLength
-            if (offset.value < currentFileSize.value) {
-              resolve(readAndSendSlice(offset.value))
-            } else {
-              resolve()
-            }
-          } catch (error) {
-            console.error(`[ERR] Error sending data: ${error}`)
-            reject(error)
+        const fileReaderSendData = async (e) => {
+          await sendData(e.target.result)
+          offset.value = offset.value + e.target.result.byteLength
+          if (offset.value < currentFileSize.value) {
+            resolve(readAndSendSlice(offset.value))
+          } else {
+            resolve()
           }
         }
 
-        fileReader.onerror = error => {
-          console.error(`[ERR] FileReader error: ${error}`)
-          reject(error)
-        }
+        fileReader.onload = fileReaderSendData
 
         const slice = file.slice(o, o + chunkSize)
         fileReader.readAsArrayBuffer(slice)
@@ -130,11 +136,7 @@ export const useSendStore = defineStore('send', () => {
 
     offset.value = 0
 
-    try {
-      await readAndSendSlice(0)
-    } catch (error) {
-      console.error(`[ERR] Error in readAndSendSlice: ${error}`)
-    }
+    await readAndSendSlice(0)
   }
 
   async function addFileReader() {
@@ -204,5 +206,6 @@ export const useSendStore = defineStore('send', () => {
     offset,
     sendFiles,
     sendText,
+    processQueue,
   }
 })
