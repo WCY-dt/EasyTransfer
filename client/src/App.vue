@@ -9,5 +9,3 @@ import Receive from '@/components/Receive.vue'
   <Send />
   <Receive />
 </template>
-
-<style scoped></style>

@@ -115,120 +115,65 @@ function onTextClick() {
 <template>
   <div id="upload" class="upload">
     <div v-show="showCamera" id="cameradisplay" class="cameradisplay">
-      <button
-        id="close"
-        class="mdi mdi-close"
-        @click="onCameraCloseClick"
-      ></button>
-      <video
-        v-show="showStream"
-        id="stream"
-        ref="stream"
-        autoplay
-        playsinline
-      ></video>
-      <button
-        v-show="showStream"
-        id="snapshot"
-        class="mdi mdi-camera"
-        @click="onSnapshotClick"
-      ></button>
+      <button id="close" class="mdi mdi-close" @click="onCameraCloseClick"></button>
+      <video v-show="showStream" id="stream" ref="stream" autoplay playsinline></video>
+      <button v-show="showStream" id="snapshot" class="mdi mdi-camera" @click="onSnapshotClick"></button>
       <canvas v-show="!showStream" id="photo" ref="photo"></canvas>
-      <button
-        v-show="!showStream"
-        id="send"
-        class="mdi"
-        @click="onCameraSendClick"
-        :class="{ 'mdi-send': !photoSent, 'mdi-check-bold': photoSent }"
-      ></button>
+      <button v-show="!showStream" id="send" class="mdi" @click="onCameraSendClick"
+        :class="{ 'mdi-send': !photoSent, 'mdi-check-bold': photoSent }"></button>
     </div>
 
-    <div
-      id="dropzone"
-      class="dropzone"
-      @dragover.prevent
-      @drop="onFileDrop"
-      @click="onFileClick"
-      :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
-    >
-      <input
-        type="file"
-        id="fileInput"
-        title="Choose a file to send"
-        multiple
-        @change="sendFiles"
-        ref="fileInput"
-        :disabled="!isConnectSuccess"
-      />
+    <div id="dropzone" class="dropzone" @dragover.prevent @drop="onFileDrop" @click="onFileClick"
+      :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }">
+      <input type="file" id="fileInput" title="Choose a file to send" multiple @change="sendFiles" ref="fileInput"
+        :disabled="!isConnectSuccess" />
       <span class="mdi mdi-cloud-upload-outline"></span>
       <p id="fileName">{{ currentFileName }}</p>
-      <progress
-        id="fileProgress"
-        :value="offset"
-        :max="currentFileSize"
-      ></progress>
+      <progress id="fileProgress" :value="offset" :max="currentFileSize"></progress>
     </div>
-    <div
-      id="camera"
-      class="camera"
-      :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
-      @click="onCameraClick"
-    >
+    <div id="camera" class="camera" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
+      @click="onCameraClick">
       <span class="mdi mdi-camera"></span>
     </div>
-    <div
-      id="text"
-      class="text"
-      :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
-    >
-      <textarea
-        id="textInput"
-        placeholder="Type a message to send"
-        :disabled="!isConnectSuccess"
-        v-model="textInput"
-        ref="textInput.value"
-      ></textarea>
-      <button
-        id="sendButton"
-        class="mdi"
-        :class="{ 'mdi-send': !textSent, 'mdi-check-bold': textSent }"
-        :disabled="!isConnectSuccess"
-        @click="onTextClick"
-      ></button>
+    <div id="text" class="text" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }">
+      <textarea id="textInput" placeholder="Type a message to send" :disabled="!isConnectSuccess" v-model="textInput"
+        ref="textInput.value"></textarea>
+      <button id="sendButton" class="mdi" :class="{ 'mdi-send': !textSent, 'mdi-check-bold': textSent }"
+        :disabled="!isConnectSuccess" @click="onTextClick"></button>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .upload {
   display: grid;
   grid-template-columns: 5fr 4fr;
   grid-template-rows: 1fr auto;
   gap: 1rem;
   width: 100%;
-}
 
-.upload > * {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  width: 100%;
-  padding: 1rem;
-  border-width: 2px;
-  border-color: var(--primary-color);
-  border-radius: 0.25rem;
-  color: var(--primary-color);
-  background-color: var(--primary-light-color);
-  transition: all 0.3s ease-in-out;
-}
+  &>* {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+    border-width: 2px;
+    border-color: var(--primary-color);
+    border-radius: 0.25rem;
+    color: var(--primary-color);
+    background-color: var(--primary-light-color);
+    transition: all 0.3s ease-in-out;
 
-.upload > *.disabled {
-  border-color: var(--secondary-color);
-  background-color: var(--secondary-light-color);
-  color: var(--secondary-color);
-  cursor: not-allowed;
+    &.disabled {
+      border-color: var(--secondary-color);
+      background-color: var(--secondary-light-color);
+      color: var(--secondary-color);
+      cursor: not-allowed;
+    }
+  }
 }
 
 .dropzone {
@@ -236,38 +181,38 @@ function onTextClick() {
   grid-row: 1 / 2;
   border-style: dashed;
   cursor: pointer;
-}
 
-.dropzone input {
-  display: none;
-}
+  input {
+    display: none;
+  }
 
-.dropzone span {
-  font-size: 6rem;
-  line-height: 6rem;
-}
+  span {
+    font-size: 6rem;
+    line-height: 6rem;
+  }
 
-.dropzone p {
-  font-size: 1.5rem;
-  line-height: 1.8rem;
-  margin: 0;
-  text-align: center;
-}
+  p {
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+    margin: 0;
+    text-align: center;
+  }
 
-.dropzone progress {
-  width: 100%;
-  height: 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  background-color: var(--light-color);
-}
+  progress {
+    width: 100%;
+    height: 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: var(--light-color);
 
-.dropzone progress::-webkit-progress-bar {
-  background-color: var(--light-color);
-}
+    &::-webkit-progress-bar {
+      background-color: var(--light-color);
+    }
 
-.dropzone progress::-webkit-progress-value {
-  background-color: var(--primary-color);
+    &::-webkit-progress-value {
+      background-color: var(--primary-color);
+    }
+  }
 }
 
 .camera {
@@ -276,11 +221,16 @@ function onTextClick() {
   border-style: solid;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-}
 
-.camera:not(.disabled):hover {
-  color: var(--light-color);
-  background-color: var(--primary-color);
+  &:not(.disabled):hover {
+    color: var(--light-color);
+    background-color: var(--primary-color);
+  }
+
+  span {
+    font-size: 6rem;
+    line-height: 6rem;
+  }
 }
 
 .cameradisplay {
@@ -299,153 +249,150 @@ function onTextClick() {
   box-shadow:
     0 0 1rem rgba(0, 0, 0, 0.3),
     0 0 0.5rem rgba(0, 0, 0, 0.5);
-}
 
-.cameradisplay button {
-  position: absolute;
-  border: none;
-  cursor: pointer;
-  z-index: 20;
-  transition: all 0.3s ease-in-out;
-}
+  button {
+    position: absolute;
+    border: none;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.3s ease-in-out;
+  }
 
-.cameradisplay #close {
-  top: 2rem;
-  right: 2rem;
-  font-size: 2rem;
-  background-color: transparent;
-  color: var(--prime-color);
-}
+  #close {
+    top: 2rem;
+    right: 2rem;
+    font-size: 2rem;
+    background-color: transparent;
+    color: var(--prime-color);
 
-.cameradisplay #close:hover {
-  color: var(--primary-dark-color);
-}
+    &:hover {
+      color: var(--primary-dark-color);
+    }
+  }
 
-.cameradisplay #stream {
-  border-radius: 0.25rem;
-  max-width: 94vw;
-  max-height: 94vh;
-  width: auto;
-  height: auto;
-}
+  #stream {
+    border-radius: 0.25rem;
+    max-width: 94vw;
+    max-height: 94vh;
+    width: auto;
+    height: auto;
+  }
 
-.cameradisplay #snapshot {
-  width: 4rem;
-  height: 4rem;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 0;
-  border-radius: 50%;
-  font-size: 2rem;
-  line-height: 0;
-  background-color: var(--primary-color);
-  color: var(--light-color);
-}
+  #snapshot {
+    width: 4rem;
+    height: 4rem;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0;
+    border-radius: 50%;
+    font-size: 2rem;
+    line-height: 0;
+    background-color: var(--primary-color);
+    color: var(--light-color);
 
-.cameradisplay #snapshot:hover {
-  background-color: var(--primary-dark-color);
-}
+    &:hover {
+      background-color: var(--primary-dark-color);
+    }
+  }
 
-.cameradisplay #photo {
-  border-radius: 0.25rem;
-  max-width: 94vw;
-  max-height: 94vh;
-  width: auto;
-  height: auto;
-}
+  #photo {
+    border-radius: 0.25rem;
+    max-width: 94vw;
+    max-height: 94vh;
+    width: auto;
+    height: auto;
+  }
 
-.cameradisplay #send {
-  width: 6rem;
-  height: 3rem;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  border-radius: 0.25rem;
-  font-size: 2rem;
-  background-color: var(--primary-color);
-  color: var(--light-color);
-}
+  #send {
+    width: 6rem;
+    height: 3rem;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0.25rem;
+    font-size: 2rem;
+    background-color: var(--primary-color);
+    color: var(--light-color);
 
-.cameradisplay #send:hover {
-  background-color: var(--primary-dark-color);
-}
+    &:hover {
+      background-color: var(--primary-dark-color);
+    }
 
-.cameradisplay #send.mdi-check-bold {
-  background-color: var(--success-color);
-}
+    &.mdi-check-bold {
+      background-color: var(--success-color);
 
-.cameradisplay #send.mdi-check-bold:hover {
-  background-color: var(--success-color);
-}
-
-.camera span {
-  font-size: 4rem;
-  line-height: 4rem;
+      &:hover {
+        background-color: var(--success-color);
+      }
+    }
+  }
 }
 
 .text {
   grid-column: 2 / 3;
   grid-row: 1 / 3;
   border-style: solid;
-}
 
-.text textarea {
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 0.25rem;
-  background-color: var(--light-color);
-  resize: none;
-  padding: 0.5rem;
-  font-size: 1.2rem;
-  font-family: inherit;
-}
+  textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: var(--light-color);
+    resize: none;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    font-family: inherit;
 
-.text textarea:focus {
-  outline: none;
-}
+    &:focus {
+      outline: none;
+    }
+  }
 
-.text button {
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.25rem;
-  color: var(--light-color);
-  background-color: var(--primary-color);
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
+  button {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    color: var(--light-color);
+    background-color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
 
-.text button.mdi-check-bold {
-  background-color: var(--success-color);
-}
+    &.mdi-check-bold {
+      background-color: var(--success-color);
+    }
+  }
 
-.text.disabled button {
-  background-color: var(--secondary-color);
-  cursor: not-allowed;
-}
+  &.disabled {
+    button {
+      background-color: var(--secondary-color);
+      cursor: not-allowed;
+    }
+  }
 
-.text:not(.disabled) button:hover {
-  background-color: var(--primary-dark-color);
-}
+  &:not(.disabled) {
+    button {
+      &:hover {
+        background-color: var(--primary-dark-color);
+      }
 
-.text:not(.disabled) button:hover {
-  background-color: var(--primary-dark-color);
-}
-
-.text:not(.disabled) button.mdi-check-bold:hover {
-  background-color: var(--success-color);
+      &.mdi-check-bold:hover {
+        background-color: var(--success-color);
+      }
+    }
+  }
 }
 
 @media (max-width: 768px) {
   .upload {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
-  }
 
-  .upload > * {
-    width: 100%;
+    &>* {
+      width: 100%;
+    }
   }
 
   .dropzone {
@@ -461,10 +408,10 @@ function onTextClick() {
   .text {
     grid-column: 1 / 2;
     grid-row: 3 / 4;
-  }
 
-  .text textarea {
-    height: 10rem;
+    textarea {
+      height: 10rem;
+    }
   }
 }
 
@@ -474,16 +421,18 @@ function onTextClick() {
     background-color: var(--light-color);
   }
 
-  .cameradisplay #close:hover {
-    color: var(--primary-color);
-  }
+  .cameradisplay {
+    #close:hover {
+      color: var(--primary-color);
+    }
 
-  .cameradisplay #snapshot:hover {
-    background-color: var(--primary-color);
-  }
+    #snapshot:hover {
+      background-color: var(--primary-color);
+    }
 
-  .cameradisplay #send:hover {
-    background-color: var(--primary-color);
+    #send:hover {
+      background-color: var(--primary-color);
+    }
   }
 
   .text:not(.disabled) button:hover {

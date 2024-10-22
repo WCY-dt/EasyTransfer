@@ -48,20 +48,13 @@ watch(isConnectSuccess, newValue => {
 
 <template>
   <div class="downloadFile">
-    <ReceiveItem
-      v-for="(downloadFileItem, index) in downloadFileItems"
-      :key="index"
-      :url="downloadFileItem.url"
-      :name="downloadFileItem.name"
-      :size="downloadFileItem.size"
-      :progress="downloadFileItem.progress"
-      :success="downloadFileItem.success"
-      :type="downloadFileItem.type"
-    />
+    <ReceiveItem v-for="(downloadFileItem, index) in downloadFileItems" :key="index" :url="downloadFileItem.url"
+      :name="downloadFileItem.name" :size="downloadFileItem.size" :progress="downloadFileItem.progress"
+      :success="downloadFileItem.success" :type="downloadFileItem.type" />
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .downloadFile {
   display: flex;
   flex-direction: column;

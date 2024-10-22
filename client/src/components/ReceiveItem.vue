@@ -40,38 +40,20 @@ function onTextClick() {
 </script>
 
 <template>
-  <a
-    v-if="
-      props.type === 'TRANSFER_TYPE_FILE' ||
-      props.type === 'TRANSFER_TYPE_PHOTO'
-    "
-    ref="downloadLink"
-    :href="props.url"
-    class="downloadFileItem file"
-    :download="props.name"
-    :class="{ success: props.success, loading: !props.success }"
-  >
+  <a v-if="
+    props.type === 'TRANSFER_TYPE_FILE' ||
+    props.type === 'TRANSFER_TYPE_PHOTO'
+  " ref="downloadLink" :href="props.url" class="downloadFileItem file" :download="props.name"
+    :class="{ success: props.success, loading: !props.success }">
     <div id="downloadDisplay">
       <p id="downloadName">{{ props.name }}</p>
-      <progress
-        id="downloadProgress"
-        :value="props.progress"
-        :max="props.size"
-      ></progress>
-      <img
-        v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success"
-        id="downloadContent"
-        :src="props.url"
-        alt="Photo"
-      />
+      <progress id="downloadProgress" :value="props.progress" :max="props.size"></progress>
+      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" id="downloadContent" :src="props.url"
+        alt="Photo" />
     </div>
   </a>
-  <div
-    v-if="props.type === 'TRANSFER_TYPE_TEXT'"
-    class="downloadFileItem text"
-    :class="{ success: props.success, loading: !props.success }"
-    @click="onTextClick"
-  >
+  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="downloadFileItem text"
+    :class="{ success: props.success, loading: !props.success }" @click="onTextClick">
     <div id="downloadDisplay">
       <p id="downloadContent">{{ props.name }}</p>
       <div class="cover">
@@ -82,7 +64,7 @@ function onTextClick() {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .downloadFileItem {
   text-decoration: none;
   display: flex;
@@ -95,126 +77,139 @@ function onTextClick() {
   width: 100%;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-}
 
-.downloadFileItem #downloadDisplay {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: 0 auto;
-  width: 100%;
-}
+  #downloadDisplay {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0 auto;
+    width: 100%;
 
-.downloadFileItem #downloadDisplay p {
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-  transition: all 0.2s ease-in-out;
-}
+    p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+      transition: all 0.2s ease-in-out;
 
-.downloadFileItem #downloadDisplay p#downloadName {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
+      &#downloadName {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
 
-.downloadFileItem #downloadDisplay p#downloadContent {
-  font-size: 1.2rem;
-  font-weight: 500;
-}
+      &#downloadContent {
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+    }
 
-.downloadFileItem #downloadDisplay progress {
-  width: 100%;
-  height: 0.5rem;
-  border: none;
-  border-radius: 0.25rem;
-}
+    progress {
+      width: 100%;
+      height: 0.5rem;
+      border: none;
+      border-radius: 0.25rem;
+    }
+  }
 
-.downloadFileItem.success {
-  border-color: var(--success-color);
-  background-color: var(--success-light-color);
-  color: var(--success-color);
-}
+  &.success {
+    border-color: var(--success-color);
+    background-color: var(--success-light-color);
+    color: var(--success-color);
 
-.downloadFileItem.file.success:hover {
-  background-color: var(--success-color);
-  color: var(--light-color);
-}
+    &.file:hover {
+      background-color: var(--success-color);
+      color: var(--light-color);
+    }
 
-.downloadFileItem.success #downloadDisplay progress::-webkit-progress-value {
-  background-color: var(--success-color);
-  transition: all 0.2s ease-in-out;
-}
+    #downloadDisplay {
+      progress {
+        &::-webkit-progress-value {
+          background-color: var(--success-color);
+          transition: all 0.2s ease-in-out;
+        }
 
-.downloadFileItem.success:hover
-  #downloadDisplay
-  progress::-webkit-progress-value {
-  background-color: var(--light-color);
-}
+        &::-webkit-progress-value {
+          background-color: var(--light-color);
+        }
+      }
+    }
 
-.downloadFileItem.loading {
-  border-color: var(--primary-color);
-  background-color: var(--primary-light-color);
-  color: var(--primary-color);
-  cursor: not-allowed;
-}
+    &.text {
+      position: relative;
 
-.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-value {
-  background-color: var(--primary-color);
-  transition: all 0.2s ease-in-out;
-}
+      .cover {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        color: var(--success-color);
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.2s ease-in-out;
+      }
 
-.downloadFileItem.loading #downloadDisplay progress::-webkit-progress-bar {
-  background-color: var(--light-color);
-}
+      &:hover {
+        p {
+          opacity: 0.2;
+        }
 
-.downloadFileItem.text.success {
-  position: relative;
-}
+        .cover {
+          opacity: 1;
+        }
+      }
+    }
+  }
 
-.downloadFileItem.text.success .cover {
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  color: var(--success-color);
-  font-size: 1.5rem;
-  transition: all 0.2s ease-in-out;
-}
+  &.loading {
+    border-color: var(--primary-color);
+    background-color: var(--primary-light-color);
+    color: var(--primary-color);
+    cursor: not-allowed;
 
-.downloadFileItem.text.success:hover p {
-  opacity: 0.2;
-}
+    #downloadDisplay {
+      progress {
+        &::-webkit-progress-value {
+          background-color: var(--primary-color);
+          transition: all 0.2s ease-in-out;
+        }
 
-.downloadFileItem.text.success:hover .cover {
-  opacity: 1;
+        &::-webkit-progress-bar {
+          background-color: var(--light-color);
+        }
+      }
+    }
+  }
 }
 
 @media (hover: none) {
-  .downloadFileItem.success:hover {
-    background-color: var(--success-light-color);
-    color: var(--success-color);
-  }
+  .downloadFileItem {
+    &.success {
+      &:hover {
+        background-color: var(--success-light-color);
+        color: var(--success-color);
 
-  .downloadFileItem.success:hover
-    #downloadDisplay
-    progress::-webkit-progress-value {
-    background-color: var(--success-color);
-  }
+        #downloadDisplay progress::-webkit-progress-value {
+          background-color: var(--success-color);
+        }
+      }
 
-  .downloadFileItem.text.success:hover p {
-    opacity: 1;
-  }
+      &.text:hover {
+        p {
+          opacity: 1;
+        }
 
-  .downloadFileItem.text.success:hover .cover {
-    opacity: 0;
+        .cover {
+          opacity: 0;
+        }
+      }
+    }
   }
 }
 </style>
