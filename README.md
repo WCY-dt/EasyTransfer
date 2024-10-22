@@ -31,7 +31,7 @@ It is built using webRTC and Vue.js, and there is
 
 1. [Fork](https://github.com/WCY-dt/EasyTransfer/fork) this project.
 2. Import the entire project into [glitch](https://glitch.com/) or your own server.
-3. Modify `signalServerUrl` and `iceServers` in [`./client/e2e/connectCore.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/e2e/connectCore.js) to your own addresses.
+3. Modify `signalServerUrl` and `iceServers` in [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) to your own addresses.
 4. Open GitHub Pages and select the `gh-pages` branch as the source.
 
 ## TODO

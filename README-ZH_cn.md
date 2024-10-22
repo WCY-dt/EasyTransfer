@@ -31,7 +31,7 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 
 1. [fork](https://github.com/WCY-dt/EasyTransfer/fork) 本项目。
 2. 将整个项目导入到 [glitch](https://glitch.com/) 中或您自己的服务器中。
-3. 修改 [`./client/e2e/connectCore.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/e2e/connectCore.js) 中的 `signalServerUrl` 和 `iceServers` 为您自己的地址。
+3. 修改 [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) 中的 `signalServerUrl` 和 `iceServers` 为您自己的地址。
 4. 开启 GitHub Pages，并选择 `gh-pages` 分支作为源。
 
 ## TODO
