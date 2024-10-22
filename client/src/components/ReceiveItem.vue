@@ -120,6 +120,10 @@ function onTextClick() {
     &.file:hover {
       background-color: var(--success-color);
       color: var(--light-color);
+
+      #downloadDisplay progress::-webkit-progress-value {
+        background-color: var(--light-color);
+      }
     }
 
     #downloadDisplay {
@@ -127,10 +131,6 @@ function onTextClick() {
         &::-webkit-progress-value {
           background-color: var(--success-color);
           transition: all 0.2s ease-in-out;
-        }
-
-        &::-webkit-progress-value {
-          background-color: var(--light-color);
         }
       }
     }

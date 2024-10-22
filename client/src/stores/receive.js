@@ -1,3 +1,4 @@
+import { ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useConnectStore } from './connect.js'
 
@@ -6,10 +7,37 @@ export const useReceiveStore = defineStore('receive', () => {
 
   const { peerConnection, privKey } = storeToRefs(connectStore)
 
-  let addDownloadFileItem = null
-  let updateFileProgress = null
-  let updateFileUrl = null
-  let updateFileSuccess = null
+  const downloadFileItems = ref([])
+
+  function addDownloadFileItem(url, name, size, progress, type) {
+    downloadFileItems.value.push({
+      url,
+      name,
+      size,
+      progress,
+      type,
+    })
+
+    downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
+  }
+
+  function updateFileProgress(index, progress) {
+    downloadFileItems.value[index].progress = progress
+
+    downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
+  }
+
+  function updateFileUrl(index, url) {
+    downloadFileItems.value[index].url = url
+
+    downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
+  }
+
+  function updateFileSuccess(index, success) {
+    downloadFileItems.value[index].success = success
+
+    downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
+  }
 
   let receiveChannel = null
 
@@ -26,18 +54,8 @@ export const useReceiveStore = defineStore('receive', () => {
 
   let currentReceivingFileNo = -1
 
-  function receiveFiles(
-    addDownloadFileItemFunc,
-    updateFileProgressFunc,
-    updateFileUrlFunc,
-    updateFileSuccessFunc,
-  ) {
+  function receiveFiles() {
     peerConnection.value.ondatachannel = event => {
-      addDownloadFileItem = addDownloadFileItemFunc
-      updateFileProgress = updateFileProgressFunc
-      updateFileUrl = updateFileUrlFunc
-      updateFileSuccess = updateFileSuccessFunc
-
       initReceiveBuffer()
 
       receiveChannel = event.channel
@@ -173,6 +191,7 @@ export const useReceiveStore = defineStore('receive', () => {
   }
 
   return {
+    downloadFileItems,
     receiveFiles,
   }
 })

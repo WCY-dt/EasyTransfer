@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { useReceiveStore } from '@/stores/receive'
@@ -9,46 +9,22 @@ const connectCore = useConnectStore()
 const receiveStore = useReceiveStore()
 const { isConnectSuccess } = storeToRefs(connectCore)
 
-const downloadFileItems = ref([])
-
-const addDownloadFileItem = (url, name, size, progress, type) => {
-  downloadFileItems.value.push({
-    url: url,
-    name: name,
-    size: size,
-    progress: progress,
-    type: type,
-    success: false,
-  })
-}
-
-const updateFileProgress = (index, progress) => {
-  downloadFileItems.value[index].progress = progress
-}
-
-const updateFileUrl = (index, url) => {
-  downloadFileItems.value[index].url = url
-}
-
-const updateFileSuccess = index => {
-  downloadFileItems.value[index].success = true
-}
+const reactiveDownloadFileItems = ref([])
 
 watch(isConnectSuccess, newValue => {
   if (newValue) {
-    receiveStore.receiveFiles(
-      addDownloadFileItem,
-      updateFileProgress,
-      updateFileUrl,
-      updateFileSuccess,
-    )
+    receiveStore.receiveFiles()
   }
 })
+
+watch(() => receiveStore.downloadFileItems, (newValue) => {
+  reactiveDownloadFileItems.value = newValue
+}, { deep: true })
 </script>
 
 <template>
   <div class="downloadFile">
-    <ReceiveItem v-for="(downloadFileItem, index) in downloadFileItems" :key="index" :url="downloadFileItem.url"
+    <ReceiveItem v-for="(downloadFileItem, index) in reactiveDownloadFileItems" :key="index" :url="downloadFileItem.url"
       :name="downloadFileItem.name" :size="downloadFileItem.size" :progress="downloadFileItem.progress"
       :success="downloadFileItem.success" :type="downloadFileItem.type" />
   </div>
