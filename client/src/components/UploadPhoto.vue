@@ -94,16 +94,25 @@ async function onCameraSendClick() {
   <div id="camera" class="camera" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
     @click="onCameraClick">
     <span class="mdi mdi-camera"></span>
+    <p>Photo</p>
   </div>
 </template>
 
 <style scoped lang="scss">
 .camera {
-  grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
   border-style: solid;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem !important;
+  color: var(--primary-color);
+  background-color: var(--primary-light-color);
 
   &.disabled {
     border-color: var(--secondary-color);
@@ -112,14 +121,26 @@ async function onCameraSendClick() {
     cursor: not-allowed;
   }
 
-  &:not(.disabled):hover {
-    color: var(--light-color);
-    background-color: var(--primary-color);
+  @media (hover: hover) {
+    &:not(.disabled):hover {
+      color: var(--light-color);
+      background-color: var(--primary-color);
+    }
   }
 
   span {
-    font-size: 6rem;
-    line-height: 6rem;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 3rem;
+  }
+
+  p {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.5rem;
+    margin: 0;
+    text-align: center;
+    display: none;
   }
 }
 
@@ -154,8 +175,10 @@ async function onCameraSendClick() {
     background-color: transparent;
     color: var(--prime-color);
 
-    &:hover {
-      color: var(--primary-dark-color);
+    @media (hover: hover) {
+      &:hover {
+        color: var(--primary-dark-color);
+      }
     }
   }
 
@@ -180,8 +203,10 @@ async function onCameraSendClick() {
     background-color: var(--primary-color);
     color: var(--light-color);
 
-    &:hover {
-      background-color: var(--primary-dark-color);
+    @media (hover: hover) {
+      &:hover {
+        background-color: var(--primary-dark-color);
+      }
     }
   }
 
@@ -204,14 +229,16 @@ async function onCameraSendClick() {
     background-color: var(--primary-color);
     color: var(--light-color);
 
-    &:hover {
-      background-color: var(--primary-dark-color);
-    }
-
     &.mdi-check-bold {
       background-color: var(--success-color);
+    }
 
+    @media (hover: hover) {
       &:hover {
+        background-color: var(--primary-dark-color);
+      }
+
+      &.mdi-check-bold:hover {
         background-color: var(--success-color);
       }
     }
@@ -222,26 +249,9 @@ async function onCameraSendClick() {
   .camera {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
-  }
-}
 
-@media (hover: none) {
-  .camera:not(.disabled):hover {
-    color: var(--primary-color);
-    background-color: var(--light-color);
-  }
-
-  .cameradisplay {
-    #close:hover {
-      color: var(--primary-color);
-    }
-
-    #snapshot:hover {
-      background-color: var(--primary-color);
-    }
-
-    #send:hover {
-      background-color: var(--primary-color);
+    p {
+      display: block;
     }
   }
 }

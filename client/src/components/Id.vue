@@ -84,11 +84,12 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
+  gap: 1rem;
 
   #clientId {
     position: relative;
     font-size: 6rem;
+    line-height: 6rem;
     font-weight: 900;
     text-align: center;
     transition: all 0.1s ease-in-out;
@@ -99,7 +100,7 @@ onMounted(async () => {
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 6rem;
       background-color: transparent;
       color: var(--primary-color);
       font-size: 4rem;
@@ -112,22 +113,24 @@ onMounted(async () => {
       transition: all 0.2s ease-in-out;
     }
 
-    &:hover .cover {
-      opacity: 1;
-    }
-
     &.ready {
       color: var(--primary-color);
-
-      &:hover {
-        color: var(--primary-light-color);
-      }
     }
 
     &.disabled {
       color: var(--secondary-color);
+    }
 
-      &:hover {
+    @media (hover: hover) {
+      &:hover .cover {
+        opacity: 1;
+      }
+
+      &.ready:hover {
+        color: var(--primary-light-color);
+      }
+
+      &.disabled:hover {
         color: var(--secondary-color);
 
         .cover {
@@ -166,9 +169,11 @@ onMounted(async () => {
     &.disabled {
       border-color: var(--secondary-color);
 
-      &:hover .info {
-        opacity: 1;
-        transform: translateY(110%);
+      @media (hover: hover) {
+        &:hover .info {
+          opacity: 1;
+          transform: translateY(110%);
+        }
       }
 
       button {
@@ -184,8 +189,10 @@ onMounted(async () => {
         background-color: var(--primary-color);
         transition: all 0.3s ease-in-out;
 
-        &:hover {
-          background-color: var(--primary-dark-color);
+        @media (hover: hover) {
+          &:hover {
+            background-color: var(--primary-dark-color);
+          }
         }
       }
     }
@@ -241,31 +248,6 @@ onMounted(async () => {
         font-size: 3rem;
         line-height: 3rem;
         margin: auto;
-      }
-    }
-  }
-}
-
-@media (hover: none) {
-  .id {
-    #clientId {
-      .cover {
-        display: none;
-      }
-
-      &:hover {
-        color: var(--primary-color);
-      }
-    }
-
-    #targetId {
-      &.disabled .info {
-        opacity: 1;
-        transform: translateY(110%);
-      }
-
-      &.ready button:hover {
-        background-color: var(--primary-color);
       }
     }
   }

@@ -19,6 +19,7 @@
   --primary-light-color: #e3f1ff;
   --secondary-color: #6c757d;
   --secondary-light-color: #dfdfdf;
+  --secondary-extra-light-color: #eeeeee;
   --success-color: #28a745;
   --success-dark-color: #218838;
   --success-light-color: #d4edda;
@@ -47,13 +48,11 @@ body {
 }
 
 #app {
-  width: calc(min(50rem, 100vw - 2rem));
-  margin: 0 auto;
+  width: 100%;
+  min-height: 80vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: start;
   justify-content: center;
-  gap: 3rem;
 }
 
 @media (max-width: 425px) {
@@ -84,14 +83,9 @@ footer p a {
   transition: all 0.3s ease-in-out;
 }
 
-footer p a:hover {
-  color: var(--primary-dark-color);
-  text-decoration: underline;
-}
-
-@media (hover: none) {
+@media (hover: hover) {
   footer p a:hover {
-    color: var(--primary-color);
-    text-decoration: none;
+    color: var(--primary-dark-color);
+    text-decoration: underline;
   }
 }

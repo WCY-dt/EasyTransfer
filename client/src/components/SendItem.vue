@@ -8,7 +8,7 @@ const props = defineProps({
   },
   name: {
     type: String,
-    default: 'No file to download',
+    default: 'No file to upload',
   },
   size: {
     type: Number,
@@ -43,22 +43,22 @@ function onTextClick() {
   <a v-if="
     props.type === 'TRANSFER_TYPE_FILE' ||
     props.type === 'TRANSFER_TYPE_PHOTO'
-  " ref="downloadLink" :href="props.url" class="downloadFileItem file" :download="props.name"
+  " ref="uploadLink" :href="props.url" class="uploadFileItem file" :upload="props.name"
     :class="{ success: props.success, loading: !props.success }">
     <span v-if="props.type === 'TRANSFER_TYPE_FILE'" class="mdi mdi-file-document"></span>
     <span v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'" class="mdi mdi-image"></span>
-    <div id="downloadDisplay">
-      <p id="downloadName">{{ props.name }}</p>
-      <progress id="downloadProgress" :value="props.progress" :max="props.size"></progress>
-      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" id="downloadContent" :src="props.url"
+    <div id="uploadDisplay">
+      <p id="uploadName">{{ props.name }}</p>
+      <progress id="uploadProgress" :value="props.progress" :max="props.size"></progress>
+      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" id="uploadContent" :src="props.url"
         alt="Photo" />
     </div>
   </a>
-  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="downloadFileItem text"
+  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="uploadFileItem text"
     :class="{ success: props.success, loading: !props.success }" @click="onTextClick">
     <span class="mdi mdi-message-text"></span>
-    <div id="downloadDisplay">
-      <p id="downloadContent">{{ props.name }}</p>
+    <div id="uploadDisplay">
+      <p id="uploadContent">{{ props.name }}</p>
       <div class="cover">
         <span class="mdi mdi-check-bold" v-if="copied"></span>
         <span class="mdi mdi-content-copy" v-else></span>
@@ -68,12 +68,12 @@ function onTextClick() {
 </template>
 
 <style scoped lang="scss">
-.downloadFileItem {
+.uploadFileItem {
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
   border: 2px solid;
   border-radius: 0.25rem;
@@ -86,7 +86,7 @@ function onTextClick() {
     font-size: 2.5rem;
   }
 
-  #downloadDisplay {
+  #uploadDisplay {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -97,12 +97,12 @@ function onTextClick() {
       margin: 0;
       transition: all 0.2s ease-in-out;
 
-      &#downloadName {
+      &#uploadName {
         font-size: 1.5rem;
         font-weight: 700;
       }
 
-      &#downloadContent {
+      &#uploadContent {
         font-size: 1.2rem;
         font-weight: 500;
       }
@@ -126,13 +126,13 @@ function onTextClick() {
         background-color: var(--success-color);
         color: var(--light-color);
 
-        #downloadDisplay progress::-webkit-progress-value {
+        #uploadDisplay progress::-webkit-progress-value {
           background-color: var(--light-color);
         }
       }
     }
 
-    #downloadDisplay {
+    #uploadDisplay {
       progress {
         &::-webkit-progress-value {
           background-color: var(--success-color);
@@ -159,6 +159,17 @@ function onTextClick() {
         justify-content: center;
         opacity: 0;
         transition: all 0.2s ease-in-out;
+
+        span {
+          height: 100%;
+
+          &::before {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
       }
 
       @media (hover: hover) {
@@ -181,7 +192,7 @@ function onTextClick() {
     color: var(--primary-color);
     cursor: not-allowed;
 
-    #downloadDisplay {
+    #uploadDisplay {
       progress {
         &::-webkit-progress-value {
           background-color: var(--primary-color);

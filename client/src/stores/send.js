@@ -6,6 +6,40 @@ export const useSendStore = defineStore('send', () => {
   const connectStore = useConnectStore()
   const { pubKey, sendChannel } = storeToRefs(connectStore)
 
+  const uploadFileItems = ref([])
+
+  function addUploadFileItem(url, name, size, progress, type) {
+    uploadFileItems.value.push({
+      url,
+      name,
+      size,
+      progress,
+      type,
+    })
+
+    uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
+  }
+
+  function updateFileProgress(index, progress) {
+    uploadFileItems.value[index].progress = progress
+
+    uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
+  }
+
+  function updateFileUrl(index, url) {
+    uploadFileItems.value[index].url = url
+
+    uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
+  }
+
+  function updateFileSuccess(index, success) {
+    uploadFileItems.value[index].success = success
+
+    uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
+  }
+
+  let currentSendingFileNo = -1
+
   let chunkQueue = []
 
   sendChannel.value.onbufferedamountlow = async () => {
@@ -83,6 +117,7 @@ export const useSendStore = defineStore('send', () => {
     }
 
     for (let i = 0; i < fileNum; i++) {
+      currentSendingFileNo++
       await sendFileContent(files[i], type)
     }
   }
@@ -97,6 +132,14 @@ export const useSendStore = defineStore('send', () => {
     await sendData('CONTENT_META' + file.size)
 
     // console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
+
+    addUploadFileItem(
+      'javascript:void(0)',
+      file.name,
+      file.size,
+      0,
+      type,
+    )
   }
 
   async function sendFileContent(file, type) {
@@ -121,9 +164,16 @@ export const useSendStore = defineStore('send', () => {
           await sendData(e.target.result)
           offset.value = offset.value + e.target.result.byteLength
           if (offset.value < currentFileSize.value) {
-            resolve(readAndSendSlice(offset.value))
+            resolve(
+              updateFileProgress(currentSendingFileNo, offset.value),
+              readAndSendSlice(offset.value)
+            )
           } else {
-            resolve()
+            resolve(
+              updateFileProgress(currentSendingFileNo, currentFileSize.value),
+              updateFileUrl(currentSendingFileNo, URL.createObjectURL(file)),
+              updateFileSuccess(currentSendingFileNo, true)
+            )
           }
         }
 
@@ -184,6 +234,18 @@ export const useSendStore = defineStore('send', () => {
     // console.log(
     //   `[INFO] Sent content: ${'TRANSFER_TYPE_TEXT'} | ${text} | ${text.length}`,
     // )
+
+    addUploadFileItem(
+      'javascript:void(0)',
+      text,
+      text.length,
+      text.length,
+      'TRANSFER_TYPE_TEXT',
+    )
+
+    currentSendingFileNo++
+
+    updateFileSuccess(currentSendingFileNo, true)
   }
 
   function checkSendTextAvailability(text) { // Check if the text.valuepty or the data channel is open
@@ -201,9 +263,7 @@ export const useSendStore = defineStore('send', () => {
   }
 
   return {
-    currentFileName,
-    currentFileSize,
-    offset,
+    uploadFileItems,
     sendFiles,
     sendText,
     processQueue,
