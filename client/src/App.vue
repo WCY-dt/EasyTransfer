@@ -18,6 +18,7 @@ import Receive from '@/components/Receive.vue'
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto;
   gap: 2rem;
+
   width: min(96vw, 120rem);
   margin: 2rem 2vw;
 
@@ -41,6 +42,7 @@ import Receive from '@/components/Receive.vue'
   .app-cluster {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
+
     gap: 4rem;
 
     &>* {

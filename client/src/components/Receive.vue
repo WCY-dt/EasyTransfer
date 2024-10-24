@@ -23,12 +23,12 @@ watch(() => receiveStore.downloadFileItems, (newValue) => {
 </script>
 
 <template>
-  <div class="downloadFile">
-    <div class="downloadFileHeader">
+  <div class="download-cluster">
+    <div class="download-cluster-title">
       <span class="mdi mdi-download-network"></span>
-      <p>Download</p>
+      <p class="download-cluster-title-text">Download</p>
     </div>
-    <p v-if="reactiveDownloadFileItems.length === 0">Nothing to download</p>
+    <p v-if="reactiveDownloadFileItems.length === 0" class="noting-to-download-text">Nothing to download</p>
     <ReceiveItem v-for="(downloadFileItem, index) in reactiveDownloadFileItems" :key="index" :url="downloadFileItem.url"
       :name="downloadFileItem.name" :size="downloadFileItem.size" :progress="downloadFileItem.progress"
       :success="downloadFileItem.success" :type="downloadFileItem.type" />
@@ -36,51 +36,57 @@ watch(() => receiveStore.downloadFileItems, (newValue) => {
 </template>
 
 <style scoped lang="scss">
-.downloadFile {
+.download-cluster {
   grid-column: 3 / 4;
   grid-row: 1 / 2;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  border-radius: 0.25rem;
-  padding: 1rem;
+
   height: 100%;
+  padding: 1rem;
+  border-radius: 0.25rem;
   overflow-y: auto;
+
   background-color: var(--secondary-extra-light-color);
 
-  .downloadFileHeader {
+  .download-cluster-title {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 
-    span {
+    .mdi {
       font-size: 2.5rem;
+
       color: var(--secondary-color);
     }
 
-    p {
+    .download-cluster-title-text {
       font-size: 2rem;
       font-weight: 700;
+
       color: var(--secondary-color);
     }
   }
 
-  p {
+  .noting-to-download-text {
     font-size: 1.5rem;
+
     color: var(--secondary-color);
   }
 }
 
 @media (max-width: 1440px) {
-  .downloadFile {
+  .download-cluster {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
   }
 }
 
 @media (max-width: 768px) {
-  .downloadFile {
+  .download-cluster {
     grid-column: 1 / 2;
     grid-row: 3 / 4;
   }

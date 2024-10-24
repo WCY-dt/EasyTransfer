@@ -5,7 +5,7 @@ import UploadPhoto from './UploadPhoto.vue'
 </script>
 
 <template>
-  <div id="upload" class="upload">
+  <div id="upload" class="upload-cluster">
     <UploadFile />
     <UploadPhoto />
     <UploadText />
@@ -13,11 +13,12 @@ import UploadPhoto from './UploadPhoto.vue'
 </template>
 
 <style scoped lang="scss">
-.upload {
+.upload-cluster {
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto auto;
   gap: 1rem;
+
   width: 100%;
 
   &>* {
@@ -26,12 +27,14 @@ import UploadPhoto from './UploadPhoto.vue'
     border-width: 2px;
     border-color: var(--primary-color);
     border-radius: 0.25rem;
-    transition: all 0.3s ease-in-out;
+    border-style: solid;
+
+    transition: all 0.1s ease-in-out;
   }
 }
 
 @media (max-width: 768px) {
-  .upload {
+  .upload-cluster {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
 

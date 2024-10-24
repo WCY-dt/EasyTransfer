@@ -43,23 +43,23 @@ function onTextClick() {
   <a v-if="
     props.type === 'TRANSFER_TYPE_FILE' ||
     props.type === 'TRANSFER_TYPE_PHOTO'
-  " ref="downloadLink" :href="props.url" class="downloadFileItem file" :download="props.name"
+  " ref="downloadLink" :href="props.url" class="download-item file" :download="props.name"
     :class="{ success: props.success, loading: !props.success }">
     <span v-if="props.type === 'TRANSFER_TYPE_FILE'" class="mdi mdi-file-document"></span>
     <span v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'" class="mdi mdi-image"></span>
-    <div id="downloadDisplay">
-      <p id="downloadName">{{ props.name }}</p>
-      <progress id="downloadProgress" :value="props.progress" :max="props.size"></progress>
-      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" id="downloadContent" :src="props.url"
+    <div class="download-item-detail">
+      <p class="download-item-name">{{ props.name }}</p>
+      <progress class="download-item-progress" :value="props.progress" :max="props.size"></progress>
+      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" class="download-item-content" :src="props.url"
         alt="Photo" />
     </div>
   </a>
-  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="downloadFileItem text"
+  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="download-item text"
     :class="{ success: props.success, loading: !props.success }" @click="onTextClick">
     <span class="mdi mdi-message-text"></span>
-    <div id="downloadDisplay">
-      <p id="downloadContent">{{ props.name }}</p>
-      <div class="cover">
+    <div class="download-item-detail">
+      <p class="download-item-content">{{ props.name }}</p>
+      <div class="copy-cover">
         <span class="mdi mdi-check-bold" v-if="copied"></span>
         <span class="mdi mdi-content-copy" v-else></span>
       </div>
@@ -68,47 +68,53 @@ function onTextClick() {
 </template>
 
 <style scoped lang="scss">
-.downloadFileItem {
-  text-decoration: none;
+.download-item {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
+
+  width: 100%;
   padding: 0.5rem 1rem;
   border: 2px solid;
   border-radius: 0.25rem;
-  width: 100%;
+
+  text-decoration: none;
+
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+
+  transition: all 0.1s ease-in-out;
 
   .mdi {
     align-self: flex-start;
     font-size: 2.5rem;
   }
 
-  #downloadDisplay {
+  .download-item-detail {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
     margin: 0 auto;
     width: 100%;
 
     p {
       margin: 0;
-      transition: all 0.2s ease-in-out;
 
-      &#downloadName {
+      transition: all 0.1s ease-in-out;
+
+      &.download-item-name {
         font-size: 1.5rem;
         font-weight: 700;
       }
 
-      &#downloadContent {
+      &.download-item-content {
         font-size: 1.2rem;
         font-weight: 500;
       }
     }
 
-    progress {
+    .download-item-progress {
       width: 100%;
       height: 0.5rem;
       border: none;
@@ -118,6 +124,7 @@ function onTextClick() {
 
   &.success {
     border-color: var(--success-color);
+
     background-color: var(--success-light-color);
     color: var(--success-color);
 
@@ -126,17 +133,18 @@ function onTextClick() {
         background-color: var(--success-color);
         color: var(--light-color);
 
-        #downloadDisplay progress::-webkit-progress-value {
+        .download-item-detail .download-item-progress::-webkit-progress-value {
           background-color: var(--light-color);
         }
       }
     }
 
-    #downloadDisplay {
-      progress {
+    .download-item-detail {
+      .download-item-progress {
         &::-webkit-progress-value {
           background-color: var(--success-color);
-          transition: all 0.2s ease-in-out;
+
+          transition: all 0.1s ease-in-out;
         }
       }
     }
@@ -144,30 +152,43 @@ function onTextClick() {
     &.text {
       position: relative;
 
-      .cover {
-        display: block;
+      .copy-cover {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
+
+        opacity: 0;
+        display: grid;
+        place-content: center;
+
+        font-size: 1.5rem;
+
         background-color: transparent;
         color: var(--success-color);
-        font-size: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: all 0.2s ease-in-out;
+
+        transition: all 0.1s ease-in-out;
+
+        .mdi {
+          height: 100%;
+
+          &::before {
+            display: grid;
+            place-content: center;
+
+            height: 100%;
+          }
+        }
       }
 
       @media (hover: hover) {
         &:hover {
-          p {
+          .download-item-content {
             opacity: 0.2;
           }
 
-          .cover {
+          .copy-cover {
             opacity: 1;
           }
         }
@@ -177,15 +198,18 @@ function onTextClick() {
 
   &.loading {
     border-color: var(--primary-color);
+
     background-color: var(--primary-light-color);
     color: var(--primary-color);
+
     cursor: not-allowed;
 
-    #downloadDisplay {
-      progress {
+    .download-item-detail {
+      .download-item-progress {
         &::-webkit-progress-value {
           background-color: var(--primary-color);
-          transition: all 0.2s ease-in-out;
+
+          transition: all 0.1s ease-in-out;
         }
 
         &::-webkit-progress-bar {

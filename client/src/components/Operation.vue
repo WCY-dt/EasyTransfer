@@ -14,6 +14,7 @@ import Upload from './Upload.vue'
 .operation-cluster {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,6 +32,7 @@ import Upload from './Upload.vue'
   .operation-cluster {
     grid-column: 1 / 2;
     grid-row: 1 / 2;
+
     gap: 2rem;
   }
 }

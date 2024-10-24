@@ -43,23 +43,23 @@ function onTextClick() {
   <a v-if="
     props.type === 'TRANSFER_TYPE_FILE' ||
     props.type === 'TRANSFER_TYPE_PHOTO'
-  " ref="uploadLink" :href="props.url" class="uploadFileItem file" :upload="props.name"
+  " ref="uploadLink" :href="props.url" class="upload-item file" :download="props.name"
     :class="{ success: props.success, loading: !props.success }">
     <span v-if="props.type === 'TRANSFER_TYPE_FILE'" class="mdi mdi-file-document"></span>
     <span v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'" class="mdi mdi-image"></span>
-    <div id="uploadDisplay">
-      <p id="uploadName">{{ props.name }}</p>
-      <progress id="uploadProgress" :value="props.progress" :max="props.size"></progress>
-      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" id="uploadContent" :src="props.url"
+    <div class="upload-item-detail">
+      <p class="upload-item-name">{{ props.name }}</p>
+      <progress class="upload-item-progress" :value="props.progress" :max="props.size"></progress>
+      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" class="upload-item-content" :src="props.url"
         alt="Photo" />
     </div>
   </a>
-  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="uploadFileItem text"
+  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="upload-item text"
     :class="{ success: props.success, loading: !props.success }" @click="onTextClick">
     <span class="mdi mdi-message-text"></span>
-    <div id="uploadDisplay">
-      <p id="uploadContent">{{ props.name }}</p>
-      <div class="cover">
+    <div class="upload-item-detail">
+      <p class="upload-item-content">{{ props.name }}</p>
+      <div class="copy-cover">
         <span class="mdi mdi-check-bold" v-if="copied"></span>
         <span class="mdi mdi-content-copy" v-else></span>
       </div>
@@ -68,47 +68,53 @@ function onTextClick() {
 </template>
 
 <style scoped lang="scss">
-.uploadFileItem {
-  text-decoration: none;
+.upload-item {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
+
+  width: 100%;
   padding: 0.5rem 1rem;
   border: 2px solid;
   border-radius: 0.25rem;
-  width: 100%;
+
+  text-decoration: none;
+
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+
+  transition: all 0.1s ease-in-out;
 
   .mdi {
     align-self: flex-start;
     font-size: 2.5rem;
   }
 
-  #uploadDisplay {
+  .upload-item-detail {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
     margin: 0 auto;
     width: 100%;
 
     p {
       margin: 0;
-      transition: all 0.2s ease-in-out;
 
-      &#uploadName {
+      transition: all 0.1s ease-in-out;
+
+      &.upload-item-name {
         font-size: 1.5rem;
         font-weight: 700;
       }
 
-      &#uploadContent {
+      &.upload-item-content {
         font-size: 1.2rem;
         font-weight: 500;
       }
     }
 
-    progress {
+    .upload-item-progress {
       width: 100%;
       height: 0.5rem;
       border: none;
@@ -118,6 +124,7 @@ function onTextClick() {
 
   &.success {
     border-color: var(--success-color);
+
     background-color: var(--success-light-color);
     color: var(--success-color);
 
@@ -126,17 +133,18 @@ function onTextClick() {
         background-color: var(--success-color);
         color: var(--light-color);
 
-        #uploadDisplay progress::-webkit-progress-value {
+        .upload-item-detail .upload-item-progress::-webkit-progress-value {
           background-color: var(--light-color);
         }
       }
     }
 
-    #uploadDisplay {
-      progress {
+    .upload-item-detail {
+      .upload-item-progress {
         &::-webkit-progress-value {
           background-color: var(--success-color);
-          transition: all 0.2s ease-in-out;
+
+          transition: all 0.1s ease-in-out;
         }
       }
     }
@@ -144,41 +152,43 @@ function onTextClick() {
     &.text {
       position: relative;
 
-      .cover {
-        display: block;
+      .copy-cover {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
+
+        opacity: 0;
+        display: grid;
+        place-content: center;
+
+        font-size: 1.5rem;
+
         background-color: transparent;
         color: var(--success-color);
-        font-size: 1.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: all 0.2s ease-in-out;
 
-        span {
+        transition: all 0.1s ease-in-out;
+
+        .mdi {
           height: 100%;
 
           &::before {
+            display: grid;
+            place-content: center;
+
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
           }
         }
       }
 
       @media (hover: hover) {
         &:hover {
-          p {
+          .upload-item-content {
             opacity: 0.2;
           }
 
-          .cover {
+          .copy-cover {
             opacity: 1;
           }
         }
@@ -188,15 +198,18 @@ function onTextClick() {
 
   &.loading {
     border-color: var(--primary-color);
+
     background-color: var(--primary-light-color);
     color: var(--primary-color);
+
     cursor: not-allowed;
 
-    #uploadDisplay {
-      progress {
+    .upload-item-detail {
+      .upload-item-progress {
         &::-webkit-progress-value {
           background-color: var(--primary-color);
-          transition: all 0.2s ease-in-out;
+
+          transition: all 0.1s ease-in-out;
         }
 
         &::-webkit-progress-bar {

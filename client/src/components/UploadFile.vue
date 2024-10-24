@@ -28,57 +28,62 @@ function onFileClick() {
 </script>
 
 <template>
-  <div id="dropzone" class="dropzone" @dragover.prevent @drop="onFileDrop" @click="onFileClick"
+  <div id="dropzone" class="upload-file-cluster" @dragover.prevent @drop="onFileDrop" @click="onFileClick"
     :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }">
-    <input type="file" id="fileInput" title="Choose a file to send" multiple @change="sendFiles" ref="fileInput"
-      :disabled="!isConnectSuccess" />
+    <input type="file" id="fileInput" class="file-input" title="Choose a file to send" multiple @change="sendFiles"
+      ref="fileInput" :disabled="!isConnectSuccess" />
     <span class="mdi mdi-file-upload"></span>
-    <p>File</p>
+    <p class="file-input-title">File</p>
   </div>
 </template>
 
 <style scoped lang="scss">
-.dropzone {
+.upload-file-cluster {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
-  border-style: solid;
-  cursor: pointer;
+
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: var(--light-color);
+
   background-color: var(--primary-color);
+  color: var(--light-color);
+
+  cursor: pointer;
 
   &.disabled {
     border-color: var(--secondary-color);
+
     background-color: var(--secondary-color);
     color: var(--secondary-light-color);
+
     cursor: not-allowed;
   }
 
-  input {
+  .file-input {
     display: none;
   }
 
-  span {
+  .mdi {
     font-size: 3rem;
     line-height: 3rem;
   }
 
-  p {
+  .file-input-title {
+    margin: 0;
+
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.5rem;
-    margin: 0;
     text-align: center;
   }
 
   @media (hover: hover) {
     &:not(.disabled):hover {
-      background-color: var(--primary-dark-color);
       border-color: var(--primary-dark-color);
+
+      background-color: var(--primary-dark-color);
     }
   }
 }

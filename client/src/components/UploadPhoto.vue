@@ -83,95 +83,110 @@ async function onCameraSendClick() {
 </script>
 
 <template>
-  <div v-show="showCamera" id="cameradisplay" class="cameradisplay">
-    <button id="close" class="mdi mdi-close" @click="onCameraCloseClick"></button>
-    <video v-show="showStream" id="stream" ref="stream" autoplay playsinline></video>
-    <button v-show="showStream" id="snapshot" class="mdi mdi-camera" @click="onSnapshotClick"></button>
-    <canvas v-show="!showStream" id="photo" ref="photo"></canvas>
-    <button v-show="!showStream" id="send" class="mdi" @click="onCameraSendClick"
+  <div v-show="showCamera" id="cameradisplay" class="camera-display-cluster">
+    <button class="close-button mdi mdi-close" @click="onCameraCloseClick"></button>
+    <video v-show="showStream" class="stream-display" ref="stream" autoplay playsinline></video>
+    <button v-show="showStream" class="snapshot-button mdi mdi-camera" @click="onSnapshotClick"></button>
+    <canvas v-show="!showStream" class="photo-display" ref="photo"></canvas>
+    <button v-show="!showStream" class="send-button mdi" @click="onCameraSendClick"
       :class="{ 'mdi-send': !photoSent, 'mdi-check-bold': photoSent }"></button>
   </div>
-  <div id="camera" class="camera" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
+  <div id="camera" class="upload-photo-cluster" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
     @click="onCameraClick">
     <span class="mdi mdi-camera"></span>
-    <p>Photo</p>
+    <p class="upload-photo-title">Photo</p>
   </div>
 </template>
 
 <style scoped lang="scss">
-.camera {
+.upload-photo-cluster {
   grid-column: 2 / 3;
   grid-row: 1 / 2;
-  border-style: solid;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
+
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+
   padding: 0.5rem 1rem !important;
-  color: var(--primary-color);
+
   background-color: var(--primary-light-color);
+  color: var(--primary-color);
+
+  cursor: pointer;
+
+  transition: all 0.1s ease-in-out;
 
   &.disabled {
     border-color: var(--secondary-color);
+
     background-color: var(--secondary-light-color);
     color: var(--secondary-color);
+
     cursor: not-allowed;
   }
 
   @media (hover: hover) {
     &:not(.disabled):hover {
-      color: var(--light-color);
       background-color: var(--primary-color);
+      color: var(--light-color);
     }
   }
 
-  span {
+  .mdi {
     font-size: 3rem;
     font-weight: 700;
     line-height: 3rem;
   }
 
-  p {
+  .upload-photo-title {
+    display: none;
+
+    margin: 0;
+
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.5rem;
-    margin: 0;
     text-align: center;
-    display: none;
   }
 }
 
-.cameradisplay {
+.camera-display-cluster {
   position: fixed;
-  padding: 1rem;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: auto;
-  background-color: var(--primary-light-color);
-  border-radius: 0.25rem;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  padding: 1rem;
+  width: auto;
+  border-radius: 0.25rem;
+
+  background-color: var(--primary-light-color);
   box-shadow:
     0 0 1rem rgba(0, 0, 0, 0.3),
     0 0 0.5rem rgba(0, 0, 0, 0.5);
 
   button {
     position: absolute;
+
     border: none;
-    cursor: pointer;
     z-index: 20;
-    transition: all 0.3s ease-in-out;
+
+    cursor: pointer;
+
+    transition: all 0.1s ease-in-out;
   }
 
-  #close {
+  .close-button {
     top: 2rem;
     right: 2rem;
+
     font-size: 2rem;
+
     background-color: transparent;
     color: var(--prime-color);
 
@@ -182,24 +197,27 @@ async function onCameraSendClick() {
     }
   }
 
-  #stream {
-    border-radius: 0.25rem;
-    max-width: 94vw;
-    max-height: 94vh;
+  .stream-display {
     width: auto;
     height: auto;
+    max-width: 94vw;
+    max-height: 94vh;
+    border-radius: 0.25rem;
   }
 
-  #snapshot {
+  .snapshot-button {
     width: 4rem;
     height: 4rem;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
+
     padding: 0;
     border-radius: 50%;
+
     font-size: 2rem;
     line-height: 0;
+
     background-color: var(--primary-color);
     color: var(--light-color);
 
@@ -210,22 +228,25 @@ async function onCameraSendClick() {
     }
   }
 
-  #photo {
-    border-radius: 0.25rem;
-    max-width: 94vw;
-    max-height: 94vh;
+  .photo-display {
     width: auto;
     height: auto;
+    max-width: 94vw;
+    max-height: 94vh;
+    border-radius: 0.25rem;
   }
 
-  #send {
+  .send-button {
     width: 6rem;
     height: 3rem;
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
+
     border-radius: 0.25rem;
+
     font-size: 2rem;
+
     background-color: var(--primary-color);
     color: var(--light-color);
 
@@ -246,11 +267,11 @@ async function onCameraSendClick() {
 }
 
 @media (max-width: 768px) {
-  .camera {
+  .upload-photo-cluster {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
 
-    p {
+    .upload-photo-title {
       display: block;
     }
   }
