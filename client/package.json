@@ -23,7 +23,7 @@
     "eslint": "^9.12.0",
     "eslint-plugin-vue": "^9.30.0",
     "prettier": "^3.3.3",
-    "sass": "^1.80.3",
+    "sass": "^1.80.4",
     "sass-loader": "^16.0.2",
     "vite": "^5.4.10",
     "vite-plugin-vue-devtools": "^7.5.4"
