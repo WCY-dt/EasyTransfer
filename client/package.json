@@ -26,6 +26,6 @@
     "sass": "^1.80.3",
     "sass-loader": "^16.0.2",
     "vite": "^5.4.8",
-    "vite-plugin-vue-devtools": "^7.4.6"
+    "vite-plugin-vue-devtools": "^7.5.4"
   }
 }
