@@ -1,8 +1,8 @@
-# EasyTransfer
+# EasyTransfer - Share simply & stay anonymous
 
 [简体中文](README-ZH_cn.md) | English
 
-👉**EXPERIENCE NOW: [EasyTransfer](https://file.ch3nyang.top/)**
+**👉EXPERIENCE NOW: [EasyTransfer](https://file.ch3nyang.top/)**
 
 ![Sample](./sample.jpeg)
 

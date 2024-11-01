@@ -1,8 +1,8 @@
-# EasyTransfer
+# EasyTransfer - Share simply & stay anonymous
 
 [English](README.md) | 简体中文
 
-👉**立即体验：[EasyTransfer](https://file.ch3nyang.top/)**
+**👉立即体验：[EasyTransfer](https://file.ch3nyang.top/)**
 
 ![样例](./sample.jpeg)
 
