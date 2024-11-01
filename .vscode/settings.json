@@ -16,6 +16,7 @@
         "editor.insertSpaces": true,
         "editor.autoIndent": "advanced",
         "editor.detectIndentation": false,
+        "editor.defaultFormatter": "vscode.typescript-language-features",
     },
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
