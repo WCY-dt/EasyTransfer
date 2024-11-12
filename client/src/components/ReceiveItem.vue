@@ -120,6 +120,12 @@ function onTextClick() {
       border: none;
       border-radius: 0.25rem;
     }
+
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 0.25rem;
+    }
   }
 
   &.success {

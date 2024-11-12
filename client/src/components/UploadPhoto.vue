@@ -65,7 +65,7 @@ async function processAndSendPhoto() {
     })
     // console.log(file)
 
-    await sendStore.sendFiles([file], 'TRANSFER_TYPE_PHOTO', sendCore.value)
+    await sendStore.sendFiles([file], 'TRANSFER_TYPE_PHOTO')
   }, 'image/png')
 }
 
