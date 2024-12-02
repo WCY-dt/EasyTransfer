@@ -1,5 +1,7 @@
 # EasyTransfer - Share simply & stay anonymous
 
+![GitHub](https://img.shields.io/github/license/WCY-dt/EasyTransfer) ![GitHub package.json version](https://img.shields.io/github/package-json/v/WCY-dt/EasyTransfer?filename=client%2Fpackage.json)
+
 [简体中文](README-ZH_cn.md) | English
 
 **👉EXPERIENCE NOW: [EasyTransfer](https://file.ch3nyang.top/)**
