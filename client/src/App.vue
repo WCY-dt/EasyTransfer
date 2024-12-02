@@ -1,14 +1,14 @@
 <script setup>
-import Operation from '@/components/Operation.vue'
-import Send from '@/components/Send.vue'
-import Receive from '@/components/Receive.vue'
+import OperationCluster from '@/components/OperationCluster.vue'
+import SendCluster from '@/components/SendCluster.vue'
+import ReceiveCluster from '@/components/ReceiveCluster.vue'
 </script>
 
 <template>
   <div class="app-cluster">
-    <Operation />
-    <Send />
-    <Receive />
+    <OperationCluster />
+    <SendCluster />
+    <ReceiveCluster />
   </div>
 </template>
 

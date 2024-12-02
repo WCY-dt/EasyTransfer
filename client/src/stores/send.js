@@ -149,7 +149,7 @@ export const useSendStore = defineStore('send', () => {
     currentFileName.value = file.name
     currentFileSize.value = file.size
 
-    // console.log(`[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value}`)
+    console.log(`[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value}`)
 
     await addFileReader()
 
@@ -177,6 +177,10 @@ export const useSendStore = defineStore('send', () => {
           }
         }
 
+        fileReader.onerror = (error) => {
+          reject(error)
+        }
+
         fileReader.onload = fileReaderSendData
 
         const slice = file.slice(o, o + chunkSize)
@@ -197,7 +201,7 @@ export const useSendStore = defineStore('send', () => {
     })
 
     fileReader.addEventListener('abort', event => {
-      // console.log(`[INFO] File reading aborted: ${event}`)
+      console.log(`[INFO] File reading aborted: ${event}`)
     })
   }
 

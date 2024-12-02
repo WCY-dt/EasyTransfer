@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { useReceiveStore } from '@/stores/receive'

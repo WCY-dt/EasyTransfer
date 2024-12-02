@@ -155,9 +155,9 @@ export const useReceiveStore = defineStore('receive', () => {
       currentFileSize = fileSizeQueue.shift()
       currentReceivingFileNo++
 
-      // console.log(
-      //   `[INFO] ===Receiving file ${currentFileType} | ${currentFileName} | ${currentFileSize}===`,
-      // )
+      console.log(
+        `[INFO] ===Receiving file ${currentFileType} | ${currentFileName} | ${currentFileSize}===`,
+      )
     }
 
     // receive file

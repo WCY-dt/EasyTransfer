@@ -1,13 +1,9 @@
 <script setup>
-import { ref, watch, computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useConnectStore } from '@/stores/connect'
+import { ref, watch } from 'vue'
 import { useSendStore } from '@/stores/send'
 import SendItem from './SendItem.vue'
 
-const connectCore = useConnectStore()
 const sendStore = useSendStore()
-const { isConnectSuccess } = storeToRefs(connectCore)
 
 const reactiveUploadFileItems = ref([])
 
