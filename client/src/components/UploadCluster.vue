@@ -21,7 +21,7 @@ import UploadPhoto from './UploadPhoto.vue'
 
   width: 100%;
 
-  &>* {
+  & > * {
     width: 100%;
     padding: 0.5rem;
     border-width: 2px;
@@ -38,7 +38,7 @@ import UploadPhoto from './UploadPhoto.vue'
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
 
-    &>* {
+    & > * {
       width: 100%;
     }
   }

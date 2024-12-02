@@ -23,11 +23,29 @@ function onTextClick() {
 </script>
 
 <template>
-  <div id="text" class="upload-text-cluster" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }">
-    <textarea id="textInput" class="text-input" placeholder="Send a short message..." :disabled="!isConnectSuccess"
-      v-model="textInput" ref="textInput.value"></textarea>
-    <button id="sendButton" class="send-button" :disabled="!isConnectSuccess" @click="onTextClick">
-      <span class="mdi" :class="{ 'mdi-send': !textSent, 'mdi-check-bold': textSent }"></span>
+  <div
+    id="text"
+    class="upload-text-cluster"
+    :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
+  >
+    <textarea
+      id="textInput"
+      class="text-input"
+      placeholder="Send a short message..."
+      :disabled="!isConnectSuccess"
+      v-model="textInput"
+      ref="textInput.value"
+    ></textarea>
+    <button
+      id="sendButton"
+      class="send-button"
+      :disabled="!isConnectSuccess"
+      @click="onTextClick"
+    >
+      <span
+        class="mdi"
+        :class="{ 'mdi-send': !textSent, 'mdi-check-bold': textSent }"
+      ></span>
       <p v-if="!textSent" class="upload-text-title">Send Message</p>
       <p v-else class="upload-text-title">Succeed</p>
     </button>

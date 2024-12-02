@@ -68,8 +68,8 @@ export const useSendStore = defineStore('send', () => {
         break
       }
 
-      if (!pubKey.value.usages.includes("encrypt")) {
-        console.error("[ERR] Public key cannot be used for encryption.")
+      if (!pubKey.value.usages.includes('encrypt')) {
+        console.error('[ERR] Public key cannot be used for encryption.')
         break
       }
 
@@ -81,7 +81,7 @@ export const useSendStore = defineStore('send', () => {
             name: 'RSA-OAEP',
           },
           pubKey.value,
-          chunk
+          chunk,
         )
       } catch (error) {
         console.error(`[ERR] Error encrypting chunk: ${error}`)
@@ -133,13 +133,7 @@ export const useSendStore = defineStore('send', () => {
 
     // console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
 
-    addUploadFileItem(
-      'javascript:void(0)',
-      file.name,
-      file.size,
-      0,
-      type,
-    )
+    addUploadFileItem('javascript:void(0)', file.name, file.size, 0, type)
   }
 
   async function sendFileContent(file, type) {
@@ -149,35 +143,37 @@ export const useSendStore = defineStore('send', () => {
     currentFileName.value = file.name
     currentFileSize.value = file.size
 
-    console.log(`[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value}`)
+    console.log(
+      `[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value}`,
+    )
 
     await addFileReader()
 
-    const readAndSendSlice = (o) => {
+    const readAndSendSlice = o => {
       return new Promise((resolve, reject) => {
         if (o >= currentFileSize.value) {
           resolve()
           return
         }
 
-        const fileReaderSendData = async (e) => {
+        const fileReaderSendData = async e => {
           await sendData(e.target.result)
           offset.value = offset.value + e.target.result.byteLength
           if (offset.value < currentFileSize.value) {
             resolve(
               updateFileProgress(currentSendingFileNo, offset.value),
-              readAndSendSlice(offset.value)
+              readAndSendSlice(offset.value),
             )
           } else {
             resolve(
               updateFileProgress(currentSendingFileNo, currentFileSize.value),
               updateFileUrl(currentSendingFileNo, URL.createObjectURL(file)),
-              updateFileSuccess(currentSendingFileNo, true)
+              updateFileSuccess(currentSendingFileNo, true),
             )
           }
         }
 
-        fileReader.onerror = (error) => {
+        fileReader.onerror = error => {
           reject(error)
         }
 
@@ -252,7 +248,8 @@ export const useSendStore = defineStore('send', () => {
     updateFileSuccess(currentSendingFileNo, true)
   }
 
-  function checkSendTextAvailability(text) { // Check if the text.valuepty or the data channel is open
+  function checkSendTextAvailability(text) {
+    // Check if the text.valuepty or the data channel is open
     if (text === '') {
       console.error('[ERR] Text is empty')
       return false

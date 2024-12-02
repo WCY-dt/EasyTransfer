@@ -40,22 +40,46 @@ function onTextClick() {
 </script>
 
 <template>
-  <a v-if="
-    props.type === 'TRANSFER_TYPE_FILE' ||
-    props.type === 'TRANSFER_TYPE_PHOTO'
-  " ref="downloadLink" :href="props.url" class="download-item file" :download="props.name"
-    :class="{ success: props.success, loading: !props.success }">
-    <span v-if="props.type === 'TRANSFER_TYPE_FILE'" class="mdi mdi-file-document"></span>
-    <span v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'" class="mdi mdi-image"></span>
+  <a
+    v-if="
+      props.type === 'TRANSFER_TYPE_FILE' ||
+      props.type === 'TRANSFER_TYPE_PHOTO'
+    "
+    ref="downloadLink"
+    :href="props.url"
+    class="download-item file"
+    :download="props.name"
+    :class="{ success: props.success, loading: !props.success }"
+  >
+    <span
+      v-if="props.type === 'TRANSFER_TYPE_FILE'"
+      class="mdi mdi-file-document"
+    ></span>
+    <span
+      v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'"
+      class="mdi mdi-image"
+    ></span>
     <div class="download-item-detail">
       <p class="download-item-name">{{ props.name }}</p>
-      <progress class="download-item-progress" :value="props.progress" :max="props.size"></progress>
-      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" class="download-item-content" :src="props.url"
-        alt="Photo" />
+      <progress
+        class="download-item-progress"
+        :value="props.progress"
+        :max="props.size"
+      ></progress>
+      <img
+        v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success"
+        class="download-item-content"
+        :src="props.url"
+        alt="Photo"
+      />
     </div>
   </a>
-  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="download-item text"
-    :class="{ success: props.success, loading: !props.success }" @click="onTextClick">
+  <div
+    v-if="props.type === 'TRANSFER_TYPE_TEXT'"
+    class="download-item text"
+    :class="{ success: props.success, loading: !props.success }"
+    @click="onTextClick"
+  >
     <span class="mdi mdi-message-text"></span>
     <div class="download-item-detail">
       <p class="download-item-content">{{ props.name }}</p>

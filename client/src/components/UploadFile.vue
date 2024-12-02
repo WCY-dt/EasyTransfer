@@ -28,10 +28,24 @@ function onFileClick() {
 </script>
 
 <template>
-  <div id="dropzone" class="upload-file-cluster" @dragover.prevent @drop="onFileDrop" @click="onFileClick"
-    :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }">
-    <input type="file" id="fileInput" class="file-input" title="Choose a file to send" multiple @change="sendFiles"
-      ref="fileInput" :disabled="!isConnectSuccess" />
+  <div
+    id="dropzone"
+    class="upload-file-cluster"
+    @dragover.prevent
+    @drop="onFileDrop"
+    @click="onFileClick"
+    :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
+  >
+    <input
+      type="file"
+      id="fileInput"
+      class="file-input"
+      title="Choose a file to send"
+      multiple
+      @change="sendFiles"
+      ref="fileInput"
+      :disabled="!isConnectSuccess"
+    />
     <span class="mdi mdi-file-upload"></span>
     <p class="file-input-title">File</p>
   </div>

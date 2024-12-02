@@ -22,7 +22,7 @@ import ReceiveCluster from '@/components/ReceiveCluster.vue'
   width: min(96vw, 120rem);
   margin: 2rem 2vw;
 
-  &>* {
+  & > * {
     width: calc((min(96vw, 120rem) - 4rem) / 3);
   }
 }
@@ -32,7 +32,7 @@ import ReceiveCluster from '@/components/ReceiveCluster.vue'
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
 
-    &>* {
+    & > * {
       width: calc((min(96vw, 120rem) - 2rem) / 2);
     }
   }
@@ -45,7 +45,7 @@ import ReceiveCluster from '@/components/ReceiveCluster.vue'
 
     gap: 4rem;
 
-    &>* {
+    & > * {
       width: 96vw;
     }
   }

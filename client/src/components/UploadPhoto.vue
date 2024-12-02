@@ -84,15 +84,36 @@ async function onCameraSendClick() {
 
 <template>
   <div v-show="showCamera" id="cameradisplay" class="camera-display-cluster">
-    <button class="close-button mdi mdi-close" @click="onCameraCloseClick"></button>
-    <video v-show="showStream" class="stream-display" ref="stream" autoplay playsinline></video>
-    <button v-show="showStream" class="snapshot-button mdi mdi-camera" @click="onSnapshotClick"></button>
+    <button
+      class="close-button mdi mdi-close"
+      @click="onCameraCloseClick"
+    ></button>
+    <video
+      v-show="showStream"
+      class="stream-display"
+      ref="stream"
+      autoplay
+      playsinline
+    ></video>
+    <button
+      v-show="showStream"
+      class="snapshot-button mdi mdi-camera"
+      @click="onSnapshotClick"
+    ></button>
     <canvas v-show="!showStream" class="photo-display" ref="photo"></canvas>
-    <button v-show="!showStream" class="send-button mdi" @click="onCameraSendClick"
-      :class="{ 'mdi-send': !photoSent, 'mdi-check-bold': photoSent }"></button>
+    <button
+      v-show="!showStream"
+      class="send-button mdi"
+      @click="onCameraSendClick"
+      :class="{ 'mdi-send': !photoSent, 'mdi-check-bold': photoSent }"
+    ></button>
   </div>
-  <div id="camera" class="upload-photo-cluster" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
-    @click="onCameraClick">
+  <div
+    id="camera"
+    class="upload-photo-cluster"
+    :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
+    @click="onCameraClick"
+  >
     <span class="mdi mdi-camera"></span>
     <p class="upload-photo-title">Photo</p>
   </div>
