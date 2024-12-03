@@ -52,6 +52,9 @@ function onTextClick() {
       <progress class="download-item-progress" :value="props.progress" :max="props.size"></progress>
       <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" class="download-item-content" :src="props.url"
         alt="Photo" />
+      <div class="copy-cover blur">
+        <span class="mdi mdi-download"></span>
+      </div>
     </div>
   </a>
   <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="download-item text shadow"
@@ -87,6 +90,8 @@ function onTextClick() {
   .mdi {
     align-self: flex-start;
     font-size: 2.5rem;
+
+    transition: all 0.1s ease-in-out;
   }
 
   .download-item-detail {
@@ -131,17 +136,6 @@ function onTextClick() {
     background-color: var(--success-light-color);
     color: var(--success-color);
 
-    @media (hover: hover) {
-      &.file:hover {
-        background-color: var(--success-color);
-        color: var(--light-color);
-
-        .download-item-detail .download-item-progress::-webkit-progress-value {
-          background-color: var(--light-color);
-        }
-      }
-    }
-
     .download-item-detail {
       .download-item-progress {
         &::-webkit-progress-value {
@@ -149,46 +143,29 @@ function onTextClick() {
 
           transition: all 0.1s ease-in-out;
         }
+
+        &::-webkit-progress-bar {
+          background-color: transparent;
+
+          transition: all 0.1s ease-in-out;
+        }
       }
     }
 
-    &.text {
+    &.text,
+    &.file {
       position: relative;
-
-      .copy-cover {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-
-        opacity: 0;
-        display: grid;
-        place-content: center;
-
-        font-size: 1.5rem;
-
-        background-color: transparent;
-        color: var(--success-color);
-
-        transition: all 0.1s ease-in-out;
-
-        .mdi {
-          height: 100%;
-
-          &::before {
-            display: grid;
-            place-content: center;
-
-            height: 100%;
-          }
-        }
-      }
 
       @media (hover: hover) {
         &:hover {
-          .download-item-content {
-            opacity: 0.2;
+          color: var(--success-semi-light-color);
+
+          .download-item-detail {
+            .download-item-progress {
+              &::-webkit-progress-value {
+                background-color: var(--success-semi-light-color);
+              }
+            }
           }
 
           .copy-cover {
@@ -217,6 +194,36 @@ function onTextClick() {
           background-color: var(--light-color);
         }
       }
+    }
+  }
+}
+
+.copy-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  opacity: 0;
+  display: grid;
+  place-content: center;
+
+  font-size: 1.5rem;
+
+  background-color: transparent;
+  color: var(--success-color);
+
+  transition: all 0.1s ease-in-out;
+
+  .mdi {
+    height: 100%;
+
+    &::before {
+      display: grid;
+      place-content: center;
+
+      height: 100%;
     }
   }
 }
