@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { io } from 'socket.io-client'
 
 export const useConnectStore = defineStore('connect', () => {
-  const signalServerUrl = 'https://easy-transfer.glitch.me/'
+  const signalServerUrl = process.env.VITE_SIGNAL_SERVER_URL
   const peerConnectionConfiguration = {
     iceServers: [
       {
