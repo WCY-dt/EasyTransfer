@@ -37,6 +37,40 @@ function onTextClick() {
     copied.value = false
   }, 1000)
 }
+
+function isImageType() {
+  if (props.type === 'TRANSFER_TYPE_PHOTO') {
+    return true
+  }
+
+  const imageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.svg', '.ico']
+  return imageFormats.some(format => props.name.toLowerCase().endsWith(format))
+}
+
+function decideFileType() {
+  const fileTypeMap = {
+    "mdi-file-image": ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.svg', '.ico', '.tiff', '.tif', '.heic', '.raw'],
+    "mdi-file-word": ['.doc', '.docx', '.odt', '.rtf', '.txt', '.wps', '.wpd'],
+    "mdi-file-table": ['.xls', '.xlsx', '.ods', '.csv', '.tsv', '.xlsm', '.xlsb'],
+    "mdi-file-powerpoint": ['.ppt', '.pptx', '.odp', '.pps', '.ppsx', '.pot', '.potx'],
+    "mdi-file-music": ['.mp3', '.wav', '.flac', '.ogg', '.aac', '.wma', '.m4a', '.aiff', '.alac'],
+    "mdi-file-video": ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mpeg', '.mpg', '.m4v', '.3gp', '.3g2'],
+    "mdi-file-code": ['.html', '.css', '.js', '.ts', '.jsx', '.tsx', '.json', '.xml', '.yaml', '.yml', '.md', '.markdown', '.cpp', '.c', '.h', '.hpp', '.java', '.py', '.rb', '.php', '.sql', '.sh', '.bat', '.ps1', '.psm1', '.psd1', '.ps1xml', '.pssc', '.psc1', '.pssc', '.pl', '.perl', '.go', '.rs', '.swift', '.kt', '.kts', '.clj', '.cljs', '.scala', '.groovy', '.gradle', '.dockerfile', '.properties', '.ini', '.cfg', '.conf', '.toml', '.yaml', '.yml', '.json', '.xml', '.csv', '.tsv', '.log', '.r', '.sas', '.stata', '.do', '.m', '.mat', '.rmd', '.ipynb']
+  };
+
+  if (props.type === 'TRANSFER_TYPE_PHOTO') {
+    return "mdi-file-image";
+  }
+
+  const fileName = props.name.toLowerCase();
+  for (const [icon, formats] of Object.entries(fileTypeMap)) {
+    if (formats.some(format => fileName.endsWith(format))) {
+      return icon;
+    }
+  }
+
+  return "mdi-file-document";
+}
 </script>
 
 <template>
@@ -45,13 +79,11 @@ function onTextClick() {
     props.type === 'TRANSFER_TYPE_PHOTO'
   " ref="uploadLink" :href="props.url" class="upload-item file shadow" :download="props.name"
     :class="{ success: props.success, loading: !props.success }">
-    <span v-if="props.type === 'TRANSFER_TYPE_FILE'" class="mdi mdi-file-document"></span>
-    <span v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'" class="mdi mdi-image"></span>
+    <span class="mdi" :class="decideFileType()"></span>
     <div class="upload-item-detail">
       <p class="upload-item-name">{{ props.name }}</p>
       <progress class="upload-item-progress" :value="props.progress" :max="props.size"></progress>
-      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" class="upload-item-content" :src="props.url"
-        alt="Photo" />
+      <img v-if="isImageType() && props.success" class="upload-item-content" :src="props.url" alt="Photo" />
       <div class="copy-cover blur">
         <span class="mdi mdi-download"></span>
       </div>
@@ -129,6 +161,9 @@ function onTextClick() {
       width: 100%;
       height: auto;
       border-radius: var(--small-border-radius);
+      opacity: 1;
+
+      transition: all 0.1s ease-in-out;
     }
   }
 
@@ -140,12 +175,14 @@ function onTextClick() {
       .upload-item-progress {
         &::-webkit-progress-value {
           background-color: var(--success-color);
+          border-radius: 0.25rem;
 
           transition: all 0.1s ease-in-out;
         }
 
         &::-webkit-progress-bar {
           background-color: transparent;
+          border-radius: 0.25rem;
 
           transition: all 0.1s ease-in-out;
         }
@@ -165,6 +202,10 @@ function onTextClick() {
               &::-webkit-progress-value {
                 background-color: var(--success-semi-light-color);
               }
+            }
+
+            img {
+              opacity: 0.3;
             }
           }
 
@@ -186,12 +227,14 @@ function onTextClick() {
       .upload-item-progress {
         &::-webkit-progress-value {
           background-color: var(--primary-color);
+          border-radius: 0.25rem;
 
           transition: all 0.1s ease-in-out;
         }
 
         &::-webkit-progress-bar {
           background-color: var(--light-color);
+          border-radius: 0.25rem;
         }
       }
     }
