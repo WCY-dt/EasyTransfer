@@ -17,17 +17,15 @@ import UploadPhoto from './UploadPhoto.vue'
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto auto;
-  gap: 1rem;
+  gap: 0.5rem;
 
   width: 100%;
 
-  & > * {
+  &>* {
     width: 100%;
-    padding: 0.5rem;
-    border-width: 2px;
-    border-color: var(--primary-color);
-    border-radius: 0.25rem;
-    border-style: solid;
+
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
 
     transition: all 0.1s ease-in-out;
   }
@@ -38,7 +36,7 @@ import UploadPhoto from './UploadPhoto.vue'
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
 
-    & > * {
+    &>* {
       width: 100%;
     }
   }

@@ -16,18 +16,27 @@
 :root {
   --primary-color: #007bff;
   --primary-dark-color: #0056b3;
-  --primary-light-color: #e3f1ff;
+  --primary-light-color: #dcecfc;
+  --primary-extra-light-color: #f0f8ff;
   --secondary-color: #6c757d;
-  --secondary-light-color: #dfdfdf;
-  --secondary-extra-light-color: #eeeeee;
+  --secondary-light-color: #f0f0f0;
+  --secondary-extra-light-color: #0000000f;
   --success-color: #28a745;
   --success-dark-color: #218838;
   --success-light-color: #d4edda;
   --light-color: #f8f9fa;
+  --light-blur-color: #f8f9fa4f;
   --dark-color: #343a40;
 
   --normal-font-family: 'Open Sans', sans-serif;
   --code-font-family: 'Source Code Pro', monospace;
+
+  --border-radius: 0.5rem;
+  --small-border-radius: 0.25rem;
+
+  --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  --blur-effect: blur(2px);
 
   font-size: 16px;
 }
@@ -144,7 +153,7 @@ header .link-item {
   color: var(--light-color);
   background-color: var(--primary-dark-color);
 
-  border-radius: 0.5rem;
+  border-radius: var(--border-radius);
 
   text-decoration: none;
   line-height: 1rem;
@@ -192,7 +201,11 @@ body {
 
   font-family: var(--normal-font-family);
 
-  background-color: var(--light-color);
+  background-color: var(--primary-extra-light-color);
+  background-image:
+    linear-gradient(to right, var(--primary-light-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--primary-light-color) 1px, transparent 1px);
+  background-size: 20px 20px;
   color: var(--dark-color);
 }
 
@@ -238,4 +251,13 @@ footer p a {
 
     text-decoration: underline;
   }
+}
+
+.shadow {
+  box-shadow: var(--box-shadow);
+}
+
+.blur {
+  -webkit-backdrop-filter: var(--blur-effect);
+  backdrop-filter: var(--blur-effect);
 }

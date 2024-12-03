@@ -28,24 +28,10 @@ function onFileClick() {
 </script>
 
 <template>
-  <div
-    id="dropzone"
-    class="upload-file-cluster"
-    @dragover.prevent
-    @drop="onFileDrop"
-    @click="onFileClick"
-    :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
-  >
-    <input
-      type="file"
-      id="fileInput"
-      class="file-input"
-      title="Choose a file to send"
-      multiple
-      @change="sendFiles"
-      ref="fileInput"
-      :disabled="!isConnectSuccess"
-    />
+  <div id="dropzone" class="upload-file-cluster" @dragover.prevent @drop="onFileDrop" @click="onFileClick"
+    :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }">
+    <input type="file" id="fileInput" class="file-input" title="Choose a file to send" multiple @change="sendFiles"
+      ref="fileInput" :disabled="!isConnectSuccess" />
     <span class="mdi mdi-file-upload"></span>
     <p class="file-input-title">File</p>
   </div>
@@ -60,6 +46,12 @@ function onFileClick() {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+
+  padding: 0.5rem;
+  border-color: var(--primary-color);
+  border-width: 2px;
+  border-radius: var(--border-radius);
+  border-style: solid;
 
   background-color: var(--primary-color);
   color: var(--light-color);

@@ -32,22 +32,12 @@ watch(
       <span class="mdi mdi-download-network"></span>
       <p class="download-cluster-title-text">Download</p>
     </div>
-    <p
-      v-if="reactiveDownloadFileItems.length === 0"
-      class="noting-to-download-text"
-    >
+    <p v-if="reactiveDownloadFileItems.length === 0" class="noting-to-download-text">
       Nothing to download
     </p>
-    <ReceiveItem
-      v-for="(downloadFileItem, index) in reactiveDownloadFileItems"
-      :key="index"
-      :url="downloadFileItem.url"
-      :name="downloadFileItem.name"
-      :size="downloadFileItem.size"
-      :progress="downloadFileItem.progress"
-      :success="downloadFileItem.success"
-      :type="downloadFileItem.type"
-    />
+    <ReceiveItem v-for="(downloadFileItem, index) in reactiveDownloadFileItems" :key="index" :url="downloadFileItem.url"
+      :name="downloadFileItem.name" :size="downloadFileItem.size" :progress="downloadFileItem.progress"
+      :success="downloadFileItem.success" :type="downloadFileItem.type" />
   </div>
 </template>
 
@@ -59,14 +49,16 @@ watch(
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 
   height: 100%;
   padding: 1rem;
-  border-radius: 0.25rem;
+  border-radius: var(--border-radius);
   overflow-y: auto;
 
   background-color: var(--secondary-extra-light-color);
+  backdrop-filter: var(--blur-effect);
+  -webkit-backdrop-filter: var(--blur-effect);
 
   .download-cluster-title {
     display: flex;

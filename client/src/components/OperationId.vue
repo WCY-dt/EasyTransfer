@@ -62,33 +62,19 @@ onMounted(async () => {
 
 <template>
   <div class="id-cluster">
-    <div
-      class="clientId-cluster"
-      @click="copyId"
-      :class="clientId === 'LOADING' ? 'disabled' : 'ready'"
-    >
+    <div class="clientId-cluster" @click="copyId" :class="clientId === 'LOADING' ? 'disabled' : 'ready'">
       {{ clientId }}
-      <div class="cover">
+      <div class="cover blur">
         <span class="mdi mdi-check-bold" v-if="copied"></span>
         <span class="mdi mdi-content-copy" v-else></span>
       </div>
     </div>
-    <div class="targetId-cluster" :class="buttonStatus">
-      <span class="input-hint">Enter the peer's code</span>
-      <input
-        type="text"
-        id="targetIdInput"
-        class="targetId-input"
-        placeholder="code"
-        maxlength="4"
-        v-model="targetId"
-      />
-      <button
-        id="connectButton"
-        class="connect-button"
-        :disabled="!enableConnect || !registered"
-        @click="connectTarget"
-      >
+    <div class="targetId-cluster shadow" :class="buttonStatus">
+      <span class="input-hint shadow">Enter the peer's code</span>
+      <input type="text" id="targetIdInput" class="targetId-input blur" placeholder="code" maxlength="4"
+        v-model="targetId" />
+      <button id="connectButton" class="connect-button" :disabled="!enableConnect || !registered"
+        @click="connectTarget">
         <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
         <span v-else class="mdi mdi-connection"></span>
       </button>
@@ -173,8 +159,7 @@ onMounted(async () => {
 
     position: relative;
 
-    border: 2px solid;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius);
 
     transition: all 0.1s ease-in-out;
 
@@ -192,8 +177,7 @@ onMounted(async () => {
       text-align: center;
 
       padding: 0.2rem 0.5rem;
-      border: 2px solid var(--primary-color);
-      border-radius: 0.25rem;
+      border-radius: var(--border-radius);
       z-index: -1;
 
       transition: all 0.1s ease-in-out;
@@ -250,7 +234,7 @@ onMounted(async () => {
       width: 12rem;
       padding: 0.5rem;
       border: none;
-      border-radius: 0.25rem 0 0 0.25rem;
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
 
       font-family: var(--code-font-family);
       font-size: 4rem;
@@ -259,6 +243,7 @@ onMounted(async () => {
       text-transform: uppercase;
 
       color: var(--dark-color);
+      background-color: var(--light-blur-color);
 
       &::placeholder {
         color: var(--secondary-color);
@@ -272,7 +257,7 @@ onMounted(async () => {
     .connect-button {
       padding: 0.5rem 1rem;
       border: none;
-      border-radius: 0;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
 
       font-family: var(--normal-font-family);
       font-size: 1rem;

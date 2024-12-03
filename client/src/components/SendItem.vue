@@ -40,50 +40,26 @@ function onTextClick() {
 </script>
 
 <template>
-  <a
-    v-if="
-      props.type === 'TRANSFER_TYPE_FILE' ||
-      props.type === 'TRANSFER_TYPE_PHOTO'
-    "
-    ref="uploadLink"
-    :href="props.url"
-    class="upload-item file"
-    :download="props.name"
-    :class="{ success: props.success, loading: !props.success }"
-  >
-    <span
-      v-if="props.type === 'TRANSFER_TYPE_FILE'"
-      class="mdi mdi-file-document"
-    ></span>
-    <span
-      v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'"
-      class="mdi mdi-image"
-    ></span>
+  <a v-if="
+    props.type === 'TRANSFER_TYPE_FILE' ||
+    props.type === 'TRANSFER_TYPE_PHOTO'
+  " ref="uploadLink" :href="props.url" class="upload-item file shadow" :download="props.name"
+    :class="{ success: props.success, loading: !props.success }">
+    <span v-if="props.type === 'TRANSFER_TYPE_FILE'" class="mdi mdi-file-document"></span>
+    <span v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'" class="mdi mdi-image"></span>
     <div class="upload-item-detail">
       <p class="upload-item-name">{{ props.name }}</p>
-      <progress
-        class="upload-item-progress"
-        :value="props.progress"
-        :max="props.size"
-      ></progress>
-      <img
-        v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success"
-        class="upload-item-content"
-        :src="props.url"
-        alt="Photo"
-      />
+      <progress class="upload-item-progress" :value="props.progress" :max="props.size"></progress>
+      <img v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success" class="upload-item-content" :src="props.url"
+        alt="Photo" />
     </div>
   </a>
-  <div
-    v-if="props.type === 'TRANSFER_TYPE_TEXT'"
-    class="upload-item text"
-    :class="{ success: props.success, loading: !props.success }"
-    @click="onTextClick"
-  >
+  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="upload-item text shadow"
+    :class="{ success: props.success, loading: !props.success }" @click="onTextClick">
     <span class="mdi mdi-message-text"></span>
     <div class="upload-item-detail">
       <p class="upload-item-content">{{ props.name }}</p>
-      <div class="copy-cover">
+      <div class="copy-cover blur">
         <span class="mdi mdi-check-bold" v-if="copied"></span>
         <span class="mdi mdi-content-copy" v-else></span>
       </div>
@@ -100,8 +76,7 @@ function onTextClick() {
 
   width: 100%;
   padding: 0.5rem 1rem;
-  border: 2px solid;
-  border-radius: 0.25rem;
+  border-radius: var(--small-border-radius);
 
   text-decoration: none;
 
@@ -142,19 +117,17 @@ function onTextClick() {
       width: 100%;
       height: 0.5rem;
       border: none;
-      border-radius: 0.25rem;
+      border-radius: var(--small-border-radius);
     }
 
     img {
       width: 100%;
       height: auto;
-      border-radius: 0.25rem;
+      border-radius: var(--small-border-radius);
     }
   }
 
   &.success {
-    border-color: var(--success-color);
-
     background-color: var(--success-light-color);
     color: var(--success-color);
 
@@ -227,8 +200,6 @@ function onTextClick() {
   }
 
   &.loading {
-    border-color: var(--primary-color);
-
     background-color: var(--primary-light-color);
     color: var(--primary-color);
 

@@ -23,29 +23,11 @@ function onTextClick() {
 </script>
 
 <template>
-  <div
-    id="text"
-    class="upload-text-cluster"
-    :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
-  >
-    <textarea
-      id="textInput"
-      class="text-input"
-      placeholder="Send a short message..."
-      :disabled="!isConnectSuccess"
-      v-model="textInput"
-      ref="textInput.value"
-    ></textarea>
-    <button
-      id="sendButton"
-      class="send-button"
-      :disabled="!isConnectSuccess"
-      @click="onTextClick"
-    >
-      <span
-        class="mdi"
-        :class="{ 'mdi-send': !textSent, 'mdi-check-bold': textSent }"
-      ></span>
+  <div id="text" class="upload-text-cluster" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }">
+    <textarea id="textInput" class="text-input blur" placeholder="Send a short message..." :disabled="!isConnectSuccess"
+      v-model="textInput" ref="textInput.value"></textarea>
+    <button id="sendButton" class="send-button" :disabled="!isConnectSuccess" @click="onTextClick">
+      <span class="mdi" :class="{ 'mdi-send': !textSent, 'mdi-check-bold': textSent }"></span>
       <p v-if="!textSent" class="upload-text-title">Send Message</p>
       <p v-else class="upload-text-title">Succeed</p>
     </button>
@@ -61,15 +43,10 @@ function onTextClick() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
 
-  background-color: var(--primary-light-color);
   color: var(--primary-color);
 
   &.disabled {
-    border-color: var(--secondary-color);
-
-    background-color: var(--secondary-light-color);
     color: var(--secondary-color);
 
     cursor: not-allowed;
@@ -79,7 +56,7 @@ function onTextClick() {
     }
 
     .send-button {
-      border-color: var(--secondary-color);
+      border-color: var(--secondary-light-color);
 
       background-color: var(--secondary-light-color);
       color: var(--secondary-color);
@@ -92,10 +69,12 @@ function onTextClick() {
     width: 100%;
     height: 12rem;
     padding: 0.5rem;
+    border-width: 2px 2px 0 2px;
+    border-style: solid;
     border: none;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 
-    background-color: var(--light-color);
+    background-color: var(--light-blur-color);
 
     font-family: inherit;
     font-size: 1.5rem;
@@ -116,8 +95,8 @@ function onTextClick() {
     width: 100%;
     padding: 0.5rem;
     border: 2px solid;
-    border-color: var(--primary-color);
-    border-radius: 0.25rem;
+    border-color: var(--primary-light-color);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
     outline: none;
 
     font-weight: 700;
@@ -130,7 +109,7 @@ function onTextClick() {
     transition: all 0.1s ease-in-out;
 
     &:has(.mdi-check-bold) {
-      border-color: var(--success-color);
+      border-color: var(--success-light-color);
 
       background-color: var(--success-light-color);
       color: var(--success-color);
@@ -152,11 +131,15 @@ function onTextClick() {
   @media (hover: hover) {
     &:not(.disabled) .send-button {
       &:hover {
+        border-color: var(--primary-color);
+
         background-color: var(--primary-color);
         color: var(--light-color);
       }
 
       &:has(.mdi-check-bold):hover {
+        border-color: var(--success-color);
+
         background-color: var(--success-color);
         color: var(--light-color);
       }
