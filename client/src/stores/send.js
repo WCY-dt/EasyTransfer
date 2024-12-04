@@ -4,7 +4,7 @@ import { useConnectStore } from './connect.js'
 
 export const useSendStore = defineStore('send', () => {
   const connectStore = useConnectStore()
-  const { pubKey, sendChannel } = storeToRefs(connectStore)
+  const { sendChannel } = storeToRefs(connectStore)
 
   const uploadFileItems = ref([])
 
@@ -63,39 +63,14 @@ export const useSendStore = defineStore('send', () => {
         chunk = new TextEncoder().encode(chunk)
       }
 
-      if (!(pubKey.value instanceof CryptoKey)) {
-        console.error('[ERR] Invalid public key')
-        break
-      }
-
-      if (!pubKey.value.usages.includes('encrypt')) {
-        console.error('[ERR] Public key cannot be used for encryption.')
-        break
-      }
-
-      let encryptedChunk = null
-
-      try {
-        encryptedChunk = await window.crypto.subtle.encrypt(
-          {
-            name: 'RSA-OAEP',
-          },
-          pubKey.value,
-          chunk,
-        )
-      } catch (error) {
-        console.error(`[ERR] Error encrypting chunk: ${error}`)
-        break
-      }
-
-      sendChannel.value.send(encryptedChunk)
+      sendChannel.value.send(chunk)
     }
   }
 
   let currentFileType = ''
   const currentFileName = ref('Drop file here or click to upload')
   const currentFileSize = ref(0)
-  const chunkSize = 446 // 4096-bit RSA key with SHA-256
+  const chunkSize = 16384
   let fileReader = null
   const offset = ref(0)
 

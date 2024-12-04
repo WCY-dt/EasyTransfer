@@ -5,7 +5,7 @@ import { useConnectStore } from './connect.js'
 export const useReceiveStore = defineStore('receive', () => {
   const connectStore = useConnectStore()
 
-  const { peerConnection, privKey } = storeToRefs(connectStore)
+  const { peerConnection } = storeToRefs(connectStore)
 
   const downloadFileItems = ref([])
 
@@ -82,24 +82,16 @@ export const useReceiveStore = defineStore('receive', () => {
   }
 
   async function handleReceiveChannelMsg(event) {
-    const decryptedDataArray = await window.crypto.subtle.decrypt(
-      {
-        name: 'RSA-OAEP',
-      },
-      privKey.value,
-      event.data,
-    )
-
-    const decryptedData = new TextDecoder().decode(decryptedDataArray)
+    const decodedData = new TextDecoder().decode(event.data)
 
     if (
-      typeof decryptedData === 'string' &&
-      decryptedData.startsWith('CONTENT_META')
+      typeof decodedData === 'string' &&
+      decodedData.startsWith('CONTENT_META')
     ) {
-      const data = decryptedData.slice(12)
+      const data = decodedData.slice(12)
       await handleFileMeta(data)
     } else {
-      await handleFileContent(decryptedDataArray)
+      await handleFileContent(event.data)
     }
   }
 

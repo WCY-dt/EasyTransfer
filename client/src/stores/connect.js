@@ -36,8 +36,6 @@ export const useConnectStore = defineStore('connect', () => {
   const registered = ref(false)
   const clientId = ref('LOADING')
   const targetId = ref('')
-  const pubKey = ref('')
-  const privKey = ref('')
   let candidateQueue = []
   const isConnectSuccess = ref(false)
   const sendChannel = ref(null)
@@ -53,37 +51,9 @@ export const useConnectStore = defineStore('connect', () => {
   }
 
   async function registerClient() {
-    // Generate public-private key pair
-    const keyPair = await window.crypto.subtle.generateKey(
-      {
-        name: 'RSA-OAEP',
-        modulusLength: 4096,
-        publicExponent: new Uint8Array([1, 0, 1]),
-        hash: 'SHA-256',
-      },
-      true,
-      ['encrypt', 'decrypt'],
-    )
-
-    const tmpPubKey = keyPair.publicKey
-    privKey.value = keyPair.privateKey
-
-    // Export the public key to send to the server
-    const exportedPubKey = await window.crypto.subtle.exportKey(
-      'spki',
-      tmpPubKey,
-    )
-
-    // Convert the exported key to a base64 string
-    const pubKeyBase64 = btoa(
-      String.fromCharCode(...new Uint8Array(exportedPubKey)),
-    )
-
-    // Emit the public key to the signal server
-    socket.emit('register', pubKeyBase64)
+    socket.emit('register')
 
     // console.log(`[INFO] ===Registering client===`)
-    // console.log(`[INFO] Public key: ${pubKeyBase64}`)
   }
 
   function connectTarget() {
@@ -133,74 +103,46 @@ export const useConnectStore = defineStore('connect', () => {
       window.location.reload()
     })
 
-    socket.on('offer', (sdp, id, keyBase64) => {
+    socket.on('offer', (sdp, id) => {
       // console.log(`[INFO] ===Connecting to ${id}===`)
-      // console.log(`[INFO] Peer public key: ${keyBase64}`)
 
-      const keyArray = new Uint8Array(
-        atob(keyBase64)
-          .split('')
-          .map(c => c.charCodeAt(0)),
-      )
-      convertToCryptoKey(keyArray)
-        .then(key => {
-          targetId.value = id
-          pubKey.value = key
+      targetId.value = id
 
-          peerConnection.value
-            .setRemoteDescription(new RTCSessionDescription(sdp))
-            .then(() => {
-              return peerConnection.value.createAnswer()
-            })
-            .then(answer => {
-              return peerConnection.value.setLocalDescription(answer)
-            })
-            .then(() => {
-              socket.emit(
-                'answer',
-                peerConnection.value.localDescription,
-                clientId.value,
-                targetId.value,
-              )
-
-              // console.log(`[INFO] Sending answer to ${targetId.value}`)
-            })
-            .then(() => {
-              addIceCandidate()
-            })
-
-          sendIceCandidate()
-
-          // console.log(`[INFO] Received offer from ${targetId.value}`)
+      peerConnection.value
+        .setRemoteDescription(new RTCSessionDescription(sdp))
+        .then(() => {
+          return peerConnection.value.createAnswer()
         })
-        .catch(error => {
-          console.error(`[ERR] Error converting key: ${error}`)
+        .then(answer => {
+          return peerConnection.value.setLocalDescription(answer)
         })
+        .then(() => {
+          socket.emit(
+            'answer',
+            peerConnection.value.localDescription,
+            clientId.value,
+            targetId.value,
+          )
+
+          // console.log(`[INFO] Sending answer to ${targetId.value}`)
+        })
+        .then(() => {
+          addIceCandidate()
+        })
+
+      sendIceCandidate()
+
+      // console.log(`[INFO] Received offer from ${targetId.value}`)
     })
 
-    socket.on('answer', (sdp, id, keyBase64) => {
-      // console.log(`[INFO] Peer public key: ${keyBase64}`)
-
-      const keyArray = new Uint8Array(
-        atob(keyBase64)
-          .split('')
-          .map(c => c.charCodeAt(0)),
-      )
-      convertToCryptoKey(keyArray)
-        .then(key => {
-          pubKey.value = key
-
-          peerConnection.value
-            .setRemoteDescription(new RTCSessionDescription(sdp))
-            .then(() => {
-              addIceCandidate()
-            })
-
-          // console.log(`[INFO] Received answer from ${targetId.value}`)
+    socket.on('answer', (sdp, id) => {
+      peerConnection.value
+        .setRemoteDescription(new RTCSessionDescription(sdp))
+        .then(() => {
+          addIceCandidate()
         })
-        .catch(error => {
-          console.error(`[ERR] Error converting key: ${error}`)
-        })
+
+      // console.log(`[INFO] Received answer from ${targetId.value}`)
     })
 
     socket.on('candidate', candidate => {
@@ -225,19 +167,6 @@ export const useConnectStore = defineStore('connect', () => {
     }
 
     // console.log(`[INFO] Added ${targetId.value} to ICE candidate`)
-  }
-
-  async function convertToCryptoKey(keyArray) {
-    return window.crypto.subtle.importKey(
-      'spki',
-      keyArray,
-      {
-        name: 'RSA-OAEP',
-        hash: 'SHA-256',
-      },
-      true,
-      ['encrypt'],
-    )
   }
 
   function establishDataChannel() {
@@ -274,8 +203,6 @@ export const useConnectStore = defineStore('connect', () => {
     registered,
     clientId,
     targetId,
-    pubKey,
-    privKey,
     sendChannel,
     maxBufferedAmount,
     initializeConnection,
