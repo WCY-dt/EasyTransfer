@@ -20,19 +20,19 @@ export const useSendStore = defineStore('send', () => {
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  function updateFileProgress(index, progress) {
+  async function updateFileProgress(index, progress) {
     uploadFileItems.value[index].progress = progress
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  function updateFileUrl(index, url) {
+  async function updateFileUrl(index, url) {
     uploadFileItems.value[index].url = url
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  function updateFileSuccess(index, success) {
+  async function updateFileSuccess(index, success) {
     uploadFileItems.value[index].success = success
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
@@ -101,10 +101,10 @@ export const useSendStore = defineStore('send', () => {
 
     for (let i = 0; i < fileNum; i++) {
       await sendFileMeta(files[i], type)
-      currentSendingFileNo++
+    }
+
+    for (let i = 0; i < fileNum; i++) {
       await sendFileContent(files[i], type)
-      // TODO: Why this works? Why? Why? Why?
-      await new Promise(resolve => setTimeout(resolve, 1000))
     }
   }
 
@@ -123,6 +123,8 @@ export const useSendStore = defineStore('send', () => {
   }
 
   async function sendFileContent(file, type) {
+    currentSendingFileNo++
+
     if (!checkSendFileAvailability(file.size)) return
 
     currentFileType = type
@@ -137,7 +139,7 @@ export const useSendStore = defineStore('send', () => {
 
     let currentChunkIdx = 0
 
-    const readAndSendSlice = o => {
+    const readAndSendSlice = async (o) => {
       return new Promise((resolve, reject) => {
         if (o >= currentFileSize.value) {
           resolve()
@@ -160,16 +162,14 @@ export const useSendStore = defineStore('send', () => {
           await sendData(dataArray)
           offset.value = offset.value + e.target.result.byteLength
           if (offset.value < currentFileSize.value) {
-            resolve(
-              updateFileProgress(currentSendingFileNo, offset.value),
-              readAndSendSlice(offset.value),
-            )
+            await updateFileProgress(currentSendingFileNo, offset.value)
+            await readAndSendSlice(offset.value)
+            resolve()
           } else {
-            resolve(
-              updateFileProgress(currentSendingFileNo, currentFileSize.value),
-              updateFileUrl(currentSendingFileNo, URL.createObjectURL(file)),
-              updateFileSuccess(currentSendingFileNo, true),
-            )
+            await updateFileProgress(currentSendingFileNo, currentFileSize.value)
+            await updateFileUrl(currentSendingFileNo, URL.createObjectURL(file))
+            await updateFileSuccess(currentSendingFileNo, true)
+            resolve()
           }
         }
 
