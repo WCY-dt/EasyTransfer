@@ -102,18 +102,21 @@ export const useSendStore = defineStore('send', () => {
     }
 
     for (let i = 0; i < fileNum; i++) {
-      await sendFileMeta(files[i], type)
+      if (checkSendFileAvailability(files[i].size)) {
+        await sendFileMeta(files[i], type)
+      }
     }
 
     for (let i = 0; i < fileNum; i++) {
-      await sendFileContent(files[i], type)
+      if (checkSendFileAvailability(files[i].size)) {
+        await sendFileContent(files[i], type)
+      }
     }
   }
 
   async function sendFileMeta(file, type) {
     // Send the type, name, and size of the file
     // console.log(`file: ${file}`)
-    if (!checkSendFileAvailability(file.size)) return
 
     await sendData('CONTENT_META' + type, true)
     await sendData('CONTENT_META' + file.name, true)
@@ -126,8 +129,6 @@ export const useSendStore = defineStore('send', () => {
 
   async function sendFileContent(file, type) {
     currentSendingFileNo++
-
-    if (!checkSendFileAvailability(file.size)) return
 
     currentFileType = type
     currentFileName.value = file.name
