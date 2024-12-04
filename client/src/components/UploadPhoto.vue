@@ -84,36 +84,15 @@ async function onCameraSendClick() {
 
 <template>
   <div v-show="showCamera" id="cameradisplay" class="camera-display-cluster">
-    <button
-      class="close-button mdi mdi-close"
-      @click="onCameraCloseClick"
-    ></button>
-    <video
-      v-show="showStream"
-      class="stream-display"
-      ref="stream"
-      autoplay
-      playsinline
-    ></video>
-    <button
-      v-show="showStream"
-      class="snapshot-button mdi mdi-camera"
-      @click="onSnapshotClick"
-    ></button>
+    <button class="close-button mdi mdi-close" @click="onCameraCloseClick"></button>
+    <video v-show="showStream" class="stream-display" ref="stream" autoplay playsinline></video>
+    <button v-show="showStream" class="snapshot-button mdi mdi-camera" @click="onSnapshotClick"></button>
     <canvas v-show="!showStream" class="photo-display" ref="photo"></canvas>
-    <button
-      v-show="!showStream"
-      class="send-button mdi"
-      @click="onCameraSendClick"
-      :class="{ 'mdi-send': !photoSent, 'mdi-check-bold': photoSent }"
-    ></button>
+    <button v-show="!showStream" class="send-button mdi" @click="onCameraSendClick"
+      :class="{ 'mdi-send': !photoSent, 'mdi-check-bold': photoSent }"></button>
   </div>
-  <div
-    id="camera"
-    class="upload-photo-cluster"
-    :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
-    @click="onCameraClick"
-  >
+  <div id="camera" class="upload-photo-cluster" :class="{ disabled: !isConnectSuccess, active: isConnectSuccess }"
+    @click="onCameraClick">
     <span class="mdi mdi-camera"></span>
     <p class="upload-photo-title">Photo</p>
   </div>
@@ -189,7 +168,6 @@ async function onCameraSendClick() {
   align-items: center;
   justify-content: center;
 
-  padding: 1rem;
   width: auto;
   border-radius: var(--border-radius);
 
@@ -197,6 +175,8 @@ async function onCameraSendClick() {
   box-shadow:
     0 0 1rem rgba(0, 0, 0, 0.3),
     0 0 0.5rem rgba(0, 0, 0, 0.5);
+
+  z-index: 500;
 
   button {
     position: absolute;
@@ -218,6 +198,8 @@ async function onCameraSendClick() {
     background-color: transparent;
     color: var(--prime-color);
 
+    z-index: 504;
+
     @media (hover: hover) {
       &:hover {
         color: var(--primary-dark-color);
@@ -230,7 +212,9 @@ async function onCameraSendClick() {
     height: auto;
     max-width: 94vw;
     max-height: 94vh;
-    border-radius: var(--small-border-radius);
+    border-radius: var(--border-radius);
+
+    z-index: 502;
   }
 
   .snapshot-button {
@@ -249,6 +233,8 @@ async function onCameraSendClick() {
     background-color: var(--primary-color);
     color: var(--light-color);
 
+    z-index: 504;
+
     @media (hover: hover) {
       &:hover {
         background-color: var(--primary-dark-color);
@@ -262,6 +248,8 @@ async function onCameraSendClick() {
     max-width: 94vw;
     max-height: 94vh;
     border-radius: var(--border-radius);
+
+    z-index: 506;
   }
 
   .send-button {
@@ -277,6 +265,8 @@ async function onCameraSendClick() {
 
     background-color: var(--primary-color);
     color: var(--light-color);
+
+    z-index: 508;
 
     &.mdi-check-bold {
       background-color: var(--success-color);

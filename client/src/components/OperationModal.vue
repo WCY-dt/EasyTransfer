@@ -19,6 +19,8 @@ import UploadModal from './UploadModal.vue'
   flex-direction: column;
   align-items: center;
   gap: 6rem;
+
+  z-index: 300;
 }
 
 @media (max-width: 1440px) {
