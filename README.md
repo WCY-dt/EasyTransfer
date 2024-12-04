@@ -6,7 +6,7 @@
 
 **👉EXPERIENCE NOW: [EasyTransfer](https://file.ch3nyang.top/)**
 
-![Sample](./sample.jpeg)
+![Sample](./example.png)
 
 EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer tool. You only need to visit a simple web page to connect to **any device** in **any network** using a device code.
 

@@ -6,7 +6,7 @@
 
 **👉立即体验：[EasyTransfer](https://file.ch3nyang.top/)**
 
-![样例](./sample.jpeg)
+![样例](./example.png)
 
 EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传输工具。您只需访问一个简单的网页，即可使用设备代码连接到**任何网络**中的**任何设备**。
 
