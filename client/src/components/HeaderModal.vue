@@ -13,8 +13,7 @@
         </div>
       </div>
       <div class="link-cluster">
-        <a href="https://ch3nyang.top" class="link-item shadow"><span class="mdi mdi-face-agent"></span><span
-            class="text">Support</span></a>
+        <a class="link-item shadow"><span class="mdi mdi-cog"></span><span class="text">Settings</span></a>
         <a href="https://github.com/WCY-dt/EasyTransfer" class="link-item shadow"><span
             class="mdi mdi-github"></span><span class="text">GitHub</span></a>
       </div>
@@ -124,6 +123,8 @@ header {
 
     text-decoration: none;
     line-height: 1rem;
+
+    cursor: pointer;
 
     transition: all 0.1s ease-in-out;
 

@@ -1,21 +1,21 @@
 <script setup>
-import HeaderCluster from './components/HeaderCluster.vue';
-import OperationCluster from '@/components/OperationCluster.vue'
-import SendCluster from '@/components/SendCluster.vue'
-import ReceiveCluster from '@/components/ReceiveCluster.vue'
-import FooterCluster from './components/FooterCluster.vue';
+import HeaderModal from './components/HeaderModal.vue';
+import OperationModal from '@/components/OperationModal.vue'
+import SendModal from '@/components/SendModal.vue'
+import ReceiveModal from '@/components/ReceiveModal.vue'
+import FooterModal from './components/FooterModal.vue';
 </script>
 
 <template>
-  <HeaderCluster />
+  <HeaderModal />
   <div id="app-content">
     <div class="app-cluster">
-      <OperationCluster />
-      <SendCluster />
-      <ReceiveCluster />
+      <OperationModal />
+      <SendModal />
+      <ReceiveModal />
     </div>
   </div>
-  <FooterCluster />
+  <FooterModal />
 </template>
 
 <style scoped lang="scss">

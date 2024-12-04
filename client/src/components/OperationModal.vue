@@ -1,12 +1,12 @@
 <script setup>
 import OperationId from './OperationId.vue'
-import UploadCluster from './UploadCluster.vue'
+import UploadModal from './UploadModal.vue'
 </script>
 
 <template>
   <div class="operation-cluster">
     <OperationId />
-    <UploadCluster />
+    <UploadModal />
   </div>
 </template>
 
