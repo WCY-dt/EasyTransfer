@@ -4,32 +4,41 @@ import { io } from 'socket.io-client'
 
 export const useConnectStore = defineStore('connect', () => {
   const signalServerUrl = process.env.VITE_SIGNAL_SERVER_URL
-  const peerConnectionConfiguration = {
-    iceServers: [
-      {
-        urls: 'stun:stun.relay.metered.ca:80',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:80',
-        username: 'cf841207b56ebddc17948dde',
-        credential: '0dGvvEm7eq2UaqlW',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:80?transport=tcp',
-        username: 'cf841207b56ebddc17948dde',
-        credential: '0dGvvEm7eq2UaqlW',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:443',
-        username: 'cf841207b56ebddc17948dde',
-        credential: '0dGvvEm7eq2UaqlW',
-      },
-      {
-        urls: 'turns:global.relay.metered.ca:443?transport=tcp',
-        username: 'cf841207b56ebddc17948dde',
-        credential: '0dGvvEm7eq2UaqlW',
-      },
-    ],
+  let iceServers = [
+    {
+      urls: 'stun:stun.relay.metered.ca:80',
+    },
+    {
+      urls: 'turn:global.relay.metered.ca:80',
+      username: 'cf841207b56ebddc17948dde',
+      credential: '0dGvvEm7eq2UaqlW',
+    },
+    {
+      urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+      username: 'cf841207b56ebddc17948dde',
+      credential: '0dGvvEm7eq2UaqlW',
+    },
+    {
+      urls: 'turn:global.relay.metered.ca:443',
+      username: 'cf841207b56ebddc17948dde',
+      credential: '0dGvvEm7eq2UaqlW',
+    },
+    {
+      urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+      username: 'cf841207b56ebddc17948dde',
+      credential: '0dGvvEm7eq2UaqlW',
+    },
+  ]
+  let maxConnectionNumber = 5
+  if (localStorage.getItem('iceServers')) {
+    iceServers = JSON.parse(localStorage.getItem('iceServers'))
+  }
+  if (localStorage.getItem('maxConnectionNumber')) {
+    maxConnectionNumber = JSON.parse(localStorage.getItem('maxConnectionNumber'))
+  }
+
+  let peerConnectionConfiguration = {
+    iceServers: iceServers,
   }
   let socket = null
   const peerConnection = ref(null)
@@ -48,6 +57,30 @@ export const useConnectStore = defineStore('connect', () => {
     handleServerMsg()
     establishDataChannel()
     // console.log('[INFO] ===Connection core initialized===')
+  }
+
+  function getIceServers() {
+    return iceServers
+  }
+
+  function setIceServers(servers) {
+    localStorage.setItem('iceServers', JSON.stringify(servers))
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 500);
+  }
+
+  function getMaxConnectionNumber() {
+    return maxConnectionNumber
+  }
+
+  function setMaxConnectionNumber(number) {
+    localStorage.setItem('maxConnectionNumber', JSON.stringify(number))
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 500);
   }
 
   async function registerClient() {
@@ -200,6 +233,10 @@ export const useConnectStore = defineStore('connect', () => {
   return {
     peerConnection,
     isConnectSuccess,
+    getIceServers,
+    setIceServers,
+    getMaxConnectionNumber,
+    setMaxConnectionNumber,
     registered,
     clientId,
     targetId,

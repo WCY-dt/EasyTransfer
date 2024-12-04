@@ -26,6 +26,8 @@ import FooterModal from './components/FooterModal.vue';
 
   width: 100%;
   min-height: 40vh;
+
+  z-index: 0;
 }
 
 .app-cluster {
