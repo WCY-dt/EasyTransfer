@@ -7,6 +7,7 @@ const io = require('socket.io')(port, {
 });
 
 const clients = {}; // Store client IDs and their corresponding sockets
+const maxConnectionNumbers = {}; // Store client IDs and their corresponding max connection numbers
 
 const generateId = () => { // Generate a random 4 character string
   let id;
@@ -29,16 +30,17 @@ const generateId = () => { // Generate a random 4 character string
 io.on('connection', socket => {
   console.log('[client connected] ', socket.id);
 
-  socket.on('register', () => {
+  socket.on('register', (maxConnectionNumber) => {
     const clientId = generateId();
-    console.log('[register] ', clientId);
+    console.log('[register] ', clientId, ' with max connection number ', maxConnectionNumber);
+    maxConnectionNumbers[clientId] = maxConnectionNumber;
     clients[clientId] = socket;
     clients[clientId].emit('success', clientId);
   });
 
   socket.on('offer', (sdp, srcId, targetId) => {
     console.log('[offer] ', srcId, ' --> ', targetId);
-    clients[targetId].emit('offer', sdp, srcId);
+    clients[targetId].emit('offer', sdp, srcId, maxConnectionNumbers[srcId]);
   });
 
   socket.on('answer', (sdp, srcId, targetId) => {

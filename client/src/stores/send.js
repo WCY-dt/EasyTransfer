@@ -4,7 +4,8 @@ import { useConnectStore } from './connect.js'
 
 export const useSendStore = defineStore('send', () => {
   const connectStore = useConnectStore()
-  const { sendChannel } = storeToRefs(connectStore)
+  const { sendChannels } = storeToRefs(connectStore)
+  const sendChannel = ref(sendChannels.value[0])
 
   const uploadFileItems = ref([])
 

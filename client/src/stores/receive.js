@@ -39,7 +39,9 @@ export const useReceiveStore = defineStore('receive', () => {
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
-  let receiveChannel = null
+  let maxConnectionNumber = 5
+
+  let receiveChannels = []
 
   let receivedDataArray = []
   let receivedData = []
@@ -57,28 +59,35 @@ export const useReceiveStore = defineStore('receive', () => {
 
   function receiveFiles() {
     peerConnection.value.ondatachannel = event => {
+      maxConnectionNumber = connectStore.getMaxConnectionNumber()
       initReceiveBuffer()
 
-      receiveChannel = event.channel
-      establishReceiveChannel()
+      receiveChannels.push(event.channel)
+
+      if (receiveChannels.length === maxConnectionNumber) {
+        establishReceiveChannel()
+      }
     }
   }
 
   function establishReceiveChannel() {
-    receiveChannel.onopen = () => {
-      // console.log(`[INFO] Receive channel opened`)
-    }
+    for (let i = 0; i < maxConnectionNumber; i++) {
 
-    receiveChannel.onerror = error => {
-      console.error(`[ERR] Receive channel error: ${error}`)
-    }
+      receiveChannels[i].onopen = () => {
+        // console.log(`[INFO] Receive channel opened`)
+      }
 
-    receiveChannel.onclose = () => {
-      // console.log(`[INFO] Receive channel closed`)
-    }
+      receiveChannels[i].onerror = error => {
+        console.error(`[ERR] Receive channel error: ${error}`)
+      }
 
-    receiveChannel.onmessage = async event => {
-      await handleReceiveChannelMsg(event)
+      receiveChannels[i].onclose = () => {
+        // console.log(`[INFO] Receive channel closed`)
+      }
+
+      receiveChannels[i].onmessage = async event => {
+        await handleReceiveChannelMsg(event)
+      }
     }
   }
 

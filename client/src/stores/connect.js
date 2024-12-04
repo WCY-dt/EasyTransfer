@@ -47,7 +47,7 @@ export const useConnectStore = defineStore('connect', () => {
   const targetId = ref('')
   let candidateQueue = []
   const isConnectSuccess = ref(false)
-  const sendChannel = ref(null)
+  const sendChannels = ref([])
   const maxBufferedAmount = 1024 * 16
   const maxRetransmits = 2
 
@@ -84,7 +84,7 @@ export const useConnectStore = defineStore('connect', () => {
   }
 
   async function registerClient() {
-    socket.emit('register')
+    socket.emit('register', maxConnectionNumber)
 
     // console.log(`[INFO] ===Registering client===`)
   }
@@ -136,10 +136,13 @@ export const useConnectStore = defineStore('connect', () => {
       window.location.reload()
     })
 
-    socket.on('offer', (sdp, id) => {
+    socket.on('offer', (sdp, id, number) => {
       // console.log(`[INFO] ===Connecting to ${id}===`)
 
       targetId.value = id
+
+      localStorage.setItem('maxConnectionNumber', JSON.stringify(number))
+      maxConnectionNumber = number
 
       peerConnection.value
         .setRemoteDescription(new RTCSessionDescription(sdp))
@@ -203,31 +206,47 @@ export const useConnectStore = defineStore('connect', () => {
   }
 
   function establishDataChannel() {
-    sendChannel.value = peerConnection.value.createDataChannel('fileTransfer', {
-      ordered: true,
-      maxRetransmits: maxRetransmits,
+    for (let i = 0; i < maxConnectionNumber; i++) {
+      sendChannels.value.push(ref(null))
+    }
+
+    sendChannels.value.forEach((channel, index) => {
+      channel.value = peerConnection.value.createDataChannel(`fileTransfer${index}`, {
+        ordered: true,
+        maxRetransmits: maxRetransmits,
+      })
+
+      channel.value.bufferedAmountLowThreshold = maxBufferedAmount
+
+      channel.value.onopen = () => {
+        // console.log(`[INFO] Data channel opened`)
+        isConnectSuccess.value = true
+      }
+
+      channel.value.onerror = error => {
+        console.error(`[ERR] Data channel error: ${error}`)
+        isConnectSuccess.value = false
+      }
+
+      channel.value.onclose = () => {
+        // console.log(`[INFO] Data channel closed`)
+        isConnectSuccess.value = false
+      }
     })
-
-    sendChannel.value.bufferedAmountLowThreshold = maxBufferedAmount
-
-    sendChannel.value.onopen = () => {
-      // console.log(`[INFO] Data channel opened`)
-      isConnectSuccess.value = true
-    }
-
-    sendChannel.value.onerror = error => {
-      console.error(`[ERR] Data channel error: ${error}`)
-      isConnectSuccess.value = false
-    }
-
-    sendChannel.value.onclose = () => {
-      // console.log(`[INFO] Data channel closed`)
-      isConnectSuccess.value = false
-    }
   }
 
   function getSendChannelState() {
-    return sendChannel.value.readyState
+    const sendChannelState = sendChannels.value.map(channel => {
+      return channel.value.readyState
+    })
+
+    // console.log(`[INFO] Send channel state: ${sendChannelState}`)
+
+    if (sendChannelState.every(state => state === 'open')) {
+      return 'open'
+    } else {
+      return 'pending'
+    }
   }
 
   return {
@@ -240,7 +259,7 @@ export const useConnectStore = defineStore('connect', () => {
     registered,
     clientId,
     targetId,
-    sendChannel,
+    sendChannels,
     maxBufferedAmount,
     initializeConnection,
     registerClient,
