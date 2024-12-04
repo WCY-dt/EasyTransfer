@@ -137,56 +137,61 @@ export const useSendStore = defineStore('send', () => {
 
     await addFileReader()
 
+    const slices = sliceFile(file)
+    await sendSlices(slices, file)
+  }
+
+  function sliceFile(file) {
+    const slices = []
+    let offset = 0
+
+    while (offset < file.size) {
+      const slice = file.slice(offset, offset + chunkSize - 2)
+      slices.push(slice)
+      offset += chunkSize - 2
+    }
+
+    return slices
+  }
+
+  async function sendSlices(slices, file) {
     let currentChunkIdx = 0
-
-    const readAndSendSlice = async (o) => {
+    const promises = slices.map((slice, idx) => {
       return new Promise((resolve, reject) => {
-        if (o >= currentFileSize.value) {
-          resolve()
-          return
-        }
+        const fileReader = new FileReader()
 
-        const fileReaderSendData = async e => {
+        fileReader.onload = async (e) => {
           const currentChunkIdxArray = new Uint8Array(2)
-          currentChunkIdxArray[0] = (currentChunkIdx & 0xff00) >> 8
-          currentChunkIdxArray[1] = currentChunkIdx & 0xff
+          currentChunkIdxArray[0] = (idx & 0xff00) >> 8
+          currentChunkIdxArray[1] = idx & 0xff
 
           const dataArray = new Uint8Array(e.target.result.byteLength + 2)
           dataArray.set(currentChunkIdxArray, 0)
           dataArray.set(new Uint8Array(e.target.result), 2)
 
-          // console.log(`[INFO] Sending chunk ${currentChunkIdx}`)
-
-          currentChunkIdx++
-
           await sendData(dataArray)
           offset.value = offset.value + e.target.result.byteLength
+
           if (offset.value < currentFileSize.value) {
             await updateFileProgress(currentSendingFileNo, offset.value)
-            await readAndSendSlice(offset.value)
-            resolve()
           } else {
             await updateFileProgress(currentSendingFileNo, currentFileSize.value)
             await updateFileUrl(currentSendingFileNo, URL.createObjectURL(file))
             await updateFileSuccess(currentSendingFileNo, true)
-            resolve()
           }
+
+          resolve()
         }
 
         fileReader.onerror = error => {
           reject(error)
         }
 
-        fileReader.onload = fileReaderSendData
-
-        const slice = file.slice(o, o + chunkSize - 2)
         fileReader.readAsArrayBuffer(slice)
       })
-    }
+    })
 
-    offset.value = 0
-
-    await readAndSendSlice(0)
+    await Promise.all(promises)
   }
 
   async function addFileReader() {

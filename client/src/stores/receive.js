@@ -59,67 +59,83 @@ export const useReceiveStore = defineStore('receive', () => {
 
   function receiveFiles() {
     peerConnection.value.ondatachannel = event => {
-      maxConnectionNumber = connectStore.getMaxConnectionNumber()
-      initReceiveBuffer()
+      maxConnectionNumber = connectStore.getMaxConnectionNumber();
+      initReceiveBuffer();
 
-      receiveChannels.push(event.channel)
+      receiveChannels.push(event.channel);
 
       if (receiveChannels.length === maxConnectionNumber) {
-        establishReceiveChannel()
+        establishReceiveChannel();
       }
-    }
+    };
   }
 
   function establishReceiveChannel() {
+    const handleOpen = () => {
+      // console.log(`[INFO] Receive channel opened`);
+    };
+
+    const handleError = error => {
+      console.error(`[ERR] Receive channel error: ${error}`);
+    };
+
+    const handleClose = () => {
+      // console.log(`[INFO] Receive channel closed`);
+    };
+
+    const handleMessage = event => {
+      // console.log(`[INFO] Channel received message`);
+      handleReceiveChannelMsg(event);
+    };
+
     for (let i = 0; i < maxConnectionNumber; i++) {
-      receiveChannels[i].onopen = () => {
-        // console.log(`[INFO] Receive channel opened`)
-      }
-
-      receiveChannels[i].onerror = error => {
-        console.error(`[ERR] Receive channel error: ${error}`)
-      }
-
-      receiveChannels[i].onclose = () => {
-        // console.log(`[INFO] Receive channel closed`)
-      }
-
-      receiveChannels[i].onmessage = async event => {
-        // console.log(`[INFO] Channel ${i} received message`)
-        await handleReceiveChannelMsg(event)
-      }
+      receiveChannels[i].onopen = handleOpen;
+      receiveChannels[i].onerror = handleError;
+      receiveChannels[i].onclose = handleClose;
+      receiveChannels[i].onmessage = handleMessage;
     }
   }
 
-  async function handleReceiveChannelMsg(event) {
-    const decodedData = new TextDecoder().decode(event.data)
+  const metaPrefix = 'CONTENT_META';
+  const metaPrefixBytes = new TextEncoder().encode(metaPrefix);
 
-    if (
-      typeof decodedData === 'string' &&
-      decodedData.startsWith('CONTENT_META')
-    ) {
-      const data = decodedData.slice(12)
-      await handleFileMeta(data)
+  async function handleReceiveChannelMsg(event) {
+    const dataView = new DataView(event.data);
+
+    let isMeta = true;
+
+    // 检查前缀字节是否匹配
+    for (let i = 0; i < metaPrefixBytes.length; i++) {
+      if (dataView.getUint8(i) !== metaPrefixBytes[i]) {
+        isMeta = false;
+        break;
+      }
+    }
+
+    if (isMeta) {
+      const decodedData = new TextDecoder().decode(event.data);
+      const data = decodedData.slice(metaPrefix.length);
+      await handleFileMeta(data);
     } else {
-      await handleFileContent(event.data)
+      handleFileContent(event.data);
     }
   }
 
   async function handleFileMeta(data) {
     if (parseInt(data)) {
-      // console.log(`[INFO] Received size: ${data}`)
-      fileSizeQueue.push(parseInt(data))
+      // console.log(`[INFO] Received size: ${data}`);
+      fileSizeQueue.push(parseInt(data));
     } else {
       if (
         data === 'TRANSFER_TYPE_FILE' ||
         data === 'TRANSFER_TYPE_TEXT' ||
         data === 'TRANSFER_TYPE_PHOTO'
       ) {
-        // console.log(`[INFO] Received type: ${data}`)
-        fileTypeQueue.push(data)
+        // console.log(`[INFO] Received type: ${data}`);
+        fileTypeQueue.push(data);
       } else {
-        // console.log(`[INFO] Received name: ${data}`)
-        fileNameQueue.push(data)
+        // console.log(`[INFO] Received name: ${data}`);
+        fileNameQueue.push(data);
       }
     }
 
@@ -129,7 +145,7 @@ export const useReceiveStore = defineStore('receive', () => {
     ) {
       // console.log(
       //   `[INFO] ===New to receive ${fileTypeQueue[fileTypeQueue.length - 1]} | ${fileNameQueue[fileNameQueue.length - 1]} | ${fileSizeQueue[fileSizeQueue.length - 1]}===`,
-      // )
+      // );
 
       addDownloadFileItem(
         'javascript:void(0)',
@@ -137,61 +153,61 @@ export const useReceiveStore = defineStore('receive', () => {
         fileSizeQueue[fileSizeQueue.length - 1],
         0,
         fileTypeQueue[fileTypeQueue.length - 1],
-      )
+      );
 
       if (fileTypeQueue[fileTypeQueue.length - 1] === 'TRANSFER_TYPE_TEXT') {
-        fileTypeQueue.shift()
-        fileNameQueue.shift()
-        fileSizeQueue.shift()
-        currentReceivingFileNo++
+        fileTypeQueue.shift();
+        fileNameQueue.shift();
+        fileSizeQueue.shift();
+        currentReceivingFileNo++;
 
-        updateFileSuccess(currentReceivingFileNo, true)
+        updateFileSuccess(currentReceivingFileNo, true);
       }
     }
   }
 
-  async function handleFileContent(data) {
+  function handleFileContent(data) {
     if (!currentFileName && fileNameQueue.length > 0) {
-      currentFileType = fileTypeQueue.shift()
-      currentFileName = fileNameQueue.shift()
-      currentFileSize = fileSizeQueue.shift()
-      currentReceivingFileNo++
+      currentFileType = fileTypeQueue.shift();
+      currentFileName = fileNameQueue.shift();
+      currentFileSize = fileSizeQueue.shift();
+      currentReceivingFileNo++;
 
       console.log(
         `[INFO] ===Receiving file ${currentFileType} | ${currentFileName} | ${currentFileSize}===`,
-      )
+      );
     }
 
     // receive file
-    // console.log(`[INFO] data: ${data}`)
-    const dataView = new DataView(data)
-    const currentChunkIdx = dataView.getUint16(0, false)
-    const currentChunkData = data.slice(2)
+    // console.log(`[INFO] data: ${data}`);
+    const dataView = new DataView(data);
+    const currentChunkIdx = dataView.getUint16(0, false);
+    const currentChunkData = data.slice(2);
 
     if (!receivedDataArray[currentChunkIdx]) {
-      currentFileProgress += currentChunkData.byteLength
+      currentFileProgress += currentChunkData.byteLength;
     }
 
-    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`)
+    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`);
 
-    receivedDataArray[currentChunkIdx] = currentChunkData
+    receivedDataArray[currentChunkIdx] = currentChunkData;
 
-    updateFileProgress(currentReceivingFileNo, currentFileProgress)
+    updateFileProgress(currentReceivingFileNo, currentFileProgress);
 
-    // console.log(receivedDataArray.map((item, index) => item ? index : null).filter(item => item !== null))
+    // console.log(receivedDataArray.map((item, index) => item ? index : null).filter(item => item !== null));
 
-    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`)
+    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`);
 
     // check if file is fully received
     if (currentFileProgress === currentFileSize) {
-      receivedData = receivedDataArray
-      currentFileUrl = URL.createObjectURL(new Blob(receivedData))
-      updateFileUrl(currentReceivingFileNo, currentFileUrl)
-      updateFileSuccess(currentReceivingFileNo, true)
+      receivedData = receivedDataArray;
+      currentFileUrl = URL.createObjectURL(new Blob(receivedData));
+      updateFileUrl(currentReceivingFileNo, currentFileUrl);
+      updateFileSuccess(currentReceivingFileNo, true);
 
-      // console.log(`[INFO] File ${currentFileName} received successfully`)
+      // console.log(`[INFO] File ${currentFileName} received successfully`);
 
-      initReceiveBuffer()
+      initReceiveBuffer();
     }
   }
 
