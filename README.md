@@ -24,6 +24,7 @@ It is built using webRTC and Vue.js, and there is
 1. Visit [EasyTransfer](https://file.ch3nyang.top/) on the two devices where you need to transfer files.
 2. Enter the four-digit device code of any device into the device code input box of the other device and click the connect button.
 3. After waiting for the connection to succeed, you can drag and drop the file to the file area on the web page, or click the file area to select the file. Supports sending multiple files at once.
+4. In the settings, you can customize the STUN server and TURN server, or specify the maximum number of connections.
 
 ## Notes
 
@@ -32,8 +33,12 @@ It is built using webRTC and Vue.js, and there is
 ## Self-deployment
 
 1. [Fork](https://github.com/WCY-dt/EasyTransfer/fork) this project.
+
 2. Import the entire project into [glitch](https://glitch.com/) or your own server.
+    [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/WCY-dt/EasyTransfer)
+
 3. Modify `signalServerUrl` and `iceServers` in [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) to your own addresses.
+
 4. Open GitHub Pages and select the `gh-pages` branch as the source.
 
 ## TODO
@@ -42,10 +47,7 @@ It is built using webRTC and Vue.js, and there is
 - [x] Optimize transmission speed
 - [x] Support photo transmission
 - [x] Support plain text transmission
-- [ ] Support breakpoint resume
-- [x] Support Encrypted transmission
-- [ ] Support multiple devices
-- [ ] Use AES instead of RSA encryption to improve transmission speed
+- [x] Support breakpoint resume
 
 ## Acknowledgements
 
