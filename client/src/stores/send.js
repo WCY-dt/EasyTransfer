@@ -124,6 +124,8 @@ export const useSendStore = defineStore('send', () => {
 
     await addFileReader()
 
+    let currentChunkIdx = 0
+
     const readAndSendSlice = o => {
       return new Promise((resolve, reject) => {
         if (o >= currentFileSize.value) {
@@ -132,7 +134,17 @@ export const useSendStore = defineStore('send', () => {
         }
 
         const fileReaderSendData = async e => {
-          await sendData(e.target.result)
+          const currentChunkIdxArray = new Uint8Array(2)
+          currentChunkIdxArray[0] = (currentChunkIdx & 0xff00) >> 8
+          currentChunkIdxArray[1] = currentChunkIdx & 0xff
+
+          const dataArray = new Uint8Array(e.target.result.byteLength + 2)
+          dataArray.set(currentChunkIdxArray, 0)
+          dataArray.set(new Uint8Array(e.target.result), 2)
+
+          currentChunkIdx++
+
+          await sendData(dataArray)
           offset.value = offset.value + e.target.result.byteLength
           if (offset.value < currentFileSize.value) {
             resolve(
@@ -154,7 +166,7 @@ export const useSendStore = defineStore('send', () => {
 
         fileReader.onload = fileReaderSendData
 
-        const slice = file.slice(o, o + chunkSize)
+        const slice = file.slice(o, o + chunkSize - 2)
         fileReader.readAsArrayBuffer(slice)
       })
     }

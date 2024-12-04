@@ -41,6 +41,7 @@ export const useReceiveStore = defineStore('receive', () => {
 
   let receiveChannel = null
 
+  let receivedDataArray = []
   let receivedData = []
   let currentFileType = ''
   let currentFileName = ''
@@ -154,14 +155,23 @@ export const useReceiveStore = defineStore('receive', () => {
 
     // receive file
     // console.log(`[INFO] data: ${data}`)
-    receivedData.push(data)
-    currentFileProgress += data.byteLength
+    const dataView = new DataView(data)
+    const currentChunkIdx = dataView.getUint16(0, false)
+    const currentChunkData = data.slice(2)
+
+    if (!receivedDataArray[currentChunkIdx]) {
+      currentFileProgress += currentChunkData.byteLength
+    }
+
+    receivedDataArray[currentChunkIdx] = currentChunkData
+
     updateFileProgress(currentReceivingFileNo, currentFileProgress)
 
-    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize}`)
+    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`)
 
     // check if file is fully received
     if (currentFileProgress === currentFileSize) {
+      receivedData = receivedDataArray
       currentFileUrl = URL.createObjectURL(new Blob(receivedData))
       updateFileUrl(currentReceivingFileNo, currentFileUrl)
       updateFileSuccess(currentReceivingFileNo, true)
@@ -173,6 +183,7 @@ export const useReceiveStore = defineStore('receive', () => {
   }
 
   function initReceiveBuffer() {
+    receivedDataArray = []
     receivedData = []
 
     currentFileType = ''
