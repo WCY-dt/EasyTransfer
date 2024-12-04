@@ -11,14 +11,14 @@ const sendStore = useSendStore()
 const fileInput = ref(null)
 
 async function sendFiles() {
-  sendStore.sendFiles(fileInput.value.files, 'TRANSFER_TYPE_FILE')
+  await sendStore.sendFiles(fileInput.value.files, 'TRANSFER_TYPE_FILE')
 }
 
-function onFileDrop(event) {
+async function onFileDrop(event) {
   if (!isConnectSuccess.value) return
   event.preventDefault()
   fileInput.value.files = event.dataTransfer.files
-  sendFiles()
+  await sendFiles()
 }
 
 function onFileClick() {

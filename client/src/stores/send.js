@@ -5,7 +5,6 @@ import { useConnectStore } from './connect.js'
 export const useSendStore = defineStore('send', () => {
   const connectStore = useConnectStore()
   const { sendChannels } = storeToRefs(connectStore)
-  const sendChannel = ref(sendChannels.value[0])
 
   const uploadFileItems = ref([])
 
@@ -43,17 +42,29 @@ export const useSendStore = defineStore('send', () => {
 
   let chunkQueue = []
 
-  sendChannel.value.onbufferedamountlow = async () => {
-    await processQueue()
+  for (let i = 0; i < sendChannels.value.length; i++) {
+    sendChannels.value[i].value.onbufferedamountlow = async () => {
+      // console.log(`[INFO] Channel ${i} buffered amount low`)
+      await processQueue()
+    }
   }
 
-  async function sendData(data) {
+  async function sendData(data, meta = false) {
     chunkQueue.push(data)
 
-    await processQueue()
+    await processQueue(meta)
   }
 
-  async function processQueue() {
+  async function processQueue(meta) {
+    let sendChannel = null
+    if (meta) {
+      sendChannel = sendChannels.value[0]
+    } else {
+      const sendChannelIdx = Math.floor(Math.random() * sendChannels.value.length)
+      sendChannel = sendChannels.value[sendChannelIdx]
+      // console.log(`[INFO] Sending data to channel ${sendChannelIdx}`)
+    }
+
     while (
       chunkQueue.length > 0 &&
       sendChannel.value.bufferedAmount <= connectStore.maxBufferedAmount
@@ -90,11 +101,10 @@ export const useSendStore = defineStore('send', () => {
 
     for (let i = 0; i < fileNum; i++) {
       await sendFileMeta(files[i], type)
-    }
-
-    for (let i = 0; i < fileNum; i++) {
       currentSendingFileNo++
       await sendFileContent(files[i], type)
+      // TODO: Why this works? Why? Why? Why?
+      await new Promise(resolve => setTimeout(resolve, 1000))
     }
   }
 
@@ -103,9 +113,9 @@ export const useSendStore = defineStore('send', () => {
     // console.log(`file: ${file}`)
     if (!checkSendFileAvailability(file.size)) return
 
-    await sendData('CONTENT_META' + type)
-    await sendData('CONTENT_META' + file.name)
-    await sendData('CONTENT_META' + file.size)
+    await sendData('CONTENT_META' + type, true)
+    await sendData('CONTENT_META' + file.name, true)
+    await sendData('CONTENT_META' + file.size, true)
 
     // console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
 
@@ -142,6 +152,8 @@ export const useSendStore = defineStore('send', () => {
           const dataArray = new Uint8Array(e.target.result.byteLength + 2)
           dataArray.set(currentChunkIdxArray, 0)
           dataArray.set(new Uint8Array(e.target.result), 2)
+
+          // console.log(`[INFO] Sending chunk ${currentChunkIdx}`)
 
           currentChunkIdx++
 
@@ -215,9 +227,9 @@ export const useSendStore = defineStore('send', () => {
     // Send the type, name, and size of the file
     if (!checkSendTextAvailability(text)) return
 
-    await sendData('CONTENT_META' + 'TRANSFER_TYPE_TEXT')
-    await sendData('CONTENT_META' + text)
-    await sendData('CONTENT_META' + text.length)
+    await sendData('CONTENT_META' + 'TRANSFER_TYPE_TEXT', true)
+    await sendData('CONTENT_META' + text, true)
+    await sendData('CONTENT_META' + text.length, true)
 
     // console.log(
     //   `[INFO] Sent content: ${'TRANSFER_TYPE_TEXT'} | ${text} | ${text.length}`,

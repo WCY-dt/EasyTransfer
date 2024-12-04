@@ -72,7 +72,6 @@ export const useReceiveStore = defineStore('receive', () => {
 
   function establishReceiveChannel() {
     for (let i = 0; i < maxConnectionNumber; i++) {
-
       receiveChannels[i].onopen = () => {
         // console.log(`[INFO] Receive channel opened`)
       }
@@ -86,6 +85,7 @@ export const useReceiveStore = defineStore('receive', () => {
       }
 
       receiveChannels[i].onmessage = async event => {
+        // console.log(`[INFO] Channel ${i} received message`)
         await handleReceiveChannelMsg(event)
       }
     }
@@ -172,9 +172,13 @@ export const useReceiveStore = defineStore('receive', () => {
       currentFileProgress += currentChunkData.byteLength
     }
 
+    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`)
+
     receivedDataArray[currentChunkIdx] = currentChunkData
 
     updateFileProgress(currentReceivingFileNo, currentFileProgress)
+
+    // console.log(receivedDataArray.map((item, index) => item ? index : null).filter(item => item !== null))
 
     // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`)
 
