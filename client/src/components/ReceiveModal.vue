@@ -32,12 +32,22 @@ watch(
       <span class="mdi mdi-download-network"></span>
       <p class="download-cluster-title-text">Download</p>
     </div>
-    <p v-if="reactiveDownloadFileItems.length === 0" class="noting-to-download-text">
+    <p
+      v-if="reactiveDownloadFileItems.length === 0"
+      class="noting-to-download-text"
+    >
       Nothing to download
     </p>
-    <ReceiveItem v-for="(downloadFileItem, index) in reactiveDownloadFileItems" :key="index" :url="downloadFileItem.url"
-      :name="downloadFileItem.name" :size="downloadFileItem.size" :progress="downloadFileItem.progress"
-      :success="downloadFileItem.success" :type="downloadFileItem.type" />
+    <ReceiveItem
+      v-for="(downloadFileItem, index) in reactiveDownloadFileItems"
+      :key="index"
+      :url="downloadFileItem.url"
+      :name="downloadFileItem.name"
+      :size="downloadFileItem.size"
+      :progress="downloadFileItem.progress"
+      :success="downloadFileItem.success"
+      :type="downloadFileItem.type"
+    />
   </div>
 </template>
 

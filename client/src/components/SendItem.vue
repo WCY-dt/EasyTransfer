@@ -43,54 +43,198 @@ function isImageType() {
     return true
   }
 
-  const imageFormats = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.svg', '.ico']
+  const imageFormats = [
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.gif',
+    '.bmp',
+    '.webp',
+    '.svg',
+    '.ico',
+  ]
   return imageFormats.some(format => props.name.toLowerCase().endsWith(format))
 }
 
 function decideFileType() {
   const fileTypeMap = {
-    "mdi-file-image": ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp', '.svg', '.ico', '.tiff', '.tif', '.heic', '.raw'],
-    "mdi-file-word": ['.doc', '.docx', '.odt', '.rtf', '.txt', '.wps', '.wpd'],
-    "mdi-file-table": ['.xls', '.xlsx', '.ods', '.csv', '.tsv', '.xlsm', '.xlsb'],
-    "mdi-file-powerpoint": ['.ppt', '.pptx', '.odp', '.pps', '.ppsx', '.pot', '.potx'],
-    "mdi-file-music": ['.mp3', '.wav', '.flac', '.ogg', '.aac', '.wma', '.m4a', '.aiff', '.alac'],
-    "mdi-file-video": ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mpeg', '.mpg', '.m4v', '.3gp', '.3g2'],
-    "mdi-file-code": ['.html', '.css', '.js', '.ts', '.jsx', '.tsx', '.json', '.xml', '.yaml', '.yml', '.md', '.markdown', '.cpp', '.c', '.h', '.hpp', '.java', '.py', '.rb', '.php', '.sql', '.sh', '.bat', '.ps1', '.psm1', '.psd1', '.ps1xml', '.pssc', '.psc1', '.pssc', '.pl', '.perl', '.go', '.rs', '.swift', '.kt', '.kts', '.clj', '.cljs', '.scala', '.groovy', '.gradle', '.dockerfile', '.properties', '.ini', '.cfg', '.conf', '.toml', '.yaml', '.yml', '.json', '.xml', '.csv', '.tsv', '.log', '.r', '.sas', '.stata', '.do', '.m', '.mat', '.rmd', '.ipynb']
-  };
-
-  if (props.type === 'TRANSFER_TYPE_PHOTO') {
-    return "mdi-file-image";
+    'mdi-file-image': [
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.gif',
+      '.bmp',
+      '.webp',
+      '.svg',
+      '.ico',
+      '.tiff',
+      '.tif',
+      '.heic',
+      '.raw',
+    ],
+    'mdi-file-word': ['.doc', '.docx', '.odt', '.rtf', '.txt', '.wps', '.wpd'],
+    'mdi-file-table': [
+      '.xls',
+      '.xlsx',
+      '.ods',
+      '.csv',
+      '.tsv',
+      '.xlsm',
+      '.xlsb',
+    ],
+    'mdi-file-powerpoint': [
+      '.ppt',
+      '.pptx',
+      '.odp',
+      '.pps',
+      '.ppsx',
+      '.pot',
+      '.potx',
+    ],
+    'mdi-file-music': [
+      '.mp3',
+      '.wav',
+      '.flac',
+      '.ogg',
+      '.aac',
+      '.wma',
+      '.m4a',
+      '.aiff',
+      '.alac',
+    ],
+    'mdi-file-video': [
+      '.mp4',
+      '.mkv',
+      '.avi',
+      '.mov',
+      '.wmv',
+      '.flv',
+      '.webm',
+      '.mpeg',
+      '.mpg',
+      '.m4v',
+      '.3gp',
+      '.3g2',
+    ],
+    'mdi-file-code': [
+      '.html',
+      '.css',
+      '.js',
+      '.ts',
+      '.jsx',
+      '.tsx',
+      '.json',
+      '.xml',
+      '.yaml',
+      '.yml',
+      '.md',
+      '.markdown',
+      '.cpp',
+      '.c',
+      '.h',
+      '.hpp',
+      '.java',
+      '.py',
+      '.rb',
+      '.php',
+      '.sql',
+      '.sh',
+      '.bat',
+      '.ps1',
+      '.psm1',
+      '.psd1',
+      '.ps1xml',
+      '.pssc',
+      '.psc1',
+      '.pssc',
+      '.pl',
+      '.perl',
+      '.go',
+      '.rs',
+      '.swift',
+      '.kt',
+      '.kts',
+      '.clj',
+      '.cljs',
+      '.scala',
+      '.groovy',
+      '.gradle',
+      '.dockerfile',
+      '.properties',
+      '.ini',
+      '.cfg',
+      '.conf',
+      '.toml',
+      '.yaml',
+      '.yml',
+      '.json',
+      '.xml',
+      '.csv',
+      '.tsv',
+      '.log',
+      '.r',
+      '.sas',
+      '.stata',
+      '.do',
+      '.m',
+      '.mat',
+      '.rmd',
+      '.ipynb',
+    ],
   }
 
-  const fileName = props.name.toLowerCase();
+  if (props.type === 'TRANSFER_TYPE_PHOTO') {
+    return 'mdi-file-image'
+  }
+
+  const fileName = props.name.toLowerCase()
   for (const [icon, formats] of Object.entries(fileTypeMap)) {
     if (formats.some(format => fileName.endsWith(format))) {
-      return icon;
+      return icon
     }
   }
 
-  return "mdi-file-document";
+  return 'mdi-file-document'
 }
 </script>
 
 <template>
-  <a v-if="
-    props.type === 'TRANSFER_TYPE_FILE' ||
-    props.type === 'TRANSFER_TYPE_PHOTO'
-  " ref="uploadLink" :href="props.url" class="upload-item file shadow" :download="props.name"
-    :class="{ success: props.success, loading: !props.success }">
+  <a
+    v-if="
+      props.type === 'TRANSFER_TYPE_FILE' ||
+      props.type === 'TRANSFER_TYPE_PHOTO'
+    "
+    ref="uploadLink"
+    :href="props.url"
+    class="upload-item file shadow"
+    :download="props.name"
+    :class="{ success: props.success, loading: !props.success }"
+  >
     <span class="mdi" :class="decideFileType()"></span>
     <div class="upload-item-detail">
       <p class="upload-item-name">{{ props.name }}</p>
-      <progress class="upload-item-progress" :value="props.progress" :max="props.size"></progress>
-      <img v-if="isImageType() && props.success" class="upload-item-content" :src="props.url" alt="Photo" />
+      <progress
+        class="upload-item-progress"
+        :value="props.progress"
+        :max="props.size"
+      ></progress>
+      <img
+        v-if="isImageType() && props.success"
+        class="upload-item-content"
+        :src="props.url"
+        alt="Photo"
+      />
       <div class="copy-cover blur">
         <span class="mdi mdi-download"></span>
       </div>
     </div>
   </a>
-  <div v-if="props.type === 'TRANSFER_TYPE_TEXT'" class="upload-item text shadow"
-    :class="{ success: props.success, loading: !props.success }" @click="onTextClick">
+  <div
+    v-if="props.type === 'TRANSFER_TYPE_TEXT'"
+    class="upload-item text shadow"
+    :class="{ success: props.success, loading: !props.success }"
+    @click="onTextClick"
+  >
     <span class="mdi mdi-message-text"></span>
     <div class="upload-item-detail">
       <p class="upload-item-content">{{ props.name }}</p>

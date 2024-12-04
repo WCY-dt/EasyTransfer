@@ -1,12 +1,13 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
   <footer>
     <p>© 2024 EasyTransfer. All rights reserved.</p>
     <p>
       View on
-      <a href="https://github.com/WCY-dt/EasyTransfer"><span class="mdi mdi-github"></span>GitHub</a>
+      <a href="https://github.com/WCY-dt/EasyTransfer"
+        ><span class="mdi mdi-github"></span>GitHub</a
+      >
     </p>
   </footer>
 </template>

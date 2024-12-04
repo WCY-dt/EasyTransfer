@@ -59,72 +59,72 @@ export const useReceiveStore = defineStore('receive', () => {
 
   function receiveFiles() {
     peerConnection.value.ondatachannel = event => {
-      maxConnectionNumber = connectStore.getMaxConnectionNumber();
-      initReceiveBuffer();
+      maxConnectionNumber = connectStore.getMaxConnectionNumber()
+      initReceiveBuffer()
 
-      receiveChannels.push(event.channel);
+      receiveChannels.push(event.channel)
 
       if (receiveChannels.length === maxConnectionNumber) {
-        establishReceiveChannel();
+        establishReceiveChannel()
       }
-    };
+    }
   }
 
   function establishReceiveChannel() {
     const handleOpen = () => {
       // console.log(`[INFO] Receive channel opened`);
-    };
+    }
 
     const handleError = error => {
-      console.error(`[ERR] Receive channel error: ${error}`);
-    };
+      console.error(`[ERR] Receive channel error: ${error}`)
+    }
 
     const handleClose = () => {
       // console.log(`[INFO] Receive channel closed`);
-    };
+    }
 
     const handleMessage = event => {
       // console.log(`[INFO] Channel received message`);
-      handleReceiveChannelMsg(event);
-    };
+      handleReceiveChannelMsg(event)
+    }
 
     for (let i = 0; i < maxConnectionNumber; i++) {
-      receiveChannels[i].onopen = handleOpen;
-      receiveChannels[i].onerror = handleError;
-      receiveChannels[i].onclose = handleClose;
-      receiveChannels[i].onmessage = handleMessage;
+      receiveChannels[i].onopen = handleOpen
+      receiveChannels[i].onerror = handleError
+      receiveChannels[i].onclose = handleClose
+      receiveChannels[i].onmessage = handleMessage
     }
   }
 
-  const metaPrefix = 'CONTENT_META';
-  const metaPrefixBytes = new TextEncoder().encode(metaPrefix);
+  const metaPrefix = 'CONTENT_META'
+  const metaPrefixBytes = new TextEncoder().encode(metaPrefix)
 
   async function handleReceiveChannelMsg(event) {
-    const dataView = new DataView(event.data);
+    const dataView = new DataView(event.data)
 
-    let isMeta = true;
+    let isMeta = true
 
     // 检查前缀字节是否匹配
     for (let i = 0; i < metaPrefixBytes.length; i++) {
       if (dataView.getUint8(i) !== metaPrefixBytes[i]) {
-        isMeta = false;
-        break;
+        isMeta = false
+        break
       }
     }
 
     if (isMeta) {
-      const decodedData = new TextDecoder().decode(event.data);
-      const data = decodedData.slice(metaPrefix.length);
-      await handleFileMeta(data);
+      const decodedData = new TextDecoder().decode(event.data)
+      const data = decodedData.slice(metaPrefix.length)
+      await handleFileMeta(data)
     } else {
-      handleFileContent(event.data);
+      handleFileContent(event.data)
     }
   }
 
   async function handleFileMeta(data) {
     if (parseInt(data)) {
       // console.log(`[INFO] Received size: ${data}`);
-      fileSizeQueue.push(parseInt(data));
+      fileSizeQueue.push(parseInt(data))
     } else {
       if (
         data === 'TRANSFER_TYPE_FILE' ||
@@ -132,10 +132,10 @@ export const useReceiveStore = defineStore('receive', () => {
         data === 'TRANSFER_TYPE_PHOTO'
       ) {
         // console.log(`[INFO] Received type: ${data}`);
-        fileTypeQueue.push(data);
+        fileTypeQueue.push(data)
       } else {
         // console.log(`[INFO] Received name: ${data}`);
-        fileNameQueue.push(data);
+        fileNameQueue.push(data)
       }
     }
 
@@ -153,46 +153,46 @@ export const useReceiveStore = defineStore('receive', () => {
         fileSizeQueue[fileSizeQueue.length - 1],
         0,
         fileTypeQueue[fileTypeQueue.length - 1],
-      );
+      )
 
       if (fileTypeQueue[fileTypeQueue.length - 1] === 'TRANSFER_TYPE_TEXT') {
-        fileTypeQueue.shift();
-        fileNameQueue.shift();
-        fileSizeQueue.shift();
-        currentReceivingFileNo++;
+        fileTypeQueue.shift()
+        fileNameQueue.shift()
+        fileSizeQueue.shift()
+        currentReceivingFileNo++
 
-        updateFileSuccess(currentReceivingFileNo, true);
+        updateFileSuccess(currentReceivingFileNo, true)
       }
     }
   }
 
   function handleFileContent(data) {
     if (!currentFileName && fileNameQueue.length > 0) {
-      currentFileType = fileTypeQueue.shift();
-      currentFileName = fileNameQueue.shift();
-      currentFileSize = fileSizeQueue.shift();
-      currentReceivingFileNo++;
+      currentFileType = fileTypeQueue.shift()
+      currentFileName = fileNameQueue.shift()
+      currentFileSize = fileSizeQueue.shift()
+      currentReceivingFileNo++
 
       console.log(
         `[INFO] ===Receiving file ${currentFileType} | ${currentFileName} | ${currentFileSize}===`,
-      );
+      )
     }
 
     // receive file
     // console.log(`[INFO] data: ${data}`);
-    const dataView = new DataView(data);
-    const currentChunkIdx = dataView.getUint16(0, false);
-    const currentChunkData = data.slice(2);
+    const dataView = new DataView(data)
+    const currentChunkIdx = dataView.getUint16(0, false)
+    const currentChunkData = data.slice(2)
 
     if (!receivedDataArray[currentChunkIdx]) {
-      currentFileProgress += currentChunkData.byteLength;
+      currentFileProgress += currentChunkData.byteLength
     }
 
     // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`);
 
-    receivedDataArray[currentChunkIdx] = currentChunkData;
+    receivedDataArray[currentChunkIdx] = currentChunkData
 
-    updateFileProgress(currentReceivingFileNo, currentFileProgress);
+    updateFileProgress(currentReceivingFileNo, currentFileProgress)
 
     // console.log(receivedDataArray.map((item, index) => item ? index : null).filter(item => item !== null));
 
@@ -200,14 +200,14 @@ export const useReceiveStore = defineStore('receive', () => {
 
     // check if file is fully received
     if (currentFileProgress === currentFileSize) {
-      receivedData = receivedDataArray;
-      currentFileUrl = URL.createObjectURL(new Blob(receivedData));
-      updateFileUrl(currentReceivingFileNo, currentFileUrl);
-      updateFileSuccess(currentReceivingFileNo, true);
+      receivedData = receivedDataArray
+      currentFileUrl = URL.createObjectURL(new Blob(receivedData))
+      updateFileUrl(currentReceivingFileNo, currentFileUrl)
+      updateFileSuccess(currentReceivingFileNo, true)
 
       // console.log(`[INFO] File ${currentFileName} received successfully`);
 
-      initReceiveBuffer();
+      initReceiveBuffer()
     }
   }
 

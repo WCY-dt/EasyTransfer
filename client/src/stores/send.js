@@ -60,7 +60,9 @@ export const useSendStore = defineStore('send', () => {
     if (meta) {
       sendChannel = sendChannels.value[0]
     } else {
-      const sendChannelIdx = Math.floor(Math.random() * sendChannels.value.length)
+      const sendChannelIdx = Math.floor(
+        Math.random() * sendChannels.value.length,
+      )
       sendChannel = sendChannels.value[sendChannelIdx]
       // console.log(`[INFO] Sending data to channel ${sendChannelIdx}`)
     }
@@ -155,12 +157,11 @@ export const useSendStore = defineStore('send', () => {
   }
 
   async function sendSlices(slices, file) {
-    let currentChunkIdx = 0
     const promises = slices.map((slice, idx) => {
       return new Promise((resolve, reject) => {
         const fileReader = new FileReader()
 
-        fileReader.onload = async (e) => {
+        fileReader.onload = async e => {
           const currentChunkIdxArray = new Uint8Array(2)
           currentChunkIdxArray[0] = (idx & 0xff00) >> 8
           currentChunkIdxArray[1] = idx & 0xff
@@ -175,7 +176,10 @@ export const useSendStore = defineStore('send', () => {
           if (offset.value < currentFileSize.value) {
             await updateFileProgress(currentSendingFileNo, offset.value)
           } else {
-            await updateFileProgress(currentSendingFileNo, currentFileSize.value)
+            await updateFileProgress(
+              currentSendingFileNo,
+              currentFileSize.value,
+            )
             await updateFileUrl(currentSendingFileNo, URL.createObjectURL(file))
             await updateFileSuccess(currentSendingFileNo, true)
           }

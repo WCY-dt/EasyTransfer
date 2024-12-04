@@ -62,7 +62,11 @@ onMounted(async () => {
 
 <template>
   <div class="id-cluster">
-    <div class="clientId-cluster" @click="copyId" :class="clientId === 'LOADING' ? 'disabled' : 'ready'">
+    <div
+      class="clientId-cluster"
+      @click="copyId"
+      :class="clientId === 'LOADING' ? 'disabled' : 'ready'"
+    >
       {{ clientId }}
       <div class="cover blur">
         <span class="mdi mdi-check-bold" v-if="copied"></span>
@@ -71,10 +75,20 @@ onMounted(async () => {
     </div>
     <div class="targetId-cluster shadow" :class="buttonStatus">
       <span class="input-hint shadow">Enter the peer's code</span>
-      <input type="text" id="targetIdInput" class="targetId-input blur" placeholder="code" maxlength="4"
-        v-model="targetId" />
-      <button id="connectButton" class="connect-button" :disabled="!enableConnect || !registered"
-        @click="connectTarget">
+      <input
+        type="text"
+        id="targetIdInput"
+        class="targetId-input blur"
+        placeholder="code"
+        maxlength="4"
+        v-model="targetId"
+      />
+      <button
+        id="connectButton"
+        class="connect-button"
+        :disabled="!enableConnect || !registered"
+        @click="connectTarget"
+      >
         <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
         <span v-else class="mdi mdi-connection"></span>
       </button>

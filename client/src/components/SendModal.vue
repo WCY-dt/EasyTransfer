@@ -22,12 +22,22 @@ watch(
       <span class="mdi mdi-upload-network"></span>
       <p class="upload-cluster-title-text">Upload</p>
     </div>
-    <p v-if="reactiveUploadFileItems.length === 0" class="noting-to-upload-text">
+    <p
+      v-if="reactiveUploadFileItems.length === 0"
+      class="noting-to-upload-text"
+    >
       Nothing to upload
     </p>
-    <SendItem v-for="(uploadFileItem, index) in reactiveUploadFileItems" :key="index" :url="uploadFileItem.url"
-      :name="uploadFileItem.name" :size="uploadFileItem.size" :progress="uploadFileItem.progress"
-      :success="uploadFileItem.success" :type="uploadFileItem.type" />
+    <SendItem
+      v-for="(uploadFileItem, index) in reactiveUploadFileItems"
+      :key="index"
+      :url="uploadFileItem.url"
+      :name="uploadFileItem.name"
+      :size="uploadFileItem.size"
+      :progress="uploadFileItem.progress"
+      :success="uploadFileItem.success"
+      :type="uploadFileItem.type"
+    />
   </div>
 </template>
 

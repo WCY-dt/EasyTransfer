@@ -34,7 +34,9 @@ export const useConnectStore = defineStore('connect', () => {
     iceServers = JSON.parse(localStorage.getItem('iceServers'))
   }
   if (localStorage.getItem('maxConnectionNumber')) {
-    maxConnectionNumber = JSON.parse(localStorage.getItem('maxConnectionNumber'))
+    maxConnectionNumber = JSON.parse(
+      localStorage.getItem('maxConnectionNumber'),
+    )
   }
 
   let peerConnectionConfiguration = {
@@ -68,7 +70,7 @@ export const useConnectStore = defineStore('connect', () => {
 
     setTimeout(() => {
       window.location.reload()
-    }, 500);
+    }, 500)
   }
 
   function getMaxConnectionNumber() {
@@ -80,7 +82,7 @@ export const useConnectStore = defineStore('connect', () => {
 
     setTimeout(() => {
       window.location.reload()
-    }, 500);
+    }, 500)
   }
 
   async function registerClient() {
@@ -172,13 +174,17 @@ export const useConnectStore = defineStore('connect', () => {
     })
 
     socket.on('answer', (sdp, id) => {
-      peerConnection.value
-        .setRemoteDescription(new RTCSessionDescription(sdp))
-        .then(() => {
-          addIceCandidate()
-        })
+      if (targetId.value === id) {
+        peerConnection.value
+          .setRemoteDescription(new RTCSessionDescription(sdp))
+          .then(() => {
+            addIceCandidate()
+          })
 
-      // console.log(`[INFO] Received answer from ${targetId.value}`)
+        // console.log(`[INFO] Received answer from ${targetId.value}`)
+      } else {
+        console.error(`[ERROR] Received answer from unexpected id: ${id}`)
+      }
     })
 
     socket.on('candidate', candidate => {
@@ -211,10 +217,13 @@ export const useConnectStore = defineStore('connect', () => {
     }
 
     sendChannels.value.forEach((channel, index) => {
-      channel.value = peerConnection.value.createDataChannel(`fileTransfer${index}`, {
-        ordered: true,
-        maxRetransmits: maxRetransmits,
-      })
+      channel.value = peerConnection.value.createDataChannel(
+        `fileTransfer${index}`,
+        {
+          ordered: true,
+          maxRetransmits: maxRetransmits,
+        },
+      )
 
       channel.value.bufferedAmountLowThreshold = maxBufferedAmount
 

@@ -1,9 +1,9 @@
 <script setup>
-import HeaderModal from './components/HeaderModal.vue';
+import HeaderModal from './components/HeaderModal.vue'
 import OperationModal from '@/components/OperationModal.vue'
 import SendModal from '@/components/SendModal.vue'
 import ReceiveModal from '@/components/ReceiveModal.vue'
-import FooterModal from './components/FooterModal.vue';
+import FooterModal from './components/FooterModal.vue'
 </script>
 
 <template>
@@ -39,7 +39,7 @@ import FooterModal from './components/FooterModal.vue';
   width: min(96vw, 120rem);
   margin: 2rem 2vw;
 
-  &>* {
+  & > * {
     width: calc((min(96vw, 120rem) - 4rem) / 3);
   }
 }
@@ -49,7 +49,7 @@ import FooterModal from './components/FooterModal.vue';
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
 
-    &>* {
+    & > * {
       width: calc((min(96vw, 120rem) - 2rem) / 2);
     }
   }
@@ -62,7 +62,7 @@ import FooterModal from './components/FooterModal.vue';
 
     gap: 4rem;
 
-    &>* {
+    & > * {
       width: 96vw;
     }
   }

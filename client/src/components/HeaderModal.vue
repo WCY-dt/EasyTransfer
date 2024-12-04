@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from 'vue';
-import SettingsModal from './SettingsModal.vue';
+import { ref } from 'vue'
+import SettingsModal from './SettingsModal.vue'
 
-const showSettings = ref(false);
+const showSettings = ref(false)
 const toggleSettings = () => {
-  showSettings.value = !showSettings.value;
-};
+  showSettings.value = !showSettings.value
+}
 </script>
 
 <template>
@@ -20,10 +20,16 @@ const toggleSettings = () => {
         </div>
       </div>
       <div class="link-cluster">
-        <a class="link-item shadow" @click="toggleSettings"><span class="mdi mdi-cog"></span><span
-            class="text">Settings</span></a>
-        <a href="https://github.com/WCY-dt/EasyTransfer" class="link-item shadow"><span
-            class="mdi mdi-github"></span><span class="text">GitHub</span></a>
+        <a class="link-item shadow" @click="toggleSettings"
+          ><span class="mdi mdi-cog"></span
+          ><span class="text">Settings</span></a
+        >
+        <a
+          href="https://github.com/WCY-dt/EasyTransfer"
+          class="link-item shadow"
+          ><span class="mdi mdi-github"></span
+          ><span class="text">GitHub</span></a
+        >
       </div>
     </div>
   </header>

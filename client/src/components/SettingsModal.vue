@@ -1,81 +1,85 @@
 <script setup>
-import { ref, defineEmits, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useConnectStore } from '@/stores/connect'
 
 const connectStore = useConnectStore()
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close'])
 const close = () => {
-  emit('close');
-};
+  emit('close')
+}
 
-const saveAvailable = ref(true);
-const saveText = ref('Save');
+const saveAvailable = ref(true)
+const saveText = ref('Save')
 
-const maxConnectionNumberTmp = ref(null);
-const iceServersTmp = ref(null);
+const maxConnectionNumberTmp = ref(null)
+const iceServersTmp = ref(null)
 
 onMounted(() => {
-  maxConnectionNumberTmp.value = connectStore.getMaxConnectionNumber();
-  let iceServersObject = connectStore.getIceServers();
-  iceServersTmp.value = iceServersObject.map(server => JSON.stringify(server)).join('\n');
-});
+  maxConnectionNumberTmp.value = connectStore.getMaxConnectionNumber()
+  let iceServersObject = connectStore.getIceServers()
+  iceServersTmp.value = iceServersObject
+    .map(server => JSON.stringify(server))
+    .join('\n')
+})
 
 function saveSettings() {
-  connectStore.setMaxConnectionNumber(maxConnectionNumberTmp.value);
-  let iceServersValue;
-  iceServersValue = JSON.parse(`[${iceServersTmp.value.split('\n').join(',')}]`);
-  connectStore.setIceServers(iceServersValue);
-  close();
+  connectStore.setMaxConnectionNumber(maxConnectionNumberTmp.value)
+  let iceServersValue
+  iceServersValue = JSON.parse(`[${iceServersTmp.value.split('\n').join(',')}]`)
+  connectStore.setIceServers(iceServersValue)
+  close()
 }
 
 const checkSettings = () => {
-  saveAvailable.value = false;
-  saveText.value = 'Checking...';
+  saveAvailable.value = false
+  saveText.value = 'Checking...'
 
   if (!maxConnectionNumberTmp.value) {
-    saveAvailable.value = false;
-    saveText.value = 'Max connection number cannot be empty';
-    return;
+    saveAvailable.value = false
+    saveText.value = 'Max connection number cannot be empty'
+    return
   }
 
   if (maxConnectionNumberTmp.value < 1) {
-    saveAvailable.value = false;
-    saveText.value = 'Max connection number must be greater than 0';
-    return;
+    saveAvailable.value = false
+    saveText.value = 'Max connection number must be greater than 0'
+    return
   }
 
   if (maxConnectionNumberTmp.value > 10) {
-    saveAvailable.value = false;
-    saveText.value = 'Max connection number must be less than 10';
-    return;
+    saveAvailable.value = false
+    saveText.value = 'Max connection number must be less than 10'
+    return
   }
 
-  let iceServersValue;
+  let iceServersValue
   try {
-    iceServersValue = JSON.parse(`[${iceServersTmp.value.split('\n').join(',')}]`);
-  } catch (e) {
-    saveAvailable.value = false;
-    saveText.value = 'ICE Servers format incorrect';
-    return;
+    iceServersValue = JSON.parse(
+      `[${iceServersTmp.value.split('\n').join(',')}]`,
+    )
+  } catch {
+    saveAvailable.value = false
+    saveText.value = 'ICE Servers format incorrect'
+    return
   }
 
   if (iceServersValue.length === 0) {
-    saveAvailable.value = false;
-    saveText.value = 'ICE Servers cannot be empty';
-    return;
+    saveAvailable.value = false
+    saveText.value = 'ICE Servers cannot be empty'
+    return
   }
 
   for (let server of iceServersValue) {
     if (!server.urls) {
-      saveAvailable.value = false;
-      saveText.value = 'ICE Servers must have urls property';
-      return;
+      saveAvailable.value = false
+      saveText.value = 'ICE Servers must have urls property'
+      return
     }
   }
 
-  saveAvailable.value = true;
-  saveText.value = 'Save';
+  saveAvailable.value = true
+  saveText.value = 'Save'
 }
 </script>
 
@@ -85,16 +89,32 @@ const checkSettings = () => {
       <h2><span class="mdi mdi-cog"></span>Settings</h2>
       <div class="setting-item">
         <label for="max-connection-number">Max connection number</label>
-        <input type="number" id="max-connection-number" class="blur shadow" v-model="maxConnectionNumberTmp"
-          @input="checkSettings" />
+        <input
+          type="number"
+          id="max-connection-number"
+          class="blur shadow"
+          v-model="maxConnectionNumberTmp"
+          @input="checkSettings"
+        />
         <label for="ice-servers">ICE Servers</label>
-        <textarea id="ice-servers" class="blur shadow" v-model="iceServersTmp" spellcheck="false"
-          @input="checkSettings"></textarea>
+        <textarea
+          id="ice-servers"
+          class="blur shadow"
+          v-model="iceServersTmp"
+          spellcheck="false"
+          @input="checkSettings"
+        ></textarea>
       </div>
       <div class="setting-button">
         <button @click="close" class="cancel-button">Cancel</button>
-        <button @click="saveSettings()" class="save-button" :class="{ 'error': !saveAvailable }"
-          :disabled="!saveAvailable">{{ saveText }}</button>
+        <button
+          @click="saveSettings()"
+          class="save-button"
+          :class="{ error: !saveAvailable }"
+          :disabled="!saveAvailable"
+        >
+          {{ saveText }}
+        </button>
       </div>
     </div>
   </div>
@@ -125,8 +145,11 @@ const checkSettings = () => {
   border-radius: var(--border-radius);
 
   background-color: var(--primary-extra-light-color);
-  background-image:
-    linear-gradient(to right, var(--primary-light-color) 1px, transparent 1px),
+  background-image: linear-gradient(
+      to right,
+      var(--primary-light-color) 1px,
+      transparent 1px
+    ),
     linear-gradient(to bottom, var(--primary-light-color) 1px, transparent 1px);
   background-size: 20px 20px;
 
