@@ -4,7 +4,7 @@ import { useConnectStore } from './connect.js'
 
 export const useSendStore = defineStore('send', () => {
   const connectStore = useConnectStore()
-  const { pubKey, sendChannel } = storeToRefs(connectStore)
+  const { sendChannels } = storeToRefs(connectStore)
 
   const uploadFileItems = ref([])
 
@@ -20,19 +20,19 @@ export const useSendStore = defineStore('send', () => {
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  function updateFileProgress(index, progress) {
+  async function updateFileProgress(index, progress) {
     uploadFileItems.value[index].progress = progress
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  function updateFileUrl(index, url) {
+  async function updateFileUrl(index, url) {
     uploadFileItems.value[index].url = url
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  function updateFileSuccess(index, success) {
+  async function updateFileSuccess(index, success) {
     uploadFileItems.value[index].success = success
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
@@ -42,17 +42,31 @@ export const useSendStore = defineStore('send', () => {
 
   let chunkQueue = []
 
-  sendChannel.value.onbufferedamountlow = async () => {
-    await processQueue()
+  for (let i = 0; i < sendChannels.value.length; i++) {
+    sendChannels.value[i].value.onbufferedamountlow = async () => {
+      // console.log(`[INFO] Channel ${i} buffered amount low`)
+      await processQueue()
+    }
   }
 
-  async function sendData(data) {
+  async function sendData(data, meta = false) {
     chunkQueue.push(data)
 
-    await processQueue()
+    await processQueue(meta)
   }
 
-  async function processQueue() {
+  async function processQueue(meta) {
+    let sendChannel = null
+    if (meta) {
+      sendChannel = sendChannels.value[0]
+    } else {
+      const sendChannelIdx = Math.floor(
+        Math.random() * sendChannels.value.length,
+      )
+      sendChannel = sendChannels.value[sendChannelIdx]
+      // console.log(`[INFO] Sending data to channel ${sendChannelIdx}`)
+    }
+
     while (
       chunkQueue.length > 0 &&
       sendChannel.value.bufferedAmount <= connectStore.maxBufferedAmount
@@ -63,39 +77,14 @@ export const useSendStore = defineStore('send', () => {
         chunk = new TextEncoder().encode(chunk)
       }
 
-      if (!(pubKey.value instanceof CryptoKey)) {
-        console.error('[ERR] Invalid public key')
-        break
-      }
-
-      if (!pubKey.value.usages.includes('encrypt')) {
-        console.error('[ERR] Public key cannot be used for encryption.')
-        break
-      }
-
-      let encryptedChunk = null
-
-      try {
-        encryptedChunk = await window.crypto.subtle.encrypt(
-          {
-            name: 'RSA-OAEP',
-          },
-          pubKey.value,
-          chunk,
-        )
-      } catch (error) {
-        console.error(`[ERR] Error encrypting chunk: ${error}`)
-        break
-      }
-
-      sendChannel.value.send(encryptedChunk)
+      sendChannel.value.send(chunk)
     }
   }
 
   let currentFileType = ''
   const currentFileName = ref('Drop file here or click to upload')
   const currentFileSize = ref(0)
-  const chunkSize = 446 // 4096-bit RSA key with SHA-256
+  const chunkSize = 16384
   let fileReader = null
   const offset = ref(0)
 
@@ -113,23 +102,25 @@ export const useSendStore = defineStore('send', () => {
     }
 
     for (let i = 0; i < fileNum; i++) {
-      await sendFileMeta(files[i], type)
+      if (checkSendFileAvailability(files[i].size)) {
+        await sendFileMeta(files[i], type)
+      }
     }
 
     for (let i = 0; i < fileNum; i++) {
-      currentSendingFileNo++
-      await sendFileContent(files[i], type)
+      if (checkSendFileAvailability(files[i].size)) {
+        await sendFileContent(files[i], type)
+      }
     }
   }
 
   async function sendFileMeta(file, type) {
     // Send the type, name, and size of the file
     // console.log(`file: ${file}`)
-    if (!checkSendFileAvailability(file.size)) return
 
-    await sendData('CONTENT_META' + type)
-    await sendData('CONTENT_META' + file.name)
-    await sendData('CONTENT_META' + file.size)
+    await sendData('CONTENT_META' + type, true)
+    await sendData('CONTENT_META' + file.name, true)
+    await sendData('CONTENT_META' + file.size, true)
 
     // console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
 
@@ -137,7 +128,7 @@ export const useSendStore = defineStore('send', () => {
   }
 
   async function sendFileContent(file, type) {
-    if (!checkSendFileAvailability(file.size)) return
+    currentSendingFileNo++
 
     currentFileType = type
     currentFileName.value = file.name
@@ -149,44 +140,63 @@ export const useSendStore = defineStore('send', () => {
 
     await addFileReader()
 
-    const readAndSendSlice = o => {
-      return new Promise((resolve, reject) => {
-        if (o >= currentFileSize.value) {
-          resolve()
-          return
-        }
+    const slices = sliceFile(file)
+    await sendSlices(slices, file)
+  }
 
-        const fileReaderSendData = async e => {
-          await sendData(e.target.result)
+  function sliceFile(file) {
+    const slices = []
+    let offset = 0
+
+    while (offset < file.size) {
+      const slice = file.slice(offset, offset + chunkSize - 2)
+      slices.push(slice)
+      offset += chunkSize - 2
+    }
+
+    return slices
+  }
+
+  async function sendSlices(slices, file) {
+    const promises = slices.map((slice, idx) => {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader()
+
+        fileReader.onload = async e => {
+          const currentChunkIdxArray = new Uint8Array(2)
+          currentChunkIdxArray[0] = (idx & 0xff00) >> 8
+          currentChunkIdxArray[1] = idx & 0xff
+
+          const dataArray = new Uint8Array(e.target.result.byteLength + 2)
+          dataArray.set(currentChunkIdxArray, 0)
+          dataArray.set(new Uint8Array(e.target.result), 2)
+
+          await sendData(dataArray)
           offset.value = offset.value + e.target.result.byteLength
+
           if (offset.value < currentFileSize.value) {
-            resolve(
-              updateFileProgress(currentSendingFileNo, offset.value),
-              readAndSendSlice(offset.value),
-            )
+            await updateFileProgress(currentSendingFileNo, offset.value)
           } else {
-            resolve(
-              updateFileProgress(currentSendingFileNo, currentFileSize.value),
-              updateFileUrl(currentSendingFileNo, URL.createObjectURL(file)),
-              updateFileSuccess(currentSendingFileNo, true),
+            await updateFileProgress(
+              currentSendingFileNo,
+              currentFileSize.value,
             )
+            await updateFileUrl(currentSendingFileNo, URL.createObjectURL(file))
+            await updateFileSuccess(currentSendingFileNo, true)
           }
+
+          resolve()
         }
 
         fileReader.onerror = error => {
           reject(error)
         }
 
-        fileReader.onload = fileReaderSendData
-
-        const slice = file.slice(o, o + chunkSize)
         fileReader.readAsArrayBuffer(slice)
       })
-    }
+    })
 
-    offset.value = 0
-
-    await readAndSendSlice(0)
+    await Promise.all(promises)
   }
 
   async function addFileReader() {
@@ -227,9 +237,9 @@ export const useSendStore = defineStore('send', () => {
     // Send the type, name, and size of the file
     if (!checkSendTextAvailability(text)) return
 
-    await sendData('CONTENT_META' + 'TRANSFER_TYPE_TEXT')
-    await sendData('CONTENT_META' + text)
-    await sendData('CONTENT_META' + text.length)
+    await sendData('CONTENT_META' + 'TRANSFER_TYPE_TEXT', true)
+    await sendData('CONTENT_META' + text, true)
+    await sendData('CONTENT_META' + text.length, true)
 
     // console.log(
     //   `[INFO] Sent content: ${'TRANSFER_TYPE_TEXT'} | ${text} | ${text.length}`,

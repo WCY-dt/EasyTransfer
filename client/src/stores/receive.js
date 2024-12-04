@@ -5,7 +5,7 @@ import { useConnectStore } from './connect.js'
 export const useReceiveStore = defineStore('receive', () => {
   const connectStore = useConnectStore()
 
-  const { peerConnection, privKey } = storeToRefs(connectStore)
+  const { peerConnection } = storeToRefs(connectStore)
 
   const downloadFileItems = ref([])
 
@@ -39,8 +39,11 @@ export const useReceiveStore = defineStore('receive', () => {
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
-  let receiveChannel = null
+  let maxConnectionNumber = 5
 
+  let receiveChannels = []
+
+  let receivedDataArray = []
   let receivedData = []
   let currentFileType = ''
   let currentFileName = ''
@@ -56,56 +59,71 @@ export const useReceiveStore = defineStore('receive', () => {
 
   function receiveFiles() {
     peerConnection.value.ondatachannel = event => {
+      maxConnectionNumber = connectStore.getMaxConnectionNumber()
       initReceiveBuffer()
 
-      receiveChannel = event.channel
-      establishReceiveChannel()
+      receiveChannels.push(event.channel)
+
+      if (receiveChannels.length === maxConnectionNumber) {
+        establishReceiveChannel()
+      }
     }
   }
 
   function establishReceiveChannel() {
-    receiveChannel.onopen = () => {
-      // console.log(`[INFO] Receive channel opened`)
+    const handleOpen = () => {
+      // console.log(`[INFO] Receive channel opened`);
     }
 
-    receiveChannel.onerror = error => {
+    const handleError = error => {
       console.error(`[ERR] Receive channel error: ${error}`)
     }
 
-    receiveChannel.onclose = () => {
-      // console.log(`[INFO] Receive channel closed`)
+    const handleClose = () => {
+      // console.log(`[INFO] Receive channel closed`);
     }
 
-    receiveChannel.onmessage = async event => {
-      await handleReceiveChannelMsg(event)
+    const handleMessage = event => {
+      // console.log(`[INFO] Channel received message`);
+      handleReceiveChannelMsg(event)
+    }
+
+    for (let i = 0; i < maxConnectionNumber; i++) {
+      receiveChannels[i].onopen = handleOpen
+      receiveChannels[i].onerror = handleError
+      receiveChannels[i].onclose = handleClose
+      receiveChannels[i].onmessage = handleMessage
     }
   }
 
+  const metaPrefix = 'CONTENT_META'
+  const metaPrefixBytes = new TextEncoder().encode(metaPrefix)
+
   async function handleReceiveChannelMsg(event) {
-    const decryptedDataArray = await window.crypto.subtle.decrypt(
-      {
-        name: 'RSA-OAEP',
-      },
-      privKey.value,
-      event.data,
-    )
+    const dataView = new DataView(event.data)
 
-    const decryptedData = new TextDecoder().decode(decryptedDataArray)
+    let isMeta = true
 
-    if (
-      typeof decryptedData === 'string' &&
-      decryptedData.startsWith('CONTENT_META')
-    ) {
-      const data = decryptedData.slice(12)
+    // 检查前缀字节是否匹配
+    for (let i = 0; i < metaPrefixBytes.length; i++) {
+      if (dataView.getUint8(i) !== metaPrefixBytes[i]) {
+        isMeta = false
+        break
+      }
+    }
+
+    if (isMeta) {
+      const decodedData = new TextDecoder().decode(event.data)
+      const data = decodedData.slice(metaPrefix.length)
       await handleFileMeta(data)
     } else {
-      await handleFileContent(decryptedDataArray)
+      handleFileContent(event.data)
     }
   }
 
   async function handleFileMeta(data) {
     if (parseInt(data)) {
-      // console.log(`[INFO] Received size: ${data}`)
+      // console.log(`[INFO] Received size: ${data}`);
       fileSizeQueue.push(parseInt(data))
     } else {
       if (
@@ -113,10 +131,10 @@ export const useReceiveStore = defineStore('receive', () => {
         data === 'TRANSFER_TYPE_TEXT' ||
         data === 'TRANSFER_TYPE_PHOTO'
       ) {
-        // console.log(`[INFO] Received type: ${data}`)
+        // console.log(`[INFO] Received type: ${data}`);
         fileTypeQueue.push(data)
       } else {
-        // console.log(`[INFO] Received name: ${data}`)
+        // console.log(`[INFO] Received name: ${data}`);
         fileNameQueue.push(data)
       }
     }
@@ -127,7 +145,7 @@ export const useReceiveStore = defineStore('receive', () => {
     ) {
       // console.log(
       //   `[INFO] ===New to receive ${fileTypeQueue[fileTypeQueue.length - 1]} | ${fileNameQueue[fileNameQueue.length - 1]} | ${fileSizeQueue[fileSizeQueue.length - 1]}===`,
-      // )
+      // );
 
       addDownloadFileItem(
         'javascript:void(0)',
@@ -148,7 +166,7 @@ export const useReceiveStore = defineStore('receive', () => {
     }
   }
 
-  async function handleFileContent(data) {
+  function handleFileContent(data) {
     if (!currentFileName && fileNameQueue.length > 0) {
       currentFileType = fileTypeQueue.shift()
       currentFileName = fileNameQueue.shift()
@@ -161,26 +179,40 @@ export const useReceiveStore = defineStore('receive', () => {
     }
 
     // receive file
-    // console.log(`[INFO] data: ${data}`)
-    receivedData.push(data)
-    currentFileProgress += data.byteLength
+    // console.log(`[INFO] data: ${data}`);
+    const dataView = new DataView(data)
+    const currentChunkIdx = dataView.getUint16(0, false)
+    const currentChunkData = data.slice(2)
+
+    if (!receivedDataArray[currentChunkIdx]) {
+      currentFileProgress += currentChunkData.byteLength
+    }
+
+    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`);
+
+    receivedDataArray[currentChunkIdx] = currentChunkData
+
     updateFileProgress(currentReceivingFileNo, currentFileProgress)
 
-    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize}`)
+    // console.log(receivedDataArray.map((item, index) => item ? index : null).filter(item => item !== null));
+
+    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`);
 
     // check if file is fully received
     if (currentFileProgress === currentFileSize) {
+      receivedData = receivedDataArray
       currentFileUrl = URL.createObjectURL(new Blob(receivedData))
       updateFileUrl(currentReceivingFileNo, currentFileUrl)
       updateFileSuccess(currentReceivingFileNo, true)
 
-      // console.log(`[INFO] File ${currentFileName} received successfully`)
+      // console.log(`[INFO] File ${currentFileName} received successfully`);
 
       initReceiveBuffer()
     }
   }
 
   function initReceiveBuffer() {
+    receivedDataArray = []
     receivedData = []
 
     currentFileType = ''

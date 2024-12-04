@@ -59,14 +59,16 @@ watch(
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 
   height: 100%;
   padding: 1rem;
-  border-radius: 0.25rem;
+  border-radius: var(--border-radius);
   overflow-y: auto;
 
   background-color: var(--secondary-extra-light-color);
+  backdrop-filter: var(--blur-effect);
+  -webkit-backdrop-filter: var(--blur-effect);
 
   .download-cluster-title {
     display: flex;

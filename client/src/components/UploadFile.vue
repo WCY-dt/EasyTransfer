@@ -11,14 +11,14 @@ const sendStore = useSendStore()
 const fileInput = ref(null)
 
 async function sendFiles() {
-  sendStore.sendFiles(fileInput.value.files, 'TRANSFER_TYPE_FILE')
+  await sendStore.sendFiles(fileInput.value.files, 'TRANSFER_TYPE_FILE')
 }
 
-function onFileDrop(event) {
+async function onFileDrop(event) {
   if (!isConnectSuccess.value) return
   event.preventDefault()
   fileInput.value.files = event.dataTransfer.files
-  sendFiles()
+  await sendFiles()
 }
 
 function onFileClick() {
@@ -60,6 +60,12 @@ function onFileClick() {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+
+  padding: 0.5rem;
+  border-color: var(--primary-color);
+  border-width: 2px;
+  border-radius: var(--border-radius);
+  border-style: solid;
 
   background-color: var(--primary-color);
   color: var(--light-color);

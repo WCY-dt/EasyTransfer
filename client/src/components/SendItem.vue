@@ -37,6 +37,165 @@ function onTextClick() {
     copied.value = false
   }, 1000)
 }
+
+function isImageType() {
+  if (props.type === 'TRANSFER_TYPE_PHOTO') {
+    return true
+  }
+
+  const imageFormats = [
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.gif',
+    '.bmp',
+    '.webp',
+    '.svg',
+    '.ico',
+  ]
+  return imageFormats.some(format => props.name.toLowerCase().endsWith(format))
+}
+
+function decideFileType() {
+  const fileTypeMap = {
+    'mdi-file-image': [
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.gif',
+      '.bmp',
+      '.webp',
+      '.svg',
+      '.ico',
+      '.tiff',
+      '.tif',
+      '.heic',
+      '.raw',
+    ],
+    'mdi-file-word': ['.doc', '.docx', '.odt', '.rtf', '.txt', '.wps', '.wpd'],
+    'mdi-file-table': [
+      '.xls',
+      '.xlsx',
+      '.ods',
+      '.csv',
+      '.tsv',
+      '.xlsm',
+      '.xlsb',
+    ],
+    'mdi-file-powerpoint': [
+      '.ppt',
+      '.pptx',
+      '.odp',
+      '.pps',
+      '.ppsx',
+      '.pot',
+      '.potx',
+    ],
+    'mdi-file-music': [
+      '.mp3',
+      '.wav',
+      '.flac',
+      '.ogg',
+      '.aac',
+      '.wma',
+      '.m4a',
+      '.aiff',
+      '.alac',
+    ],
+    'mdi-file-video': [
+      '.mp4',
+      '.mkv',
+      '.avi',
+      '.mov',
+      '.wmv',
+      '.flv',
+      '.webm',
+      '.mpeg',
+      '.mpg',
+      '.m4v',
+      '.3gp',
+      '.3g2',
+    ],
+    'mdi-file-code': [
+      '.html',
+      '.css',
+      '.js',
+      '.ts',
+      '.jsx',
+      '.tsx',
+      '.json',
+      '.xml',
+      '.yaml',
+      '.yml',
+      '.md',
+      '.markdown',
+      '.cpp',
+      '.c',
+      '.h',
+      '.hpp',
+      '.java',
+      '.py',
+      '.rb',
+      '.php',
+      '.sql',
+      '.sh',
+      '.bat',
+      '.ps1',
+      '.psm1',
+      '.psd1',
+      '.ps1xml',
+      '.pssc',
+      '.psc1',
+      '.pssc',
+      '.pl',
+      '.perl',
+      '.go',
+      '.rs',
+      '.swift',
+      '.kt',
+      '.kts',
+      '.clj',
+      '.cljs',
+      '.scala',
+      '.groovy',
+      '.gradle',
+      '.dockerfile',
+      '.properties',
+      '.ini',
+      '.cfg',
+      '.conf',
+      '.toml',
+      '.yaml',
+      '.yml',
+      '.json',
+      '.xml',
+      '.csv',
+      '.tsv',
+      '.log',
+      '.r',
+      '.sas',
+      '.stata',
+      '.do',
+      '.m',
+      '.mat',
+      '.rmd',
+      '.ipynb',
+    ],
+  }
+
+  if (props.type === 'TRANSFER_TYPE_PHOTO') {
+    return 'mdi-file-image'
+  }
+
+  const fileName = props.name.toLowerCase()
+  for (const [icon, formats] of Object.entries(fileTypeMap)) {
+    if (formats.some(format => fileName.endsWith(format))) {
+      return icon
+    }
+  }
+
+  return 'mdi-file-document'
+}
 </script>
 
 <template>
@@ -47,18 +206,11 @@ function onTextClick() {
     "
     ref="uploadLink"
     :href="props.url"
-    class="upload-item file"
+    class="upload-item file shadow"
     :download="props.name"
     :class="{ success: props.success, loading: !props.success }"
   >
-    <span
-      v-if="props.type === 'TRANSFER_TYPE_FILE'"
-      class="mdi mdi-file-document"
-    ></span>
-    <span
-      v-else-if="props.type === 'TRANSFER_TYPE_PHOTO'"
-      class="mdi mdi-image"
-    ></span>
+    <span class="mdi" :class="decideFileType()"></span>
     <div class="upload-item-detail">
       <p class="upload-item-name">{{ props.name }}</p>
       <progress
@@ -67,23 +219,26 @@ function onTextClick() {
         :max="props.size"
       ></progress>
       <img
-        v-if="props.type === 'TRANSFER_TYPE_PHOTO' && props.success"
+        v-if="isImageType() && props.success"
         class="upload-item-content"
         :src="props.url"
         alt="Photo"
       />
+      <div class="copy-cover blur">
+        <span class="mdi mdi-download"></span>
+      </div>
     </div>
   </a>
   <div
     v-if="props.type === 'TRANSFER_TYPE_TEXT'"
-    class="upload-item text"
+    class="upload-item text shadow"
     :class="{ success: props.success, loading: !props.success }"
     @click="onTextClick"
   >
     <span class="mdi mdi-message-text"></span>
     <div class="upload-item-detail">
       <p class="upload-item-content">{{ props.name }}</p>
-      <div class="copy-cover">
+      <div class="copy-cover blur">
         <span class="mdi mdi-check-bold" v-if="copied"></span>
         <span class="mdi mdi-content-copy" v-else></span>
       </div>
@@ -100,8 +255,7 @@ function onTextClick() {
 
   width: 100%;
   padding: 0.5rem 1rem;
-  border: 2px solid;
-  border-radius: 0.25rem;
+  border-radius: var(--small-border-radius);
 
   text-decoration: none;
 
@@ -112,6 +266,8 @@ function onTextClick() {
   .mdi {
     align-self: flex-start;
     font-size: 2.5rem;
+
+    transition: all 0.1s ease-in-out;
   }
 
   .upload-item-detail {
@@ -142,80 +298,59 @@ function onTextClick() {
       width: 100%;
       height: 0.5rem;
       border: none;
-      border-radius: 0.25rem;
+      border-radius: var(--small-border-radius);
     }
 
     img {
       width: 100%;
       height: auto;
-      border-radius: 0.25rem;
+      border-radius: var(--small-border-radius);
+      opacity: 1;
+
+      transition: all 0.1s ease-in-out;
     }
   }
 
   &.success {
-    border-color: var(--success-color);
-
     background-color: var(--success-light-color);
     color: var(--success-color);
-
-    @media (hover: hover) {
-      &.file:hover {
-        background-color: var(--success-color);
-        color: var(--light-color);
-
-        .upload-item-detail .upload-item-progress::-webkit-progress-value {
-          background-color: var(--light-color);
-        }
-      }
-    }
 
     .upload-item-detail {
       .upload-item-progress {
         &::-webkit-progress-value {
           background-color: var(--success-color);
+          border-radius: 0.25rem;
+
+          transition: all 0.1s ease-in-out;
+        }
+
+        &::-webkit-progress-bar {
+          background-color: transparent;
+          border-radius: 0.25rem;
 
           transition: all 0.1s ease-in-out;
         }
       }
     }
 
-    &.text {
+    &.text,
+    &.file {
       position: relative;
-
-      .copy-cover {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-
-        opacity: 0;
-        display: grid;
-        place-content: center;
-
-        font-size: 1.5rem;
-
-        background-color: transparent;
-        color: var(--success-color);
-
-        transition: all 0.1s ease-in-out;
-
-        .mdi {
-          height: 100%;
-
-          &::before {
-            display: grid;
-            place-content: center;
-
-            height: 100%;
-          }
-        }
-      }
 
       @media (hover: hover) {
         &:hover {
-          .upload-item-content {
-            opacity: 0.2;
+          color: var(--success-semi-light-color);
+
+          .upload-item-detail {
+            .upload-item-progress {
+              &::-webkit-progress-value {
+                background-color: var(--success-semi-light-color);
+              }
+            }
+
+            img {
+              opacity: 0.3;
+            }
           }
 
           .copy-cover {
@@ -227,8 +362,6 @@ function onTextClick() {
   }
 
   &.loading {
-    border-color: var(--primary-color);
-
     background-color: var(--primary-light-color);
     color: var(--primary-color);
 
@@ -238,14 +371,46 @@ function onTextClick() {
       .upload-item-progress {
         &::-webkit-progress-value {
           background-color: var(--primary-color);
+          border-radius: 0.25rem;
 
           transition: all 0.1s ease-in-out;
         }
 
         &::-webkit-progress-bar {
           background-color: var(--light-color);
+          border-radius: 0.25rem;
         }
       }
+    }
+  }
+}
+
+.copy-cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  opacity: 0;
+  display: grid;
+  place-content: center;
+
+  font-size: 1.5rem;
+
+  background-color: transparent;
+  color: var(--success-color);
+
+  transition: all 0.1s ease-in-out;
+
+  .mdi {
+    height: 100%;
+
+    &::before {
+      display: grid;
+      place-content: center;
+
+      height: 100%;
     }
   }
 }

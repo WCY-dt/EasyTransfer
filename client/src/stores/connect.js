@@ -3,44 +3,53 @@ import { defineStore } from 'pinia'
 import { io } from 'socket.io-client'
 
 export const useConnectStore = defineStore('connect', () => {
-  const signalServerUrl = 'https://easy-transfer.glitch.me/'
-  const peerConnectionConfiguration = {
-    iceServers: [
-      {
-        urls: 'stun:stun.relay.metered.ca:80',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:80',
-        username: 'cf841207b56ebddc17948dde',
-        credential: '0dGvvEm7eq2UaqlW',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:80?transport=tcp',
-        username: 'cf841207b56ebddc17948dde',
-        credential: '0dGvvEm7eq2UaqlW',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:443',
-        username: 'cf841207b56ebddc17948dde',
-        credential: '0dGvvEm7eq2UaqlW',
-      },
-      {
-        urls: 'turns:global.relay.metered.ca:443?transport=tcp',
-        username: 'cf841207b56ebddc17948dde',
-        credential: '0dGvvEm7eq2UaqlW',
-      },
-    ],
+  const signalServerUrl = process.env.VITE_SIGNAL_SERVER_URL
+  let iceServers = [
+    {
+      urls: 'stun:stun.relay.metered.ca:80',
+    },
+    {
+      urls: 'turn:global.relay.metered.ca:80',
+      username: 'cf841207b56ebddc17948dde',
+      credential: '0dGvvEm7eq2UaqlW',
+    },
+    {
+      urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+      username: 'cf841207b56ebddc17948dde',
+      credential: '0dGvvEm7eq2UaqlW',
+    },
+    {
+      urls: 'turn:global.relay.metered.ca:443',
+      username: 'cf841207b56ebddc17948dde',
+      credential: '0dGvvEm7eq2UaqlW',
+    },
+    {
+      urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+      username: 'cf841207b56ebddc17948dde',
+      credential: '0dGvvEm7eq2UaqlW',
+    },
+  ]
+  let maxConnectionNumber = 5
+  if (localStorage.getItem('iceServers')) {
+    iceServers = JSON.parse(localStorage.getItem('iceServers'))
+  }
+  if (localStorage.getItem('maxConnectionNumber')) {
+    maxConnectionNumber = JSON.parse(
+      localStorage.getItem('maxConnectionNumber'),
+    )
+  }
+
+  let peerConnectionConfiguration = {
+    iceServers: iceServers,
   }
   let socket = null
   const peerConnection = ref(null)
   const registered = ref(false)
   const clientId = ref('LOADING')
   const targetId = ref('')
-  const pubKey = ref('')
-  const privKey = ref('')
   let candidateQueue = []
   const isConnectSuccess = ref(false)
-  const sendChannel = ref(null)
+  const sendChannels = ref([])
   const maxBufferedAmount = 1024 * 16
   const maxRetransmits = 2
 
@@ -52,38 +61,34 @@ export const useConnectStore = defineStore('connect', () => {
     // console.log('[INFO] ===Connection core initialized===')
   }
 
+  function getIceServers() {
+    return iceServers
+  }
+
+  function setIceServers(servers) {
+    localStorage.setItem('iceServers', JSON.stringify(servers))
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 500)
+  }
+
+  function getMaxConnectionNumber() {
+    return maxConnectionNumber
+  }
+
+  function setMaxConnectionNumber(number) {
+    localStorage.setItem('maxConnectionNumber', JSON.stringify(number))
+
+    setTimeout(() => {
+      window.location.reload()
+    }, 500)
+  }
+
   async function registerClient() {
-    // Generate public-private key pair
-    const keyPair = await window.crypto.subtle.generateKey(
-      {
-        name: 'RSA-OAEP',
-        modulusLength: 4096,
-        publicExponent: new Uint8Array([1, 0, 1]),
-        hash: 'SHA-256',
-      },
-      true,
-      ['encrypt', 'decrypt'],
-    )
-
-    const tmpPubKey = keyPair.publicKey
-    privKey.value = keyPair.privateKey
-
-    // Export the public key to send to the server
-    const exportedPubKey = await window.crypto.subtle.exportKey(
-      'spki',
-      tmpPubKey,
-    )
-
-    // Convert the exported key to a base64 string
-    const pubKeyBase64 = btoa(
-      String.fromCharCode(...new Uint8Array(exportedPubKey)),
-    )
-
-    // Emit the public key to the signal server
-    socket.emit('register', pubKeyBase64)
+    socket.emit('register', maxConnectionNumber)
 
     // console.log(`[INFO] ===Registering client===`)
-    // console.log(`[INFO] Public key: ${pubKeyBase64}`)
   }
 
   function connectTarget() {
@@ -133,74 +138,53 @@ export const useConnectStore = defineStore('connect', () => {
       window.location.reload()
     })
 
-    socket.on('offer', (sdp, id, keyBase64) => {
+    socket.on('offer', (sdp, id, number) => {
       // console.log(`[INFO] ===Connecting to ${id}===`)
-      // console.log(`[INFO] Peer public key: ${keyBase64}`)
 
-      const keyArray = new Uint8Array(
-        atob(keyBase64)
-          .split('')
-          .map(c => c.charCodeAt(0)),
-      )
-      convertToCryptoKey(keyArray)
-        .then(key => {
-          targetId.value = id
-          pubKey.value = key
+      targetId.value = id
 
-          peerConnection.value
-            .setRemoteDescription(new RTCSessionDescription(sdp))
-            .then(() => {
-              return peerConnection.value.createAnswer()
-            })
-            .then(answer => {
-              return peerConnection.value.setLocalDescription(answer)
-            })
-            .then(() => {
-              socket.emit(
-                'answer',
-                peerConnection.value.localDescription,
-                clientId.value,
-                targetId.value,
-              )
+      localStorage.setItem('maxConnectionNumber', JSON.stringify(number))
+      maxConnectionNumber = number
 
-              // console.log(`[INFO] Sending answer to ${targetId.value}`)
-            })
-            .then(() => {
-              addIceCandidate()
-            })
-
-          sendIceCandidate()
-
-          // console.log(`[INFO] Received offer from ${targetId.value}`)
+      peerConnection.value
+        .setRemoteDescription(new RTCSessionDescription(sdp))
+        .then(() => {
+          return peerConnection.value.createAnswer()
         })
-        .catch(error => {
-          console.error(`[ERR] Error converting key: ${error}`)
+        .then(answer => {
+          return peerConnection.value.setLocalDescription(answer)
         })
+        .then(() => {
+          socket.emit(
+            'answer',
+            peerConnection.value.localDescription,
+            clientId.value,
+            targetId.value,
+          )
+
+          // console.log(`[INFO] Sending answer to ${targetId.value}`)
+        })
+        .then(() => {
+          addIceCandidate()
+        })
+
+      sendIceCandidate()
+
+      // console.log(`[INFO] Received offer from ${targetId.value}`)
     })
 
-    socket.on('answer', (sdp, id, keyBase64) => {
-      // console.log(`[INFO] Peer public key: ${keyBase64}`)
+    socket.on('answer', (sdp, id) => {
+      if (targetId.value === id) {
+        peerConnection.value
+          .setRemoteDescription(new RTCSessionDescription(sdp))
+          .then(() => {
+            addIceCandidate()
+          })
 
-      const keyArray = new Uint8Array(
-        atob(keyBase64)
-          .split('')
-          .map(c => c.charCodeAt(0)),
-      )
-      convertToCryptoKey(keyArray)
-        .then(key => {
-          pubKey.value = key
-
-          peerConnection.value
-            .setRemoteDescription(new RTCSessionDescription(sdp))
-            .then(() => {
-              addIceCandidate()
-            })
-
-          // console.log(`[INFO] Received answer from ${targetId.value}`)
-        })
-        .catch(error => {
-          console.error(`[ERR] Error converting key: ${error}`)
-        })
+        // console.log(`[INFO] Received answer from ${targetId.value}`)
+      } else {
+        console.error(`[ERROR] Received answer from unexpected id: ${id}`)
+      }
     })
 
     socket.on('candidate', candidate => {
@@ -227,56 +211,64 @@ export const useConnectStore = defineStore('connect', () => {
     // console.log(`[INFO] Added ${targetId.value} to ICE candidate`)
   }
 
-  async function convertToCryptoKey(keyArray) {
-    return window.crypto.subtle.importKey(
-      'spki',
-      keyArray,
-      {
-        name: 'RSA-OAEP',
-        hash: 'SHA-256',
-      },
-      true,
-      ['encrypt'],
-    )
-  }
-
   function establishDataChannel() {
-    sendChannel.value = peerConnection.value.createDataChannel('fileTransfer', {
-      ordered: true,
-      maxRetransmits: maxRetransmits,
+    for (let i = 0; i < maxConnectionNumber; i++) {
+      sendChannels.value.push(ref(null))
+    }
+
+    sendChannels.value.forEach((channel, index) => {
+      channel.value = peerConnection.value.createDataChannel(
+        `fileTransfer${index}`,
+        {
+          ordered: true,
+          maxRetransmits: maxRetransmits,
+        },
+      )
+
+      channel.value.bufferedAmountLowThreshold = maxBufferedAmount
+
+      channel.value.onopen = () => {
+        // console.log(`[INFO] Data channel opened`)
+        isConnectSuccess.value = true
+      }
+
+      channel.value.onerror = error => {
+        console.error(`[ERR] Data channel error: ${error}`)
+        isConnectSuccess.value = false
+      }
+
+      channel.value.onclose = () => {
+        // console.log(`[INFO] Data channel closed`)
+        isConnectSuccess.value = false
+      }
     })
-
-    sendChannel.value.bufferedAmountLowThreshold = maxBufferedAmount
-
-    sendChannel.value.onopen = () => {
-      // console.log(`[INFO] Data channel opened`)
-      isConnectSuccess.value = true
-    }
-
-    sendChannel.value.onerror = error => {
-      console.error(`[ERR] Data channel error: ${error}`)
-      isConnectSuccess.value = false
-    }
-
-    sendChannel.value.onclose = () => {
-      // console.log(`[INFO] Data channel closed`)
-      isConnectSuccess.value = false
-    }
   }
 
   function getSendChannelState() {
-    return sendChannel.value.readyState
+    const sendChannelState = sendChannels.value.map(channel => {
+      return channel.value.readyState
+    })
+
+    // console.log(`[INFO] Send channel state: ${sendChannelState}`)
+
+    if (sendChannelState.every(state => state === 'open')) {
+      return 'open'
+    } else {
+      return 'pending'
+    }
   }
 
   return {
     peerConnection,
     isConnectSuccess,
+    getIceServers,
+    setIceServers,
+    getMaxConnectionNumber,
+    setMaxConnectionNumber,
     registered,
     clientId,
     targetId,
-    pubKey,
-    privKey,
-    sendChannel,
+    sendChannels,
     maxBufferedAmount,
     initializeConnection,
     registerClient,

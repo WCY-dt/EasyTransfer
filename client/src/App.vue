@@ -1,18 +1,35 @@
 <script setup>
-import OperationCluster from '@/components/OperationCluster.vue'
-import SendCluster from '@/components/SendCluster.vue'
-import ReceiveCluster from '@/components/ReceiveCluster.vue'
+import HeaderModal from './components/HeaderModal.vue'
+import OperationModal from '@/components/OperationModal.vue'
+import SendModal from '@/components/SendModal.vue'
+import ReceiveModal from '@/components/ReceiveModal.vue'
+import FooterModal from './components/FooterModal.vue'
 </script>
 
 <template>
-  <div class="app-cluster">
-    <OperationCluster />
-    <SendCluster />
-    <ReceiveCluster />
+  <HeaderModal />
+  <div id="app-content">
+    <div class="app-cluster">
+      <OperationModal />
+      <SendModal />
+      <ReceiveModal />
+    </div>
   </div>
+  <FooterModal />
 </template>
 
 <style scoped lang="scss">
+#app-content {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 40vh;
+
+  z-index: 0;
+}
+
 .app-cluster {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
