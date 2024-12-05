@@ -35,9 +35,20 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 1. [fork](https://github.com/WCY-dt/EasyTransfer/fork) 本项目。
 
 2. 将整个项目导入到 [glitch](https://glitch.com/) 中或您自己的服务器中。
+
     [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/WCY-dt/EasyTransfer)
 
-3. 修改 [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) 中的 `signalServerUrl` 和 `iceServers` 为您自己的地址。
+    > 本项目也提供了自动化的部署脚本，您只需要在 Glitch 中创建一个新的项目，并在项目的控制台中运行以下命令：
+    >
+    > ```shell
+    > git config receive.denyCurrentBranch ignore
+    > ```
+    >
+    > 然后在 GitHub 中设置 Secrets，将 `GLITCH_GIT_URL` 设置为您的 Glitch 项目的 Git URL。
+    >
+    > 每当您 push 代码到 `main` 分支时，GitHub Actions 将自动将代码同步到 Glitch 项目中。
+
+3. 如有需要，修改 [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) 中的 `signalServerUrl` 和 `iceServers` 为您自己的地址。
 
 4. 开启 GitHub Pages，并选择 `gh-pages` 分支作为源。
 

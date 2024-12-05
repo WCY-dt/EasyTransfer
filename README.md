@@ -35,9 +35,20 @@ It is built using webRTC and Vue.js, and there is
 1. [Fork](https://github.com/WCY-dt/EasyTransfer/fork) this project.
 
 2. Import the entire project into [glitch](https://glitch.com/) or your own server.
+
     [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/WCY-dt/EasyTransfer)
 
-3. Modify `signalServerUrl` and `iceServers` in [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) to your own addresses.
+    > This project also provides an automated deployment script. You only need to create a new project in Glitch and run the following command in the project's console:
+    >
+    > ```shell
+    > git config receive.denyCurrentBranch ignore
+    > ```
+    >
+    > Then set Secrets `GLITCH_GIT_URL` in GitHub to the Git URL of your Glitch project.
+    >
+    > Whenever you push code to the `main` branch, GitHub Actions will automatically synchronize the code to the Glitch project.
+
+3. Modify `signalServerUrl` and `iceServers` in [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) to your own addresses if needed.
 
 4. Open GitHub Pages and select the `gh-pages` branch as the source.
 
