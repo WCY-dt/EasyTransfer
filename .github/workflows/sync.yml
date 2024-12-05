@@ -1,0 +1,27 @@
+name: Sync with Glitch
+on:
+  push:
+    branches:
+      - main
+permissions:
+  contents: read
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Config remote
+        run: |
+          git remote remove origin
+          git remote add origin ${{ secrets.GLITCH_GIT_URL }}
+
+      - name: Push to Glitch
+        run: |
+          git push -u origin main --force
