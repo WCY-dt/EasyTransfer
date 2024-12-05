@@ -11,19 +11,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Git
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
       - name: Config remote
         run: |
           git remote remove origin
           git remote add origin ${{ secrets.GLITCH_GIT_URL }}
-
-      - name: Unshallow the repository
-        run: git fetch --unshallow
 
       - name: Push to Glitch
         run: |
