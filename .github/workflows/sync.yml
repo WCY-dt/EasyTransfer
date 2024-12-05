@@ -22,6 +22,9 @@ jobs:
           git remote remove origin
           git remote add origin ${{ secrets.GLITCH_GIT_URL }}
 
+      - name: Unshallow the repository
+        run: git fetch --unshallow
+
       - name: Push to Glitch
         run: |
           git push -u origin main --force
