@@ -23,7 +23,7 @@ import UploadPhoto from './UploadPhoto.vue'
 
   z-index: 400;
 
-  &>* {
+  & > * {
     width: 100%;
 
     border-radius: var(--border-radius);
@@ -38,7 +38,7 @@ import UploadPhoto from './UploadPhoto.vue'
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
 
-    &>* {
+    & > * {
       width: 100%;
     }
   }

@@ -77,9 +77,11 @@ body {
   font-family: var(--normal-font-family);
 
   background-color: var(--primary-extra-light-color);
-  background-image: linear-gradient(to right,
+  background-image: linear-gradient(
+      to right,
       var(--primary-light-color) 1px,
-      transparent 1px),
+      transparent 1px
+    ),
     linear-gradient(to bottom, var(--primary-light-color) 1px, transparent 1px);
   background-size: 20px 20px;
   color: var(--dark-color);
