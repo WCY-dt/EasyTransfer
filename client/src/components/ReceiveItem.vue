@@ -38,6 +38,22 @@ function onTextClick() {
   }, 1000)
 }
 
+function isLinkMessage(text) {
+  if (props.type === 'TRANSFER_TYPE_TEXT') {
+    const urlPattern = new RegExp(
+      '^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$',
+      'i', // fragment locator
+    )
+    return !!urlPattern.test(text)
+  }
+  return false
+}
+
 function isImageType() {
   if (props.type === 'TRANSFER_TYPE_PHOTO') {
     return true
@@ -230,7 +246,7 @@ function decideFileType() {
     </div>
   </a>
   <div
-    v-if="props.type === 'TRANSFER_TYPE_TEXT'"
+    v-if="props.type === 'TRANSFER_TYPE_TEXT' && !isLinkMessage(props.name)"
     class="download-item text shadow"
     :class="{ success: props.success, loading: !props.success }"
     @click="onTextClick"
@@ -244,6 +260,23 @@ function decideFileType() {
       </div>
     </div>
   </div>
+  <a
+    v-if="props.type === 'TRANSFER_TYPE_TEXT' && isLinkMessage(props.name)"
+    class="download-item text shadow"
+    :class="{ success: props.success, loading: !props.success }"
+    @click="onTextClick"
+    :href="props.name"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="mdi mdi-link-variant"></span>
+    <div class="download-item-detail">
+      <p class="download-item-content">{{ props.name }}</p>
+      <div class="copy-cover blur">
+        <span class="mdi mdi-open-in-new"></span>
+      </div>
+    </div>
+  </a>
 </template>
 
 <style scoped lang="scss">
@@ -291,6 +324,9 @@ function decideFileType() {
       &.download-item-content {
         font-size: 1.2rem;
         font-weight: 500;
+
+        word-break: break-all;
+        line-break: anywhere;
       }
     }
 
