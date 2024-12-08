@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useSettingStore } from './setting.js'
 import { io } from 'socket.io-client'
@@ -8,10 +8,6 @@ export const useConnectStore = defineStore('connect', () => {
   const { maxConnectionNumber, iceServers } = storeToRefs(settingStore)
 
   const signalServerUrl = process.env.VITE_SIGNAL_SERVER_URL
-
-  let peerConnectionConfiguration = {
-    iceServers: iceServers.value,
-  }
   let socket = null
   const peerConnection = ref(null)
   const registered = ref(false)
@@ -24,8 +20,19 @@ export const useConnectStore = defineStore('connect', () => {
   const maxRetransmits = 2
 
   function initializeConnection() {
+    sendChannels.value = []
+    let peerConnectionConfiguration = {
+      iceServers: iceServers.value,
+    }
+
     socket = io.connect(signalServerUrl)
     peerConnection.value = new RTCPeerConnection(peerConnectionConfiguration)
+
+    peerConnection.value.onclose = () => {
+      // console.log('[INFO] ===Connection closed===')
+      window.location.reload()
+    }
+
     handleServerMsg()
     establishDataChannel()
     // console.log('[INFO] ===Connection core initialized===')
@@ -202,6 +209,20 @@ export const useConnectStore = defineStore('connect', () => {
       return 'pending'
     }
   }
+
+  watch([iceServers, maxConnectionNumber], async () => {
+    if (peerConnection.value) {
+      console.warn('[INFO] ===Reconnecting===')
+
+      await Promise.all(
+        sendChannels.value.map(channel => channel.value.close()),
+      )
+
+      peerConnection.value.close()
+      socket.disconnect()
+      window.location.reload()
+    }
+  })
 
   return {
     peerConnection,

@@ -69,6 +69,7 @@ export const useReceiveStore = defineStore('receive', () => {
 
       receiveChannel.onclose = () => {
         // console.log(`[INFO] Receive channel closed`)
+        window.location.reload()
       }
 
       receiveChannel.onmessage = event => {

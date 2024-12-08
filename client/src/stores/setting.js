@@ -35,7 +35,7 @@ export const useSettingStore = defineStore('setting', () => {
   })
 
   // maxConnectionNumber
-  const maxConnectionNumber = ref(5)
+  const maxConnectionNumber = ref(10)
 
   if (localStorage.getItem('maxConnectionNumber')) {
     maxConnectionNumber.value = JSON.parse(

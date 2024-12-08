@@ -32,12 +32,25 @@ onMounted(() => {
 })
 
 function saveSettings() {
-  maxConnectionNumber.value = maxConnectionNumberTmp.value
-  let iceServersValue
-  iceServersValue = JSON.parse(`[${iceServersTmp.value.split('\n').join(',')}]`)
-  iceServers.value = iceServersValue
-  autoDisplayImage.value = autoDisplayImageTmp.value
-  directlyOpenLink.value = directlyOpenLinkTmp.value
+  if (maxConnectionNumber.value !== maxConnectionNumberTmp.value) {
+    maxConnectionNumber.value = maxConnectionNumberTmp.value
+  }
+
+  let iceServersValue = JSON.parse(
+    `[${iceServersTmp.value.split('\n').join(',')}]`,
+  )
+  if (JSON.stringify(iceServers.value) !== JSON.stringify(iceServersValue)) {
+    iceServers.value = iceServersValue
+  }
+
+  if (autoDisplayImage.value !== autoDisplayImageTmp.value) {
+    autoDisplayImage.value = autoDisplayImageTmp.value
+  }
+
+  if (directlyOpenLink.value !== directlyOpenLinkTmp.value) {
+    directlyOpenLink.value = directlyOpenLinkTmp.value
+  }
+
   close()
 }
 
