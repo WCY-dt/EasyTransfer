@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSettingStore } from '@/stores/setting'
 
 const props = defineProps({
   url: {
@@ -27,6 +29,9 @@ const props = defineProps({
     default: false,
   },
 })
+
+const settingStore = useSettingStore()
+const { autoDisplayImage, directlyOpenLink } = storeToRefs(settingStore)
 
 const copied = ref(false)
 
@@ -307,7 +312,7 @@ function decideFileType() {
         :max="props.size"
       ></progress>
       <img
-        v-if="isImageType() && props.success"
+        v-if="isImageType() && props.success && autoDisplayImage"
         class="download-item-content"
         :src="props.url"
         alt="Photo"
@@ -318,7 +323,10 @@ function decideFileType() {
     </div>
   </a>
   <div
-    v-if="props.type === 'TRANSFER_TYPE_TEXT' && !isLinkMessage(props.name)"
+    v-if="
+      props.type === 'TRANSFER_TYPE_TEXT' &&
+      (!isLinkMessage(props.name) || !directlyOpenLink)
+    "
     class="download-item text shadow"
     :class="{ success: props.success, loading: !props.success }"
     @click="onTextClick"
@@ -333,7 +341,11 @@ function decideFileType() {
     </div>
   </div>
   <a
-    v-if="props.type === 'TRANSFER_TYPE_TEXT' && isLinkMessage(props.name)"
+    v-if="
+      props.type === 'TRANSFER_TYPE_TEXT' &&
+      isLinkMessage(props.name) &&
+      directlyOpenLink
+    "
     class="download-item text shadow"
     :class="{ success: props.success, loading: !props.success }"
     @click="onTextClick"

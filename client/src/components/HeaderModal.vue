@@ -15,7 +15,7 @@ const toggleSettings = () => {
         <img src="/src/assets/favicon.svg" alt="EasyTransfer Logo" />
         <div class="logo-text">
           <h1>EasyTransfer</h1>
-          <span>v3.1.1</span>
+          <span>v3.1.2</span>
           <p>Share simply & stay anonymous.</p>
         </div>
       </div>

@@ -1,8 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useConnectStore } from '@/stores/connect'
+import { storeToRefs } from 'pinia'
+import { useSettingStore } from '@/stores/setting'
 
-const connectStore = useConnectStore()
+const settingStore = useSettingStore()
+
+const { maxConnectionNumber, iceServers, autoDisplayImage, directlyOpenLink } =
+  storeToRefs(settingStore)
 
 const emit = defineEmits(['close'])
 const close = () => {
@@ -14,20 +18,26 @@ const saveText = ref('Save')
 
 const maxConnectionNumberTmp = ref(null)
 const iceServersTmp = ref(null)
+const autoDisplayImageTmp = ref(null)
+const directlyOpenLinkTmp = ref(null)
 
 onMounted(() => {
-  maxConnectionNumberTmp.value = connectStore.getMaxConnectionNumber()
-  let iceServersObject = connectStore.getIceServers()
-  iceServersTmp.value = iceServersObject
+  maxConnectionNumberTmp.value = maxConnectionNumber.value
+  iceServersTmp.value = iceServers.value
     .map(server => JSON.stringify(server))
     .join('\n')
+
+  autoDisplayImageTmp.value = autoDisplayImage.value
+  directlyOpenLinkTmp.value = directlyOpenLink.value
 })
 
 function saveSettings() {
-  connectStore.setMaxConnectionNumber(maxConnectionNumberTmp.value)
+  maxConnectionNumber.value = maxConnectionNumberTmp.value
   let iceServersValue
   iceServersValue = JSON.parse(`[${iceServersTmp.value.split('\n').join(',')}]`)
-  connectStore.setIceServers(iceServersValue)
+  iceServers.value = iceServersValue
+  autoDisplayImage.value = autoDisplayImageTmp.value
+  directlyOpenLink.value = directlyOpenLinkTmp.value
   close()
 }
 
@@ -35,22 +45,8 @@ const checkSettings = () => {
   saveAvailable.value = false
   saveText.value = 'Checking...'
 
-  if (!maxConnectionNumberTmp.value) {
-    saveAvailable.value = false
-    saveText.value = 'Max connection number cannot be empty'
-    return
-  }
-
   if (maxConnectionNumberTmp.value < 1) {
-    saveAvailable.value = false
-    saveText.value = 'Max connection number must be greater than 0'
-    return
-  }
-
-  if (maxConnectionNumberTmp.value > 10) {
-    saveAvailable.value = false
-    saveText.value = 'Max connection number must be less than 10'
-    return
+    maxConnectionNumberTmp.value = 1
   }
 
   let iceServersValue
@@ -89,13 +85,22 @@ const checkSettings = () => {
       <h2><span class="mdi mdi-cog"></span>Settings</h2>
       <div class="setting-item">
         <label for="max-connection-number">Max connection number</label>
-        <input
-          type="number"
-          id="max-connection-number"
-          class="blur shadow"
-          v-model="maxConnectionNumberTmp"
-          @input="checkSettings"
-        />
+        <div class="range-input">
+          <input
+            type="range"
+            id="max-connection-number"
+            class="blur shadow"
+            v-model="maxConnectionNumberTmp"
+            @input="checkSettings"
+            min="0"
+            max="16"
+            step="1"
+          />
+          <div class="range-input-label">
+            <span>0</span><span>4</span><span>8</span><span>12</span
+            ><span>16</span>
+          </div>
+        </div>
         <label for="ice-servers">ICE Servers</label>
         <textarea
           id="ice-servers"
@@ -104,6 +109,26 @@ const checkSettings = () => {
           spellcheck="false"
           @input="checkSettings"
         ></textarea>
+        <label for="enable-img-display">Auto display image</label>
+        <label class="switch-input blur shadow">
+          <input
+            class="blur shadow"
+            type="checkbox"
+            id="enable-img-display"
+            v-model="autoDisplayImageTmp"
+          />
+          <span class="blur shadow"></span>
+        </label>
+        <label for="enable-open-link">Directly open link</label>
+        <label class="switch-input blur shadow">
+          <input
+            class="blur shadow"
+            type="checkbox"
+            id="enable-open-link"
+            v-model="directlyOpenLinkTmp"
+          />
+          <span class="blur shadow"></span>
+        </label>
       </div>
       <div class="setting-button">
         <button @click="close" class="cancel-button">Cancel</button>
@@ -177,7 +202,7 @@ const checkSettings = () => {
   .setting-item {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
 
     width: 100%;
     padding: 2rem 1.5rem;
@@ -189,12 +214,152 @@ const checkSettings = () => {
       text-align: right;
     }
 
-    input,
+    .switch-input {
+      position: relative;
+      display: inline-block;
+      width: 4rem;
+      height: 2rem;
+
+      input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      span {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: var(--border-radius);
+        background-color: var(--secondary-color);
+        transition: all 0.1s ease-in-out;
+
+        &:before {
+          position: absolute;
+          content: '';
+          height: 1.5rem;
+          width: 1.5rem;
+          left: 0.25rem;
+          bottom: 0.25rem;
+          border-radius: var(--small-border-radius);
+          background-color: var(--light-color);
+          transition: all 0.1s ease-in-out;
+        }
+      }
+
+      input:checked + span {
+        background-color: var(--success-color);
+
+        &:before {
+          transform: translateX(calc(4rem - 2 * 0.25rem - 1.5rem));
+        }
+      }
+    }
+
+    .range-input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2rem;
+
+      input[type='range'] {
+        width: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+        margin: 0;
+        outline: 0;
+        background-color: transparent;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+
+        &::-webkit-slider-runnable-track {
+          height: 1.5rem;
+          background-color: var(--light-blur-color);
+          border-radius: var(--border-radius);
+        }
+
+        &::-moz-range-track {
+          height: 1.5rem;
+          background-color: var(--light-blur-color);
+          outline: none;
+          border-radius: var(--border-radius);
+        }
+
+        &::-webkit-slider-container {
+          width: 100%;
+          height: 1.5rem;
+          overflow: hidden;
+          background-color: transparent;
+          border-radius: var(--border-radius);
+        }
+
+        &::-moz-range-progress {
+          width: 100%;
+          height: 1.5rem;
+          overflow: hidden;
+          background-color: transparent;
+          border-radius: var(--border-radius);
+        }
+
+        &::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+
+          width: 0rem;
+          height: 1.5rem;
+
+          border-image: linear-gradient(
+              var(--primary-color),
+              var(--primary-color)
+            )
+            0 fill / 8 20 8 0 / 0 0 0 2000px;
+        }
+
+        &::-moz-range-thumb {
+          width: 0rem;
+          height: 1.5rem;
+
+          border-image: linear-gradient(
+              var(--primary-color),
+              var(--primary-color)
+            )
+            0 fill / 8 20 8 0 / 0 0 0 2000px;
+        }
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      .range-input-label {
+        display: flex;
+        justify-content: space-between;
+
+        width: calc(100% + 1rem);
+
+        font-size: 1rem;
+        font-weight: 700;
+
+        span {
+          width: 1rem;
+          text-align: center;
+          font-family: var(--code-font-family);
+          font-size: 1rem;
+          color: var(--secondary-color);
+        }
+      }
+    }
+
     textarea {
       width: 100%;
       padding: 0.5rem;
       border: none;
       border-radius: var(--border-radius);
+      min-height: 16rem;
 
       background-color: var(--light-blur-color);
 
@@ -203,18 +368,14 @@ const checkSettings = () => {
       word-break: keep-all;
       line-break: keep-all;
 
+      resize: none;
+
       transition: all 0.1s ease-in-out;
 
       &:focus {
         border: none;
         outline: 2px solid var(--primary-color);
       }
-    }
-
-    textarea {
-      resize: none;
-
-      min-height: 16rem;
     }
   }
 
@@ -286,6 +447,7 @@ const checkSettings = () => {
   .settings-cluster {
     .setting-item {
       grid-template-columns: 1fr;
+      gap: 0.5rem;
 
       label {
         text-align: left;
