@@ -6,6 +6,8 @@ const showSettings = ref(false)
 const toggleSettings = () => {
   showSettings.value = !showSettings.value
 }
+
+const version = 'v' + process.package_version
 </script>
 
 <template>
@@ -15,7 +17,7 @@ const toggleSettings = () => {
         <img src="/src/assets/favicon.svg" alt="EasyTransfer Logo" />
         <div class="logo-text">
           <h1>EasyTransfer</h1>
-          <span>v3.1.2</span>
+          <span>{{ version }}</span>
           <p>Share simply & stay anonymous.</p>
         </div>
       </div>
