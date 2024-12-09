@@ -28,9 +28,9 @@ const version = 'v' + (process.package_version as string)
         >
         <a
           href="https://github.com/WCY-dt/EasyTransfer"
-          class="link-item shadow"
+          class="link-item shadow github"
           ><span class="mdi mdi-github"></span
-          ><span class="text">GitHub</span></a
+          ><span class="text">Star on GitHub</span></a
         >
       </div>
     </div>
@@ -145,6 +145,11 @@ header {
 
     transition: all 0.1s ease-in-out;
 
+    &.github {
+      color: var(--dark-color);
+      background-color: var(--gold-color);
+    }
+
     .mdi {
       font-size: 1.5rem;
       line-height: 1.5rem;
@@ -153,6 +158,11 @@ header {
     @media (hover: hover) {
       &:hover {
         color: var(--primary-light-color);
+
+        &.github {
+          color: var(--dark-color);
+          background-color: var(--gold-light-color);
+        }
       }
     }
 

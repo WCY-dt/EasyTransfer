@@ -4,7 +4,14 @@
   <footer>
     <p>© 2024 EasyTransfer. All rights reserved.</p>
     <p>
-      View on
+      <a href="https://github.com/WCY-dt/EasyTransfer/blob/main/README.md"
+        ><span class="mdi mdi-information"></span>About</a
+      >
+      |
+      <a href="https://github.com/WCY-dt/EasyTransfer/issues/new/choose"
+        ><span class="mdi mdi-comment-quote"></span>Feedback</a
+      >
+      |
       <a href="https://github.com/WCY-dt/EasyTransfer"
         ><span class="mdi mdi-github"></span>GitHub</a
       >
