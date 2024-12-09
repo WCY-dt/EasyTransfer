@@ -7,7 +7,7 @@ const toggleSettings = (): void => {
   showSettings.value = !showSettings.value
 }
 
-const version = 'v' + (process.env.PACKAGE_VERSION as string)
+const version = 'v' + (process.package_version as string)
 </script>
 
 <template>
