@@ -1,16 +1,27 @@
+import { Server } from 'socket.io';
+import { Socket } from 'socket.io';
+
 const port = process.env.PORT || 3000;
-const io = require('socket.io')(port, {
+const io = new Server(Number(port), {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
   }
 });
 
-const clients = {}; // Store client IDs and their corresponding sockets
-const maxConnectionNumbers = {}; // Store client IDs and their corresponding max connection numbers
+interface Clients {
+  [key: string]: Socket;
+}
 
-const generateId = () => { // Generate a random 4 character string
-  let id;
+interface MaxConnectionNumbers {
+  [key: string]: number;
+}
+
+const clients: Clients = {}; // Store client IDs and their corresponding sockets
+const maxConnectionNumbers: MaxConnectionNumbers = {}; // Store client IDs and their corresponding max connection numbers
+
+const generateId = (): string => { // Generate a random 4 character string
+  let id: string;
   do {
     id = Math.random()
       .toString(36)
@@ -27,10 +38,10 @@ const generateId = () => { // Generate a random 4 character string
   return id;
 }
 
-io.on('connection', socket => {
+io.on('connection', (socket: Socket) => {
   console.log('[client connected] ', socket.id);
 
-  socket.on('register', (maxConnectionNumber) => {
+  socket.on('register', (maxConnectionNumber: number) => {
     const clientId = generateId();
     console.log('[register] ', clientId, ' with max connection number ', maxConnectionNumber);
     maxConnectionNumbers[clientId] = maxConnectionNumber;
@@ -38,17 +49,17 @@ io.on('connection', socket => {
     clients[clientId].emit('success', clientId);
   });
 
-  socket.on('offer', (sdp, srcId, targetId) => {
+  socket.on('offer', (sdp: any, srcId: string, targetId: string) => {
     console.log('[offer] ', srcId, ' --> ', targetId);
     clients[targetId].emit('offer', sdp, srcId, maxConnectionNumbers[srcId]);
   });
 
-  socket.on('answer', (sdp, srcId, targetId) => {
+  socket.on('answer', (sdp: any, srcId: string, targetId: string) => {
     console.log('[answer] ', srcId, ' --> ', targetId);
     clients[targetId].emit('answer', sdp, srcId);
   });
 
-  socket.on('candidate', (candidate, targetId) => {
+  socket.on('candidate', (candidate: any, targetId: string) => {
     console.log('[candidate] ', targetId);
     clients[targetId].emit('candidate', candidate);
   });

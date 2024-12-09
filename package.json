@@ -1,11 +1,14 @@
 {
   "name": "file-transfer-server",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Server for file transfer",
-  "main": "server/server.js",
+  "main": "dist/server.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "nodemon server/server.js"
+    "start": "tsc && node dist/server/server.js",
+    "dev": "tsc && nodemon dist/server/server.js"
   },
   "keywords": [
     "file",
@@ -18,6 +21,8 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "@types/node": "^22.10.1",
+    "nodemon": "^3.1.7",
+    "typescript": "^5.7.2"
   }
 }
