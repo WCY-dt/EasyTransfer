@@ -2,7 +2,7 @@
 
 ![GitHub](https://img.shields.io/github/license/WCY-dt/EasyTransfer) ![GitHub package.json version](https://img.shields.io/github/package-json/v/WCY-dt/EasyTransfer?filename=client%2Fpackage.json)
 
-[简体中文](README-ZH_cn.md) | English
+[简体中文](README_ZH-cn.md) | English
 
 **👉EXPERIENCE NOW: [EasyTransfer](https://file.ch3nyang.top/)**
 
@@ -34,23 +34,27 @@ It is built using webRTC and Vue.js, and there is
 
 1. [Fork](https://github.com/WCY-dt/EasyTransfer/fork) this project.
 
-2. Import the entire project into [glitch](https://glitch.com/) or your own server.
+2. Click the button below to import the entire project into [glitch](https://glitch.com/).
 
     [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/WCY-dt/EasyTransfer)
 
-    > This project also provides an automated deployment script. You only need to create a new project in Glitch and run the following command in the project's console:
+    > You can also choose to use the automated deployment script provided by this project. All you need to do is create a new project in Glitch and run the following command in the project's console:
     >
     > ```shell
     > git config receive.denyCurrentBranch ignore
     > ```
     >
-    > Then set Secrets `GLITCH_GIT_URL` in GitHub to the Git URL of your Glitch project.
+    > Then set up Secrets in GitHub and set `GLITCH_GIT_URL` to the Git URL of your Glitch project.
     >
-    > Whenever you push code to the `main` branch, GitHub Actions will automatically synchronize the code to the Glitch project.
+    > Whenever you push code to the `main` branch, GitHub Actions will automatically sync the code to the Glitch project.
 
-3. Modify `signalServerUrl` and `iceServers` in [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) to your own addresses if needed.
+3. The changes you may need to make to the code include:
 
-4. Open GitHub Pages and select the `gh-pages` branch as the source.
+    - **IceServers**: modify `iceServers` in [`./client/src/stores/connect.js`](./client/src/stores/setting.ts) to your own STUN and TURN server addresses;
+    - **SignalServerUrl**: modify `VITE_SIGNAL_SERVER_URL` in [`./client/.env.production`](./client/.env.production) to your own signaling server address;
+    - You may also need to modify `VITE_SIGNAL_SERVER_URL` in [`./client/.env.development`](./client/.env.development) to use a different signaling server address in the development environment to avoid conflicts with the production environment.
+
+4. Open GitHub Pages and select the `gh-pages` branch as the source. GitHub Actions will automatically build and deploy.
 
 ## TODO
 
@@ -58,7 +62,7 @@ It is built using webRTC and Vue.js, and there is
 - [x] Optimize transmission speed
 - [x] Support photo transmission
 - [x] Support plain text transmission
-- [x] Support breakpoint resume
+- [x] Support parallel transmission
 
 ## Acknowledgements
 

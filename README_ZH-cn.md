@@ -34,11 +34,11 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 
 1. [fork](https://github.com/WCY-dt/EasyTransfer/fork) 本项目。
 
-2. 将整个项目导入到 [glitch](https://glitch.com/) 中或您自己的服务器中。
+2. 点击下方按钮，将整个项目导入到 [glitch](https://glitch.com/) 中。
 
     [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/WCY-dt/EasyTransfer)
 
-    > 本项目也提供了自动化的部署脚本，您只需要在 Glitch 中创建一个新的项目，并在项目的控制台中运行以下命令：
+    > 您也可以选择使用本项目提供的自动化部署脚本。您只需要在 Glitch 中创建一个新的项目，并在项目的控制台中运行以下命令：
     >
     > ```shell
     > git config receive.denyCurrentBranch ignore
@@ -48,9 +48,13 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
     >
     > 每当您 push 代码到 `main` 分支时，GitHub Actions 将自动将代码同步到 Glitch 项目中。
 
-3. 如有需要，修改 [`./client/src/stores/connect.js`](https://github.com/WCY-dt/EasyTransfer/blob/main/client/src/stores/connect.js) 中的 `signalServerUrl` 和 `iceServers` 为您自己的地址。
+3. 您可能需要对代码做出的修改包括：
 
-4. 开启 GitHub Pages，并选择 `gh-pages` 分支作为源。
+    - **IceServers**：在 [`./client/src/stores/connect.js`](./client/src/stores/setting.ts) 中修改 `iceServers` 为您自己的 STUN 和 TURN 服务器地址；
+    - **SignalServerUrl**：在 [`./client/.env.production`](./client/.env.production) 中修改 `VITE_SIGNAL_SERVER_URL` 为您自己的信令服务器地址；
+    - 你可能还需要修改 [`./client/.env.development`](./client/.env.development) 中的 `VITE_SIGNAL_SERVER_URL`，以便在开发环境中使用不同的信令服务器地址，以避免与生产环境冲突。
+
+4. 开启 GitHub Pages，并选择 `gh-pages` 分支作为源。GitHub Actions 将自动构建并部署。
 
 ## TODO
 
@@ -58,7 +62,7 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 - [x] 优化传输速度
 - [x] 支持拍照传输
 - [x] 支持纯文本传输
-- [x] 支持断点续传
+- [x] 支持并行传输
 
 ## 致谢
 
