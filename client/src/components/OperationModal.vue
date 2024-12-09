@@ -1,6 +1,6 @@
-<script setup>
-import OperationId from './OperationId.vue'
-import UploadModal from './UploadModal.vue'
+<script setup lang="ts">
+import OperationId from '@/components/OperationId.vue'
+import UploadModal from '@/components/UploadModal.vue'
 </script>
 
 <template>

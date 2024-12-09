@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
@@ -8,10 +8,10 @@ const connectStore = useConnectStore()
 const { isConnectSuccess } = storeToRefs(connectStore)
 const sendStore = useSendStore()
 
-const textInput = ref('')
-const textSent = ref(false)
+const textInput = ref<string>('')
+const textSent = ref<boolean>(false)
 
-function onTextClick() {
+function onTextClick(): void {
   if (!isConnectSuccess.value) return
   sendStore.sendText(textInput.value)
   textSent.value = true

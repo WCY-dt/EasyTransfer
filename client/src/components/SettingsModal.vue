@@ -1,7 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
+import { IceServer } from '@/types'
 
 const settingStore = useSettingStore()
 
@@ -9,35 +10,35 @@ const { maxConnectionNumber, iceServers, autoDisplayImage, directlyOpenLink } =
   storeToRefs(settingStore)
 
 const emit = defineEmits(['close'])
-const close = () => {
+const close = (): void => {
   emit('close')
 }
 
-const saveAvailable = ref(true)
-const saveText = ref('Save')
+const saveAvailable = ref<boolean>(true)
+const saveText = ref<string>('Save')
 
-const maxConnectionNumberTmp = ref(null)
-const iceServersTmp = ref(null)
-const autoDisplayImageTmp = ref(null)
-const directlyOpenLinkTmp = ref(null)
+const maxConnectionNumberTmp = ref<number | null>(null)
+const iceServersTmp = ref<string | null>(null)
+const autoDisplayImageTmp = ref<boolean | null>(null)
+const directlyOpenLinkTmp = ref<boolean | null>(null)
 
-onMounted(() => {
+onMounted((): void => {
   maxConnectionNumberTmp.value = maxConnectionNumber.value
   iceServersTmp.value = iceServers.value
-    .map(server => JSON.stringify(server))
+    .map((server: IceServer) => JSON.stringify(server))
     .join('\n')
 
   autoDisplayImageTmp.value = autoDisplayImage.value
   directlyOpenLinkTmp.value = directlyOpenLink.value
 })
 
-function saveSettings() {
+function saveSettings(): void {
   if (maxConnectionNumber.value !== maxConnectionNumberTmp.value) {
     maxConnectionNumber.value = maxConnectionNumberTmp.value
   }
 
-  let iceServersValue = JSON.parse(
-    `[${iceServersTmp.value.split('\n').join(',')}]`,
+  let iceServersValue: IceServer[] = JSON.parse(
+    `[${iceServersTmp.value?.split('\n').join(',')}]`,
   )
   if (JSON.stringify(iceServers.value) !== JSON.stringify(iceServersValue)) {
     iceServers.value = iceServersValue
@@ -54,18 +55,21 @@ function saveSettings() {
   close()
 }
 
-const checkSettings = () => {
+const checkSettings = (): void => {
   saveAvailable.value = false
   saveText.value = 'Checking...'
 
-  if (maxConnectionNumberTmp.value < 1) {
+  if (
+    maxConnectionNumberTmp.value !== null &&
+    maxConnectionNumberTmp.value < 1
+  ) {
     maxConnectionNumberTmp.value = 1
   }
 
-  let iceServersValue
+  let iceServersValue: IceServer[]
   try {
     iceServersValue = JSON.parse(
-      `[${iceServersTmp.value.split('\n').join(',')}]`,
+      `[${iceServersTmp.value?.split('\n').join(',')}]`,
     )
   } catch {
     saveAvailable.value = false

@@ -1,41 +1,24 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
+import { ItemDisplayProps } from '@/types'
 
-const props = defineProps({
-  url: {
-    type: String,
-    default: 'javascript:void(0)',
-  },
-  name: {
-    type: String,
-    default: 'No file to download',
-  },
-  size: {
-    type: Number,
-    default: 1,
-  },
-  progress: {
-    type: Number,
-    default: 0,
-  },
-  type: {
-    type: String,
-    default: 'TRANSFER_TYPE_FILE',
-  },
-  success: {
-    type: Boolean,
-    default: false,
-  },
-})
+const props = defineProps<ItemDisplayProps>()
+
+props.url = props.url || 'javascript:void(0)'
+props.name = props.name || 'No file to download'
+props.size = props.size || 1
+props.progress = props.progress || 0
+props.type = props.type || 'TRANSFER_TYPE_FILE'
+props.success = props.success || false
 
 const settingStore = useSettingStore()
 const { autoDisplayImage, directlyOpenLink } = storeToRefs(settingStore)
 
 const copied = ref(false)
 
-function onTextClick() {
+function onTextClick(): void {
   navigator.clipboard.writeText(props.name)
   copied.value = true
   setTimeout(() => {
@@ -43,7 +26,7 @@ function onTextClick() {
   }, 1000)
 }
 
-function isLinkMessage(text) {
+function isLinkMessage(text: string): boolean {
   if (props.type === 'TRANSFER_TYPE_TEXT') {
     const urlPattern = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
@@ -59,7 +42,7 @@ function isLinkMessage(text) {
   return false
 }
 
-function isImageType() {
+function isImageType(): boolean {
   if (props.type === 'TRANSFER_TYPE_PHOTO') {
     return true
   }
@@ -77,8 +60,8 @@ function isImageType() {
   return imageFormats.some(format => props.name.toLowerCase().endsWith(format))
 }
 
-function decideFileType() {
-  const fileTypeMap = {
+function decideFileType(): string {
+  const fileTypeMap: { [key: string]: string[] } = {
     'mdi-file-image': [
       '.png',
       '.jpg',

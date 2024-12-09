@@ -1,15 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useSendStore } from '@/stores/send'
-import SendItem from './SendItem.vue'
+import SendItem from '@/components/SendItem.vue'
+import { ItemDisplayProps } from '@/types'
 
 const sendStore = useSendStore()
 
-const reactiveUploadFileItems = ref([])
+const reactiveUploadFileItems = ref<ItemDisplayProps[]>([])
 
 watch(
   () => sendStore.uploadFileItems,
-  newValue => {
+  (newValue: ItemDisplayProps[]) => {
     reactiveUploadFileItems.value = newValue
   },
   { deep: true },

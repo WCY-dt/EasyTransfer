@@ -21,6 +21,11 @@ export default defineConfig(({ mode }) => {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
     },
+    esbuild: {
+      jsxFactory: 'h',
+      jsxFragment: 'Fragment',
+      jsxInject: `import { h } from 'vue'`
+    },
     define: {
       'process.env': env,
       'process.package_version': JSON.stringify(packageJson.version),

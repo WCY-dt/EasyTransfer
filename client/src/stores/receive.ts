@@ -1,15 +1,22 @@
-import { ref } from 'vue'
+import { ref, Ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { useConnectStore } from './connect.js'
+import { useConnectStore } from '@/stores/connect'
+import { ItemDisplayProps } from '@/types'
 
 export const useReceiveStore = defineStore('receive', () => {
   const connectStore = useConnectStore()
 
   const { peerConnection } = storeToRefs(connectStore)
 
-  const downloadFileItems = ref([])
+  const downloadFileItems: Ref<ItemDisplayProps[]> = ref([])
 
-  function addDownloadFileItem(url, name, size, progress, type) {
+  function addDownloadFileItem(
+    url: string,
+    name: string,
+    size: number,
+    progress: number,
+    type: string,
+  ) {
     downloadFileItems.value.push({
       url,
       name,
@@ -21,40 +28,45 @@ export const useReceiveStore = defineStore('receive', () => {
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
-  function updateFileProgress(index, progress) {
+  function updateFileProgress(index: number, progress: number) {
     downloadFileItems.value[index].progress = progress
 
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
-  function updateFileUrl(index, url) {
+  function updateFileUrl(index: number, url: string) {
     downloadFileItems.value[index].url = url
 
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
-  function updateFileSuccess(index, success) {
+  function updateFileSuccess(index: number, success: boolean) {
     downloadFileItems.value[index].success = success
 
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
-  let receivedDataArray = []
-  let receivedData = []
+  let receivedDataArray: ArrayBuffer[] = []
+  let receivedData: ArrayBuffer[] = []
   let currentFileType = ''
   let currentFileName = ''
   let currentFileSize = 0
   let currentFileProgress = 0
   let currentFileUrl = ''
 
-  let fileTypeQueue = []
-  let fileNameQueue = []
-  let fileSizeQueue = []
+  let fileTypeQueue: string[] = []
+  let fileNameQueue: string[] = []
+  let fileSizeQueue: number[] = []
 
   let currentReceivingFileNo = -1
 
   function receiveFiles() {
-    peerConnection.value.ondatachannel = event => {
+    if (!peerConnection.value) {
+      console.error('[ERR] Peer connection not ready')
+      return
+    }
+
+    peerConnection.value.ondatachannel = (event: RTCDataChannelEvent) => {
       initReceiveBuffer()
 
       const receiveChannel = event.channel
@@ -63,7 +75,7 @@ export const useReceiveStore = defineStore('receive', () => {
         // console.log(`[INFO] Receive channel opened`)
       }
 
-      receiveChannel.onerror = error => {
+      receiveChannel.onerror = (error: Event) => {
         console.error(`[ERR] Receive channel error: ${error}`)
       }
 
@@ -72,7 +84,7 @@ export const useReceiveStore = defineStore('receive', () => {
         window.location.reload()
       }
 
-      receiveChannel.onmessage = event => {
+      receiveChannel.onmessage = (event: MessageEvent) => {
         // console.log(`[INFO] Channel received message`)
         handleReceiveChannelMsg(event)
       }
@@ -82,7 +94,7 @@ export const useReceiveStore = defineStore('receive', () => {
   const metaPrefix = 'CONTENT_META'
   const metaPrefixBytes = new TextEncoder().encode(metaPrefix)
 
-  async function handleReceiveChannelMsg(event) {
+  async function handleReceiveChannelMsg(event: MessageEvent) {
     const dataView = new DataView(event.data)
 
     let isMeta = true
@@ -104,7 +116,7 @@ export const useReceiveStore = defineStore('receive', () => {
     }
   }
 
-  async function handleFileMeta(data) {
+  async function handleFileMeta(data: string) {
     if (parseInt(data)) {
       // console.log(`[INFO] Received size: ${data}`);
       fileSizeQueue.push(parseInt(data))
@@ -149,11 +161,11 @@ export const useReceiveStore = defineStore('receive', () => {
     }
   }
 
-  function handleFileContent(data) {
+  function handleFileContent(data: ArrayBuffer) {
     if (!currentFileName && fileNameQueue.length > 0) {
-      currentFileType = fileTypeQueue.shift()
-      currentFileName = fileNameQueue.shift()
-      currentFileSize = fileSizeQueue.shift()
+      currentFileType = fileTypeQueue.shift()!
+      currentFileName = fileNameQueue.shift()!
+      currentFileSize = fileSizeQueue.shift()!
       currentReceivingFileNo++
 
       console.log(

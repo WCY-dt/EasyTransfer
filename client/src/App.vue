@@ -1,9 +1,9 @@
-<script setup>
-import HeaderModal from './components/HeaderModal.vue'
+<script setup lang="ts">
+import HeaderModal from '@/components/HeaderModal.vue'
 import OperationModal from '@/components/OperationModal.vue'
 import SendModal from '@/components/SendModal.vue'
 import ReceiveModal from '@/components/ReceiveModal.vue'
-import FooterModal from './components/FooterModal.vue'
+import FooterModal from '@/components/FooterModal.vue'
 </script>
 
 <template>

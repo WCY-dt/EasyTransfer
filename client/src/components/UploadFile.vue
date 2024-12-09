@@ -1,5 +1,5 @@
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { useSendStore } from '@/stores/send'
@@ -8,22 +8,28 @@ const connectStore = useConnectStore()
 const { isConnectSuccess } = storeToRefs(connectStore)
 const sendStore = useSendStore()
 
-const fileInput = ref(null)
+const fileInput: Ref<HTMLInputElement | null> = ref(null)
 
 async function sendFiles() {
-  await sendStore.sendFiles(fileInput.value.files, 'TRANSFER_TYPE_FILE')
+  if (fileInput.value && fileInput.value.files) {
+    await sendStore.sendFiles(fileInput.value.files, 'TRANSFER_TYPE_FILE')
+  }
 }
 
-async function onFileDrop(event) {
+async function onFileDrop(event: DragEvent) {
   if (!isConnectSuccess.value) return
   event.preventDefault()
-  fileInput.value.files = event.dataTransfer.files
-  await sendFiles()
+  if (fileInput.value) {
+    fileInput.value.files = event.dataTransfer.files
+    await sendFiles()
+  }
 }
 
 function onFileClick() {
   if (!isConnectSuccess.value) return
-  fileInput.value.click()
+  if (fileInput.value) {
+    fileInput.value.click()
+  }
 }
 </script>
 

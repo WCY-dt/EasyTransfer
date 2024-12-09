@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
@@ -9,9 +9,9 @@ connectStore.initializeConnection()
 const { isConnectSuccess, registered, clientId, targetId } =
   storeToRefs(connectStore)
 
-const enableConnect = ref(false)
-const isConnecting = ref(false)
-const copied = ref(false)
+const enableConnect = ref<boolean>(false)
+const isConnecting = ref<boolean>(false)
+const copied = ref<boolean>(false)
 
 const buttonStatus = computed(() => ({
   disabled:
@@ -20,21 +20,21 @@ const buttonStatus = computed(() => ({
   success: !enableConnect.value && isConnectSuccess.value && registered.value,
 }))
 
-watch(targetId, newVal => {
+watch(targetId, (newVal: string) => {
   if (newVal !== newVal.toUpperCase()) {
     targetId.value = newVal.toUpperCase()
   }
   validateInput(newVal)
 })
 
-watch(isConnectSuccess, newValue => {
+watch(isConnectSuccess, (newValue: boolean) => {
   if (newValue) {
     enableConnect.value = false
   }
   isConnecting.value = false
 })
 
-function validateInput(value) {
+function validateInput(value: string) {
   enableConnect.value = value.length === 4
   isConnectSuccess.value = false
 }

@@ -1,14 +1,21 @@
-import { ref } from 'vue'
+import { ref, Ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
-import { useConnectStore } from './connect.js'
+import { useConnectStore } from '@/stores/connect'
+import { ItemDisplayProps } from '@/types'
 
 export const useSendStore = defineStore('send', () => {
   const connectStore = useConnectStore()
   const { sendChannels } = storeToRefs(connectStore)
 
-  const uploadFileItems = ref([])
+  const uploadFileItems: Ref<ItemDisplayProps[]> = ref([])
 
-  function addUploadFileItem(url, name, size, progress, type) {
+  function addUploadFileItem(
+    url: string,
+    name: string,
+    size: number,
+    progress: number,
+    type: string,
+  ) {
     uploadFileItems.value.push({
       url,
       name,
@@ -20,19 +27,19 @@ export const useSendStore = defineStore('send', () => {
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  async function updateFileProgress(index, progress) {
+  async function updateFileProgress(index: number, progress: number) {
     uploadFileItems.value[index].progress = progress
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  async function updateFileUrl(index, url) {
+  async function updateFileUrl(index: number, url: string) {
     uploadFileItems.value[index].url = url
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  async function updateFileSuccess(index, success) {
+  async function updateFileSuccess(index: number, success: boolean) {
     uploadFileItems.value[index].success = success
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
@@ -40,22 +47,24 @@ export const useSendStore = defineStore('send', () => {
 
   let currentSendingFileNo = -1
 
-  let chunkQueue = []
+  let chunkQueue: (ArrayBuffer | Uint8Array | string)[] = []
 
   for (let i = 0; i < sendChannels.value.length; i++) {
-    sendChannels.value[i].value.onbufferedamountlow = async () => {
-      // console.log(`[INFO] Channel ${i} buffered amount low`)
+    sendChannels.value[i].onbufferedamountlow = async () => {
       await processQueue()
     }
   }
 
-  async function sendData(data, meta = false) {
+  async function sendData(
+    data: ArrayBuffer | Uint8Array | string,
+    meta: boolean = false,
+  ) {
     chunkQueue.push(data)
 
     await processQueue(meta)
   }
 
-  async function processQueue(meta) {
+  async function processQueue(meta?: boolean) {
     let sendChannel = null
     if (meta) {
       sendChannel = sendChannels.value[0]
@@ -64,12 +73,11 @@ export const useSendStore = defineStore('send', () => {
         Math.random() * sendChannels.value.length,
       )
       sendChannel = sendChannels.value[sendChannelIdx]
-      // console.log(`[INFO] Sending data to channel ${sendChannelIdx}`)
     }
 
     while (
       chunkQueue.length > 0 &&
-      sendChannel.value.bufferedAmount <= connectStore.maxBufferedAmount
+      sendChannel.bufferedAmount <= connectStore.maxBufferedAmount
     ) {
       let chunk = chunkQueue.shift()
 
@@ -77,23 +85,18 @@ export const useSendStore = defineStore('send', () => {
         chunk = new TextEncoder().encode(chunk)
       }
 
-      sendChannel.value.send(chunk)
+      sendChannel.send(new Uint8Array(chunk as ArrayBuffer))
     }
   }
 
   let currentFileType = ''
-  const currentFileName = ref('Drop file here or click to upload')
-  const currentFileSize = ref(0)
+  const currentFileName: Ref<string> = ref('Drop file here or click to upload')
+  const currentFileSize: Ref<number> = ref(0)
   const chunkSize = 16384
-  let fileReader = null
-  const offset = ref(0)
+  let fileReader: FileReader | null = null
+  const offset: Ref<number> = ref(0)
 
-  async function sendFiles(files, type) {
-    // Send the file meta and content
-    // console.log(`[INFO] ===Sending ${files.length} files===`)
-
-    // console.log(`files: ${files}`)
-
+  async function sendFiles(files: File[], type: string) {
     const fileNum = files.length
 
     if (fileNum === 0) {
@@ -114,20 +117,15 @@ export const useSendStore = defineStore('send', () => {
     }
   }
 
-  async function sendFileMeta(file, type) {
-    // Send the type, name, and size of the file
-    // console.log(`file: ${file}`)
-
+  async function sendFileMeta(file: File, type: string) {
     await sendData('CONTENT_META' + type, true)
     await sendData('CONTENT_META' + file.name, true)
     await sendData('CONTENT_META' + file.size, true)
 
-    // console.log(`[INFO] Sent meta: ${type} | ${file.name} | ${file.size}`)
-
     addUploadFileItem('javascript:void(0)', file.name, file.size, 0, type)
   }
 
-  async function sendFileContent(file, type) {
+  async function sendFileContent(file: File, type: string) {
     currentSendingFileNo++
 
     currentFileType = type
@@ -144,8 +142,8 @@ export const useSendStore = defineStore('send', () => {
     await sendSlices(slices, file)
   }
 
-  function sliceFile(file) {
-    const slices = []
+  function sliceFile(file: File): Blob[] {
+    const slices: Blob[] = []
     let offset = 0
 
     while (offset < file.size) {
@@ -157,9 +155,9 @@ export const useSendStore = defineStore('send', () => {
     return slices
   }
 
-  async function sendSlices(slices, file) {
+  async function sendSlices(slices: Blob[], file: File) {
     const promises = slices.map((slice, idx) => {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         const fileReader = new FileReader()
 
         fileReader.onload = async e => {
@@ -167,12 +165,15 @@ export const useSendStore = defineStore('send', () => {
           currentChunkIdxArray[0] = (idx & 0xff00) >> 8
           currentChunkIdxArray[1] = idx & 0xff
 
-          const dataArray = new Uint8Array(e.target.result.byteLength + 2)
+          const dataArray = new Uint8Array(
+            (e.target?.result as ArrayBuffer).byteLength + 2,
+          )
           dataArray.set(currentChunkIdxArray, 0)
-          dataArray.set(new Uint8Array(e.target.result), 2)
+          dataArray.set(new Uint8Array(e.target?.result as ArrayBuffer), 2)
 
           await sendData(dataArray)
-          offset.value = offset.value + e.target.result.byteLength
+          offset.value =
+            offset.value + (e.target?.result as ArrayBuffer).byteLength
 
           if (offset.value < currentFileSize.value) {
             await updateFileProgress(currentSendingFileNo, offset.value)
@@ -211,8 +212,7 @@ export const useSendStore = defineStore('send', () => {
     })
   }
 
-  function checkSendFileAvailability(size) {
-    // Check if the file is empty or the data channel is open
+  function checkSendFileAvailability(size: number): boolean {
     if (size === 0) {
       console.error(`[ERR] File is empty`)
       return false
@@ -226,24 +226,16 @@ export const useSendStore = defineStore('send', () => {
     return true
   }
 
-  async function sendText(text) {
-    // Send the file meta and content
-    // console.log(`[INFO] ===Sending text===`)
-
+  async function sendText(text: string) {
     await sendTextContent(text)
   }
 
-  async function sendTextContent(text) {
-    // Send the type, name, and size of the file
+  async function sendTextContent(text: string) {
     if (!checkSendTextAvailability(text)) return
 
     await sendData('CONTENT_META' + 'TRANSFER_TYPE_TEXT', true)
     await sendData('CONTENT_META' + text, true)
     await sendData('CONTENT_META' + text.length, true)
-
-    // console.log(
-    //   `[INFO] Sent content: ${'TRANSFER_TYPE_TEXT'} | ${text} | ${text.length}`,
-    // )
 
     addUploadFileItem(
       'javascript:void(0)',
@@ -258,8 +250,7 @@ export const useSendStore = defineStore('send', () => {
     updateFileSuccess(currentSendingFileNo, true)
   }
 
-  function checkSendTextAvailability(text) {
-    // Check if the text.valuepty or the data channel is open
+  function checkSendTextAvailability(text: string): boolean {
     if (text === '') {
       console.error('[ERR] Text is empty')
       return false

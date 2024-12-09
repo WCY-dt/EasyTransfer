@@ -1,13 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
-import SettingsModal from './SettingsModal.vue'
+import SettingsModal from '@/components/SettingsModal.vue'
 
-const showSettings = ref(false)
-const toggleSettings = () => {
+const showSettings = ref<boolean>(false)
+const toggleSettings = (): void => {
   showSettings.value = !showSettings.value
 }
 
-const version = 'v' + process.package_version
+const version = 'v' + (process.env.PACKAGE_VERSION as string)
 </script>
 
 <template>

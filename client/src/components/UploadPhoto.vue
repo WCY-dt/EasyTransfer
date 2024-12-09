@@ -1,5 +1,5 @@
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { useSendStore } from '@/stores/send'
@@ -8,14 +8,14 @@ const connectStore = useConnectStore()
 const { isConnectSuccess } = storeToRefs(connectStore)
 const sendStore = useSendStore()
 
-const photoSent = ref(false)
-const showCamera = ref(false)
-const showStream = ref(false)
+const photoSent: Ref<boolean> = ref(false)
+const showCamera: Ref<boolean> = ref(false)
+const showStream: Ref<boolean> = ref(false)
 
-const stream = ref(null)
-const photo = ref(null)
+const stream: Ref<HTMLVideoElement | null> = ref(null)
+const photo: Ref<HTMLCanvasElement | null> = ref(null)
 
-function onCameraClick() {
+function onCameraClick(): void {
   if (!isConnectSuccess.value) return
 
   navigator.mediaDevices
@@ -25,13 +25,15 @@ function onCameraClick() {
         facingMode: 'environment',
       },
     })
-    .then(mediaStream => {
+    .then((mediaStream: MediaStream) => {
       window.stream = mediaStream
-      stream.value.srcObject = mediaStream
+      if (stream.value) {
+        stream.value.srcObject = mediaStream
+      }
       showCamera.value = true
       showStream.value = true
     })
-    .catch(error => {
+    .catch((error: Error) => {
       console.error(`[ERR] GetUserMedia error: ${error}`)
       showCamera.value = false
       showStream.value = false
@@ -39,37 +41,46 @@ function onCameraClick() {
     })
 }
 
-function onSnapshotClick() {
-  // console.log('Taking snapshot')
-  photo.value.width = stream.value.videoWidth
-  photo.value.height = stream.value.videoHeight
-  photo.value
-    .getContext('2d')
-    .drawImage(stream.value, 0, 0, photo.value.width, photo.value.height)
-  window.stream.getTracks().forEach(track => track.stop())
-  showStream.value = false
+function onSnapshotClick(): void {
+  if (photo.value && stream.value) {
+    photo.value.width = stream.value.videoWidth
+    photo.value.height = stream.value.videoHeight
+    const context = photo.value.getContext('2d')
+    if (context) {
+      context.drawImage(
+        stream.value,
+        0,
+        0,
+        photo.value.width,
+        photo.value.height,
+      )
+    }
+    window.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop())
+    showStream.value = false
+  }
 }
 
-function onCameraCloseClick() {
-  window.stream.getTracks().forEach(track => track.stop())
+function onCameraCloseClick(): void {
+  window.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop())
   showCamera.value = false
   showStream.value = false
 }
 
-async function processAndSendPhoto() {
-  photo.value.toBlob(async function (blob) {
-    const timestamp = new Date().getTime()
-
-    const file = new File([blob], `image_${timestamp}.png`, {
-      type: 'image/png',
-    })
-    // console.log(file)
-
-    await sendStore.sendFiles([file], 'TRANSFER_TYPE_PHOTO')
-  }, 'image/png')
+async function processAndSendPhoto(): Promise<void> {
+  if (photo.value) {
+    photo.value.toBlob(async function (blob: Blob | null) {
+      if (blob) {
+        const timestamp = new Date().getTime()
+        const file = new File([blob], `image_${timestamp}.png`, {
+          type: 'image/png',
+        })
+        await sendStore.sendFiles([file], 'TRANSFER_TYPE_PHOTO')
+      }
+    }, 'image/png')
+  }
 }
 
-async function onCameraSendClick() {
+async function onCameraSendClick(): Promise<void> {
   if (!isConnectSuccess.value) return
 
   await processAndSendPhoto()

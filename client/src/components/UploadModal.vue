@@ -1,7 +1,7 @@
-<script setup>
-import UploadText from './UploadText.vue'
-import UploadFile from './UploadFile.vue'
-import UploadPhoto from './UploadPhoto.vue'
+<script setup lang="ts">
+import UploadText from '@/components/UploadText.vue'
+import UploadFile from '@/components/UploadFile.vue'
+import UploadPhoto from '@/components/UploadPhoto.vue'
 </script>
 
 <template>

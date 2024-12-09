@@ -1,17 +1,18 @@
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { useReceiveStore } from '@/stores/receive'
-import ReceiveItem from './ReceiveItem.vue'
+import ReceiveItem from '@/components/ReceiveItem.vue'
+import { ItemDisplayProps } from '@/types'
 
 const connectCore = useConnectStore()
 const receiveStore = useReceiveStore()
 const { isConnectSuccess } = storeToRefs(connectCore)
 
-const reactiveDownloadFileItems = ref([])
+const reactiveDownloadFileItems = ref<ItemDisplayProps[]>([])
 
-watch(isConnectSuccess, newValue => {
+watch(isConnectSuccess, (newValue: boolean) => {
   if (newValue) {
     receiveStore.receiveFiles()
   }
@@ -19,7 +20,7 @@ watch(isConnectSuccess, newValue => {
 
 watch(
   () => receiveStore.downloadFileItems,
-  newValue => {
+  (newValue: ItemDisplayProps[]) => {
     reactiveDownloadFileItems.value = newValue
   },
   { deep: true },

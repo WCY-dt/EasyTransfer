@@ -1,13 +1,14 @@
-import { ref, watch } from 'vue'
+import { ref, watch, Ref } from 'vue'
 import { defineStore } from 'pinia'
+import { IceServer } from '@/types'
 
 export const useSettingStore = defineStore('setting', () => {
   // autoDisplayImage
-  const autoDisplayImage = ref(true)
+  const autoDisplayImage: Ref<boolean> = ref(true)
 
   if (localStorage.getItem('autoDisplayImage')) {
     autoDisplayImage.value = JSON.parse(
-      localStorage.getItem('autoDisplayImage'),
+      localStorage.getItem('autoDisplayImage') as string,
     )
   }
 
@@ -19,11 +20,11 @@ export const useSettingStore = defineStore('setting', () => {
   })
 
   // directlyOpenLink
-  const directlyOpenLink = ref(true)
+  const directlyOpenLink: Ref<boolean> = ref(true)
 
   if (localStorage.getItem('directlyOpenLink')) {
     directlyOpenLink.value = JSON.parse(
-      localStorage.getItem('directlyOpenLink'),
+      localStorage.getItem('directlyOpenLink') as string,
     )
   }
 
@@ -35,11 +36,11 @@ export const useSettingStore = defineStore('setting', () => {
   })
 
   // maxConnectionNumber
-  const maxConnectionNumber = ref(10)
+  const maxConnectionNumber: Ref<number> = ref(10)
 
   if (localStorage.getItem('maxConnectionNumber')) {
     maxConnectionNumber.value = JSON.parse(
-      localStorage.getItem('maxConnectionNumber'),
+      localStorage.getItem('maxConnectionNumber') as string,
     )
   }
 
@@ -51,7 +52,7 @@ export const useSettingStore = defineStore('setting', () => {
   })
 
   // iceServers
-  const iceServers = ref([
+  const iceServers: Ref<IceServer[]> = ref([
     {
       urls: 'stun:stun.relay.metered.ca:80',
     },
@@ -78,7 +79,7 @@ export const useSettingStore = defineStore('setting', () => {
   ])
 
   if (localStorage.getItem('iceServers')) {
-    iceServers.value = JSON.parse(localStorage.getItem('iceServers'))
+    iceServers.value = JSON.parse(localStorage.getItem('iceServers') as string)
   }
 
   watch(iceServers, () => {
