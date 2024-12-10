@@ -386,6 +386,9 @@ function decideFileType(): string {
       &.upload-item-name {
         font-size: 1.5rem;
         font-weight: 700;
+
+        word-break: break-all;
+        line-break: anywhere;
       }
 
       &.upload-item-content {
