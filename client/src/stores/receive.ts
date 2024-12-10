@@ -117,22 +117,6 @@ export const useReceiveStore = defineStore('receive', () => {
   }
 
   async function handleFileMeta(data: string) {
-    // if (/^\d+$/.test(data)) {
-    //   // console.log(`[INFO] Received size: ${data}`);
-    //   fileSizeQueue.push(parseInt(data))
-    // } else {
-    //   if (
-    //     data === 'TRANSFER_TYPE_FILE' ||
-    //     data === 'TRANSFER_TYPE_TEXT' ||
-    //     data === 'TRANSFER_TYPE_PHOTO'
-    //   ) {
-    //     // console.log(`[INFO] Received type: ${data}`);
-    //     fileTypeQueue.push(data)
-    //   } else {
-    //     // console.log(`[INFO] Received name: ${data}`);
-    //     fileNameQueue.push(data)
-    //   }
-    // }
     const metaType = data[0]
     data = data.slice(1)
 

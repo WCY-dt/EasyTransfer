@@ -74,7 +74,7 @@ async function processAndSendPhoto(): Promise<void> {
         const file = new File([blob], `image_${timestamp}.png`, {
           type: 'image/png',
         })
-        await sendStore.sendFiles([file], 'TRANSFER_TYPE_PHOTO')
+        await sendStore.sendFiles([file], 'TRANSFER_TYPE_FILE')
       }
     }, 'image/png')
   }
