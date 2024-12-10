@@ -4,14 +4,14 @@ import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
 import { ItemDisplayProps } from '@/types'
 
-const props = defineProps<ItemDisplayProps>()
-
-props.url = props.url || 'javascript:void(0)'
-props.name = props.name || 'No file to download'
-props.size = props.size || 1
-props.progress = props.progress || 0
-props.type = props.type || 'TRANSFER_TYPE_FILE'
-props.success = props.success || false
+const props = withDefaults(defineProps<ItemDisplayProps>(), {
+  url: 'javascript:void(0)',
+  name: 'No file to download',
+  size: 1,
+  progress: 0,
+  type: 'TRANSFER_TYPE_FILE',
+  success: false,
+})
 
 const settingStore = useSettingStore()
 const { autoDisplayImage, directlyOpenLink } = storeToRefs(settingStore)
@@ -30,11 +30,11 @@ function isLinkMessage(text: string): boolean {
   if (props.type === 'TRANSFER_TYPE_TEXT') {
     const urlPattern = new RegExp(
       '^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$',
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$',
       'i', // fragment locator
     )
     return !!urlPattern.test(text)
@@ -275,45 +275,27 @@ function decideFileType(): string {
 </script>
 
 <template>
-  <a
-    v-if="
-      props.type === 'TRANSFER_TYPE_FILE' ||
-      props.type === 'TRANSFER_TYPE_PHOTO'
-    "
-    ref="downloadLink"
-    :href="props.url"
-    class="download-item file shadow"
-    :download="props.name"
-    :class="{ success: props.success, loading: !props.success }"
-  >
+  <a v-if="
+    props.type === 'TRANSFER_TYPE_FILE' ||
+    props.type === 'TRANSFER_TYPE_PHOTO'
+  " ref="downloadLink" :href="props.url" class="download-item file shadow" :download="props.name"
+    :class="{ success: props.success, loading: !props.success }">
     <span class="mdi" :class="decideFileType()"></span>
     <div class="download-item-detail">
       <p class="download-item-name">{{ props.name }}</p>
-      <progress
-        class="download-item-progress"
-        :value="props.progress"
-        :max="props.size"
-      ></progress>
-      <img
-        v-if="isImageType() && props.success && autoDisplayImage"
-        class="download-item-content"
-        :src="props.url"
-        alt="Photo"
-      />
+      <progress class="download-item-progress" :value="props.progress" :max="props.size"></progress>
+      <img v-if="isImageType() && props.success && autoDisplayImage" class="download-item-content" :src="props.url"
+        alt="Photo" />
       <div class="copy-cover blur">
         <span class="mdi mdi-download"></span>
       </div>
     </div>
   </a>
-  <div
-    v-if="
-      props.type === 'TRANSFER_TYPE_TEXT' &&
-      (!isLinkMessage(props.name) || !directlyOpenLink)
-    "
-    class="download-item text shadow"
-    :class="{ success: props.success, loading: !props.success }"
-    @click="onTextClick"
-  >
+  <div v-if="
+    props.type === 'TRANSFER_TYPE_TEXT' &&
+    (!isLinkMessage(props.name) || !directlyOpenLink)
+  " class="download-item text shadow" :class="{ success: props.success, loading: !props.success }"
+    @click="onTextClick">
     <span class="mdi mdi-message-text"></span>
     <div class="download-item-detail">
       <p class="download-item-content">{{ props.name }}</p>
@@ -323,19 +305,12 @@ function decideFileType(): string {
       </div>
     </div>
   </div>
-  <a
-    v-if="
-      props.type === 'TRANSFER_TYPE_TEXT' &&
-      isLinkMessage(props.name) &&
-      directlyOpenLink
-    "
-    class="download-item text shadow"
-    :class="{ success: props.success, loading: !props.success }"
-    @click="onTextClick"
-    :href="props.name"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
+  <a v-if="
+    props.type === 'TRANSFER_TYPE_TEXT' &&
+    isLinkMessage(props.name) &&
+    directlyOpenLink
+  " class="download-item text shadow" :class="{ success: props.success, loading: !props.success }"
+    @click="onTextClick" :href="props.name" target="_blank" rel="noopener noreferrer">
     <span class="mdi mdi-link-variant"></span>
     <div class="download-item-detail">
       <p class="download-item-content">{{ props.name }}</p>
