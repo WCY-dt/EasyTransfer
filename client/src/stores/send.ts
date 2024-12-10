@@ -118,9 +118,9 @@ export const useSendStore = defineStore('send', () => {
   }
 
   async function sendFileMeta(file: File, type: string) {
-    await sendData('CONTENT_META' + type, true)
-    await sendData('CONTENT_META' + file.name, true)
-    await sendData('CONTENT_META' + file.size, true)
+    await sendData('CONTENT_METAt' + type, true)
+    await sendData('CONTENT_METAn' + file.name, true)
+    await sendData('CONTENT_METAs' + file.size, true)
 
     addUploadFileItem('javascript:void(0)', file.name, file.size, 0, type)
   }

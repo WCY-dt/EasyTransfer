@@ -117,21 +117,38 @@ export const useReceiveStore = defineStore('receive', () => {
   }
 
   async function handleFileMeta(data: string) {
-    if (parseInt(data)) {
-      // console.log(`[INFO] Received size: ${data}`);
-      fileSizeQueue.push(parseInt(data))
-    } else {
-      if (
-        data === 'TRANSFER_TYPE_FILE' ||
-        data === 'TRANSFER_TYPE_TEXT' ||
-        data === 'TRANSFER_TYPE_PHOTO'
-      ) {
-        // console.log(`[INFO] Received type: ${data}`);
+    // if (/^\d+$/.test(data)) {
+    //   // console.log(`[INFO] Received size: ${data}`);
+    //   fileSizeQueue.push(parseInt(data))
+    // } else {
+    //   if (
+    //     data === 'TRANSFER_TYPE_FILE' ||
+    //     data === 'TRANSFER_TYPE_TEXT' ||
+    //     data === 'TRANSFER_TYPE_PHOTO'
+    //   ) {
+    //     // console.log(`[INFO] Received type: ${data}`);
+    //     fileTypeQueue.push(data)
+    //   } else {
+    //     // console.log(`[INFO] Received name: ${data}`);
+    //     fileNameQueue.push(data)
+    //   }
+    // }
+    const metaType = data[0]
+    data = data.slice(1)
+
+    switch (metaType) {
+      case 's':
+        fileSizeQueue.push(parseInt(data))
+        break
+      case 't':
         fileTypeQueue.push(data)
-      } else {
-        // console.log(`[INFO] Received name: ${data}`);
+        break
+      case 'n':
         fileNameQueue.push(data)
-      }
+        break
+      default:
+        console.error(`[ERR] Invalid meta type: ${metaType}`)
+        break
     }
 
     if (
