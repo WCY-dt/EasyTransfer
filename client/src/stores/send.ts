@@ -233,9 +233,9 @@ export const useSendStore = defineStore('send', () => {
   async function sendTextContent(text: string) {
     if (!checkSendTextAvailability(text)) return
 
-    await sendData('CONTENT_META' + 'TRANSFER_TYPE_TEXT', true)
-    await sendData('CONTENT_META' + text, true)
-    await sendData('CONTENT_META' + text.length, true)
+    await sendData('CONTENT_METAt' + 'TRANSFER_TYPE_TEXT', true)
+    await sendData('CONTENT_METAn' + text, true)
+    await sendData('CONTENT_METAs' + text.length, true)
 
     addUploadFileItem(
       'javascript:void(0)',
