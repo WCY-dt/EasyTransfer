@@ -263,6 +263,8 @@ function decideFileType(): string {
 
   return 'mdi-file-document'
 }
+
+const supportsHover = window.matchMedia('(hover: hover)').matches
 </script>
 
 <template>
@@ -288,9 +290,15 @@ function decideFileType(): string {
         :src="props.url"
         alt="Photo"
       />
-      <div class="copy-cover blur">
-        <span class="mdi mdi-download"></span>
-      </div>
+    </div>
+    <div
+      v-if="props.success"
+      :class="{
+        'copy-cover blur': supportsHover,
+        'none-hover': !supportsHover,
+      }"
+    >
+      <span class="mdi mdi-download"></span>
     </div>
   </a>
   <div
@@ -305,10 +313,16 @@ function decideFileType(): string {
     <span class="mdi mdi-message-text"></span>
     <div class="download-item-detail">
       <p class="download-item-content">{{ props.name }}</p>
-      <div class="copy-cover blur">
-        <span class="mdi mdi-check-bold" v-if="copied"></span>
-        <span class="mdi mdi-content-copy" v-else></span>
-      </div>
+    </div>
+    <div
+      v-if="props.success"
+      :class="{
+        'copy-cover blur': supportsHover,
+        'none-hover': !supportsHover,
+      }"
+    >
+      <span class="mdi mdi-check-bold" v-if="copied"></span>
+      <span class="mdi mdi-content-copy" v-else></span>
     </div>
   </div>
   <a
@@ -327,9 +341,15 @@ function decideFileType(): string {
     <span class="mdi mdi-link-variant"></span>
     <div class="download-item-detail">
       <p class="download-item-content">{{ props.name }}</p>
-      <div class="copy-cover blur">
-        <span class="mdi mdi-open-in-new"></span>
-      </div>
+    </div>
+    <div
+      v-if="props.success"
+      :class="{
+        'copy-cover blur': supportsHover,
+        'none-hover': !supportsHover,
+      }"
+    >
+      <span class="mdi mdi-open-in-new"></span>
     </div>
   </a>
 </template>
@@ -507,5 +527,9 @@ function decideFileType(): string {
       height: 100%;
     }
   }
+}
+
+.none-hover {
+  align-self: flex-start;
 }
 </style>
