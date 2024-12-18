@@ -18,7 +18,7 @@ export const useConnectStore = defineStore('connect', () => {
   const isConnectSuccess: Ref<boolean> = ref(false)
   const sendChannels: Ref<RTCDataChannel[]> = ref([])
   const maxBufferedAmount = 1024 * 16
-  const maxRetransmits = 2
+  const maxRetransmits = 10
 
   function initializeConnection() {
     sendChannels.value = []
