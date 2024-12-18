@@ -30,7 +30,7 @@ It is built using webRTC and Vue.js, and there is
 
 - This project is hosted on a free server. Please do not abuse it.
 
-## Self-deployment
+## Self-deployment using free services
 
 1. [Fork](https://github.com/WCY-dt/EasyTransfer/fork) this project.
 
@@ -55,6 +55,38 @@ It is built using webRTC and Vue.js, and there is
    - You may also need to modify `VITE_SIGNAL_SERVER_URL` in [`./client/.env.development`](./client/.env.development) to use a different signaling server address in the development environment to avoid conflicts with the production environment.
 
 4. Open GitHub Pages and select the `gh-pages` branch as the source. GitHub Actions will automatically build and deploy.
+
+## Self-deployment using Docker
+
+1. Clone this project:
+
+   ```shell
+   git clone https://github.com/WCY-dt/EasyTransfer.git
+   cd EasyTransfer
+   ```
+
+2. For the signaling server, run in the project root directory:
+
+   ```shell
+   docker build -t server-image -f ./Dockerfile .
+   docker run -d -p 3000:3000 server-image
+   ```
+
+   You can modify the exposed port number as needed.
+
+3. Modify the signaling server address in the client code. In [`./client/.env.production`](./client/.env.production), modify `VITE_SIGNAL_SERVER_URL` to the signaling server address you just deployed.
+
+4. Modify the STUN and TURN server addresses in the client code. If you have additionally deployed STUN and TURN servers, you can modify `iceServers` in [`./client/src/stores/connect.js`](./client/src/stores/setting.ts) to your own STUN and TURN server addresses.
+
+5. For the client web page, run:
+
+   ```shell
+   cd client
+   docker build -t client-image -f ./Dockerfile .
+   docker run -d -p 80:80 client-image
+   ```
+
+   You can modify the exposed port number as needed.
 
 ## TODO
 
