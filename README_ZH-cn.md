@@ -30,7 +30,7 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 
 - 本项目全部托管在免费的服务器上，请不要滥用。
 
-## 自行部署
+## 使用免费服务自行部署
 
 1. [fork](https://github.com/WCY-dt/EasyTransfer/fork) 本项目。
 
@@ -55,6 +55,38 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
    - 你可能还需要修改 [`./client/.env.development`](./client/.env.development) 中的 `VITE_SIGNAL_SERVER_URL`，以便在开发环境中使用不同的信令服务器地址，以避免与生产环境冲突。
 
 4. 开启 GitHub Pages，并选择 `gh-pages` 分支作为源。GitHub Actions 将自动构建并部署。
+
+## 使用 Docker 自行部署
+
+1. 克隆本项目：
+
+   ```shell
+   git clone https://github.com/WCY-dt/EasyTransfer.git
+   cd EasyTransfer
+   ```
+
+2. 对于信令服务器，在项目根目录下运行：
+
+   ```shell
+   docker build -t server-image -f ./Dockerfile .
+   docker run -d -p 3000:3000 server-image
+   ```
+
+   您可以根据需要修改暴露的端口号。
+
+3. 修改客户端代码中的信令服务器地址。在 [`./client/.env.production`](./client/.env.production) 中修改 `VITE_SIGNAL_SERVER_URL` 为您刚刚部署的信令服务器地址。
+
+4. 修改客户端代码中的 STUN 和 TURN 服务器地址。如果您额外部署了 STUN 和 TURN 服务器，您可以在 [`./client/src/stores/connect.js`](./client/src/stores/setting.ts) 中修改 `iceServers` 为您自己的 STUN 和 TURN 服务器地址。
+
+5. 对于客户端网页，运行：
+
+   ```shell
+   cd client
+   docker build -t client-image -f ./Dockerfile .
+   docker run -d -p 80:80 client-image
+   ```
+
+   您可以根据需要修改暴露的端口号。
 
 ## TODO
 
