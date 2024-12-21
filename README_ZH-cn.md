@@ -1,10 +1,17 @@
-# EasyTransfer - Share simply & stay anonymous
+<div align="center">
+<img src="client/public/favicon.svg" alt="logo" width="100" height="100" />
 
-![GitHub](https://img.shields.io/github/license/WCY-dt/EasyTransfer) ![GitHub package.json version](https://img.shields.io/github/package-json/v/WCY-dt/EasyTransfer?filename=client%2Fpackage.json)
+<h1>EasyTransfer</h1>
+
+简单分享，匿名传输
 
 [English](README.md) | 简体中文
 
-**👉 立即体验：[EasyTransfer](https://file.ch3nyang.top/)**
+[![GitHub issues](https://img.shields.io/github/issues/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/issues) [![GitHub pull requests](https://img.shields.io/github/issues-pr/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/pulls) [![GitHub license](https://img.shields.io/github/license/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/blob/main/LICENSE) ![GitHub package.json version](https://img.shields.io/github/package-json/v/WCY-dt/EasyTransfer?filename=client%2Fpackage.json)
+
+<strong style="font-size: 24px;">👉 立即体验：<a href="https://file.ch3nyang.top/">EasyTransfer</a></strong>
+
+</div>
 
 ![样例](./example.png)
 
