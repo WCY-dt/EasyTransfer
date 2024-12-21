@@ -1,14 +1,17 @@
 {
   "name": "file-transfer-server",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Server for file transfer",
   "main": "dist/server.js",
+  "type": "module",
   "engines": {
     "node": "16.x"
   },
   "scripts": {
     "start": "tsc && node dist/server/server.js",
-    "dev": "tsc && nodemon dist/server/server.js"
+    "dev": "tsc && nodemon dist/server/server.js",
+    "lint": "eslint . --fix",
+    "format": "prettier --write server/"
   },
   "keywords": [
     "file",
@@ -22,7 +25,11 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "eslint": "^9.17.0",
     "nodemon": "^3.1.7",
+    "prettier": "^3.4.2",
     "typescript": "^5.7.2"
   }
 }

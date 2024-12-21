@@ -1,0 +1,54 @@
+name: Check Lint and Format
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js for server
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16.x
+
+      - name: Check server
+        run: |
+          npm install
+          npm run lint
+          npm run format -- --check
+
+      - name: Set up Node.js for client
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      - name: Check client
+        run: |
+          cd client
+          npm install
+          npm run lint
+          npm run format -- --check
+
+      - name: Check if the code is formatted and linted
+        run: |
+          git diff --exit-code
+
+          if [ $? -eq 0 ]; then
+            echo "Code is formatted and linted"
+          else
+            echo "Code is not formatted or linted"
+            exit 1
+          fi

@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
+    "target": "ES2016",
+    "lib": ["ES2016", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "outDir": "./dist",
     "rootDir": "./",
     "strict": true,
@@ -9,5 +11,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["server/server.ts"]
+  "include": ["server/server.ts"],
+  "exclude": ["node_modules"]
 }
