@@ -30,6 +30,7 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "markdownlint.config": {
+    "MD024": false, // Disables "Multiple headers with the same content" rule
     "MD033": false, // Disables "Inline HTML" rule
     "MD041": false // Disables "First line in file should be a top level header" rule
   }
