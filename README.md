@@ -37,71 +37,9 @@ It is built using webRTC and Vue.js, and there is
 
 - This project is hosted on a free server. Please do not abuse it.
 
-## Self-deployment using free services
+## Self-deployment
 
-1. [Fork](https://github.com/WCY-dt/EasyTransfer/fork) this project.
-
-2. Click the button below to import the entire project into [glitch](https://glitch.com/).
-
-   [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/WCY-dt/EasyTransfer)
-
-   > You can also choose to use the automated deployment script provided by this project. All you need to do is create a new project in Glitch and run the following command in the project's console:
-   >
-   > ```shell
-   > git config receive.denyCurrentBranch ignore
-   > ```
-   >
-   > Then set up Secrets in GitHub and set `GLITCH_GIT_URL` to the Git URL of your Glitch project.
-   >
-   > Whenever you push code to the `main` branch, GitHub Actions will automatically sync the code to the Glitch project.
-
-3. The changes you may need to make to the code include:
-
-   - **IceServers**: modify `iceServers` in [`./client/src/stores/connect.js`](./client/src/stores/setting.ts) to your own STUN and TURN server addresses;
-   - **SignalServerUrl**: modify `VITE_SIGNAL_SERVER_URL` in [`./client/.env.production`](./client/.env.production) to your own signaling server address;
-   - You may also need to modify `VITE_SIGNAL_SERVER_URL` in [`./client/.env.development`](./client/.env.development) to use a different signaling server address in the development environment to avoid conflicts with the production environment.
-
-4. Open GitHub Pages and select the `gh-pages` branch as the source. GitHub Actions will automatically build and deploy.
-
-## Self-deployment using Docker
-
-1. Clone this project:
-
-   ```shell
-   git clone https://github.com/WCY-dt/EasyTransfer.git
-   cd EasyTransfer
-   ```
-
-2. For the signaling server, run in the project root directory:
-
-   ```shell
-   docker build -t server-image -f ./Dockerfile .
-   docker run -d -p 3000:3000 server-image
-   ```
-
-   You can modify the exposed port number as needed.
-
-3. Modify the signaling server address in the client code. In [`./client/.env.production`](./client/.env.production), modify `VITE_SIGNAL_SERVER_URL` to the signaling server address you just deployed.
-
-4. Modify the STUN and TURN server addresses in the client code. If you have additionally deployed STUN and TURN servers, you can modify `iceServers` in [`./client/src/stores/connect.js`](./client/src/stores/setting.ts) to your own STUN and TURN server addresses.
-
-5. For the client web page, run:
-
-   ```shell
-   cd client
-   docker build -t client-image -f ./Dockerfile .
-   docker run -d -p 80:80 client-image
-   ```
-
-   You can modify the exposed port number as needed.
-
-## TODO
-
-- [x] Support large file transmission
-- [x] Optimize transmission speed
-- [x] Support photo transmission
-- [x] Support plain text transmission
-- [x] Support parallel transmission
+Please refer to the [project Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/Navigator).
 
 ## Acknowledgements
 
