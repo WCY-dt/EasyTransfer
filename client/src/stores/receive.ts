@@ -198,6 +198,12 @@ export const useReceiveStore = defineStore('receive', () => {
     if (currentFileProgress === currentFileSize) {
       receivedData = receivedDataArray
       currentFileUrl = URL.createObjectURL(new Blob(receivedData))
+      // check if is svg file
+      if (currentFileName.endsWith('.svg')) {
+        currentFileUrl = URL.createObjectURL(
+          new Blob(receivedData, { type: 'image/svg+xml' }),
+        )
+      }
       updateFileUrl(currentReceivingFileNo, currentFileUrl)
       updateFileSuccess(currentReceivingFileNo, true)
 
