@@ -3,8 +3,6 @@
 
 <h1>EasyTransfer</h1>
 
-Share simply & stay anonymous
-
 [简体中文](README_ZH-cn.md) | English
 
 [![GitHub issues](https://img.shields.io/github/issues/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/issues) [![GitHub pull requests](https://img.shields.io/github/issues-pr/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/pulls) [![GitHub license](https://img.shields.io/github/license/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/blob/main/LICENSE) ![GitHub package.json version](https://img.shields.io/github/package-json/v/WCY-dt/EasyTransfer?filename=client%2Fpackage.json)
@@ -13,7 +11,7 @@ Share simply & stay anonymous
 
 </div>
 
-![Sample](./example.png)
+![Sample](./og-image.png)
 
 EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer tool. You only need to visit a simple web page to connect to **any device** in **any network** using a device code.
 
@@ -52,4 +50,4 @@ Please refer to the [project Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/N
 
 > Thanks to [Ruanyifeng](http://www.ruanyifeng.com/blog/2024/12/weekly-issue-329.html) for the recommendation!
 
-[<img src="https://starchart.cc/WCY-dt/EasyTransfer.svg?axis=%23343a40&line=%23007bff" alt="Stargazers over time" style="zoom: 67%;" />](https://starchart.cc/WCY-dt/EasyTransfer)
+[<img src="https://api.star-history.com/svg?repos=WCY-dt/EasyTransfer&type=Date" alt="Star History Chart" style="zoom: 67%;" />](https://star-history.com/#WCY-dt/EasyTransfer&Date)

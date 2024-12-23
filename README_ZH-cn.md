@@ -3,8 +3,6 @@
 
 <h1>EasyTransfer</h1>
 
-简单分享，匿名传输
-
 [English](README.md) | 简体中文
 
 [![GitHub issues](https://img.shields.io/github/issues/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/issues) [![GitHub pull requests](https://img.shields.io/github/issues-pr/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/pulls) [![GitHub license](https://img.shields.io/github/license/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/blob/main/LICENSE) ![GitHub package.json version](https://img.shields.io/github/package-json/v/WCY-dt/EasyTransfer?filename=client%2Fpackage.json)
@@ -13,7 +11,7 @@
 
 </div>
 
-![样例](./example.png)
+![样例](./og-image.png)
 
 EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传输工具。您只需访问一个简单的网页，即可使用设备代码连接到**任何网络**中的**任何设备**。
 
@@ -52,4 +50,4 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 
 > 感谢[阮一峰老师](http://www.ruanyifeng.com/blog/2024/12/weekly-issue-329.html)的推荐！
 
-[<img src="https://starchart.cc/WCY-dt/EasyTransfer.svg?axis=%23343a40&line=%23007bff" alt="Stargazers over time" style="zoom: 67%;" />](https://starchart.cc/WCY-dt/EasyTransfer)
+[<img src="https://api.star-history.com/svg?repos=WCY-dt/EasyTransfer&type=Date" alt="Star History Chart" style="zoom: 67%;" />](https://star-history.com/#WCY-dt/EasyTransfer&Date)
