@@ -2,11 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [3.1.9] - 2024-12-23
 
 ### Added
 
+- Support auto display of video
 - Add CI/CD pipeline to automate the whole deployment process
+
+### Changed
+
+- Refactor the code to improve the code quality and maintainability
+
+### Fixed
+
+- Fixed the issue where the svg can not be displayed correctly when downloading
 
 ## [3.1.8] - 2024-12-18
 
