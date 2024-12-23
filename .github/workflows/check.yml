@@ -44,7 +44,7 @@ jobs:
 
       - name: Check if the code is formatted and linted
         run: |
-          git diff --exit-code -- . ':(exclude)package-lock.json'
+          git diff --exit-code -- . ':(exclude)package-lock.json' ':(exclude)client/package-lock.json'
 
           if [ $? -eq 0 ]; then
             echo "Code is formatted and linted"
