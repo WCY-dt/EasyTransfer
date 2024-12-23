@@ -3,7 +3,12 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
 import { ItemDisplayProps } from '@/types'
-import { isLinkMessage, isImageType, decideFileType } from '@/utils/msgType'
+import {
+  isLinkMessage,
+  isImageType,
+  isVideoType,
+  decideFileType,
+} from '@/utils/msgType'
 
 const props = withDefaults(defineProps<ItemDisplayProps>(), {
   url: 'javascript:void(0)',
@@ -53,6 +58,15 @@ const supportsHover = window.matchMedia('(hover: hover)').matches
         :src="props.url"
         alt="Photo"
       />
+      <video
+        v-if="isVideoType(props.name) && props.success"
+        class="download-item-content"
+        :src="props.url"
+        :controls="!supportsHover"
+        muted
+        autoplay
+        loop
+      ></video>
     </div>
     <div
       v-if="props.success"
@@ -178,7 +192,8 @@ const supportsHover = window.matchMedia('(hover: hover)').matches
       border-radius: var(--small-border-radius);
     }
 
-    img {
+    img,
+    video {
       width: 100%;
       height: auto;
       border-radius: var(--small-border-radius);

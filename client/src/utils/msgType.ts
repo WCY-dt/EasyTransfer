@@ -6,6 +6,10 @@ export function isImageType(name: string): boolean {
   return imageFormats.some(format => name.toLowerCase().endsWith(format))
 }
 
+export function isVideoType(name: string): boolean {
+  return videoFormats.some(format => name.toLowerCase().endsWith(format))
+}
+
 export function decideFileType(name: string): string {
   const fileName = name.toLowerCase()
   for (const [icon, formats] of Object.entries(fileTypeMap)) {
@@ -37,6 +41,21 @@ const imageFormats = [
   '.raw',
 ]
 
+const videoFormats = [
+  '.mp4',
+  '.mkv',
+  '.avi',
+  '.mov',
+  '.wmv',
+  '.flv',
+  '.webm',
+  '.mpeg',
+  '.mpg',
+  '.m4v',
+  '.3gp',
+  '.3g2',
+]
+
 const fileTypeMap: { [key: string]: string[] } = {
   'mdi-file-image': imageFormats,
   'mdi-file-word': ['.doc', '.docx', '.odt', '.rtf', '.txt', '.wps', '.wpd'],
@@ -61,20 +80,7 @@ const fileTypeMap: { [key: string]: string[] } = {
     '.aiff',
     '.alac',
   ],
-  'mdi-file-video': [
-    '.mp4',
-    '.mkv',
-    '.avi',
-    '.mov',
-    '.wmv',
-    '.flv',
-    '.webm',
-    '.mpeg',
-    '.mpg',
-    '.m4v',
-    '.3gp',
-    '.3g2',
-  ],
+  'mdi-file-video': videoFormats,
   'mdi-file-code': [
     '.html',
     '.css',
