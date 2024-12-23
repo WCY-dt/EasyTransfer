@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
 import { ItemDisplayProps } from '@/types'
+import { isLinkMessage, isImageType, decideFileType } from '@/utils/msgType'
 
 const props = withDefaults(defineProps<ItemDisplayProps>(), {
   url: 'javascript:void(0)',
@@ -26,244 +27,6 @@ function onTextClick(): void {
   }, 1000)
 }
 
-function isLinkMessage(text: string): boolean {
-  if (props.type === 'TRANSFER_TYPE_TEXT') {
-    const urlPattern = new RegExp(
-      '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$',
-      'i', // fragment locator
-    )
-    return !!urlPattern.test(text)
-  }
-  return false
-}
-
-function isImageType(): boolean {
-  const imageFormats = [
-    '.png',
-    '.jpg',
-    '.jpeg',
-    '.gif',
-    '.bmp',
-    '.webp',
-    '.svg',
-    '.ico',
-    '.tiff',
-    '.tif',
-    '.heic',
-    '.raw',
-  ]
-  return imageFormats.some(format => props.name.toLowerCase().endsWith(format))
-}
-
-function decideFileType(): string {
-  const fileTypeMap: { [key: string]: string[] } = {
-    'mdi-file-image': [
-      '.png',
-      '.jpg',
-      '.jpeg',
-      '.gif',
-      '.bmp',
-      '.webp',
-      '.svg',
-      '.ico',
-      '.tiff',
-      '.tif',
-      '.heic',
-      '.raw',
-    ],
-    'mdi-file-word': ['.doc', '.docx', '.odt', '.rtf', '.txt', '.wps', '.wpd'],
-    'mdi-file-table': [
-      '.xls',
-      '.xlsx',
-      '.ods',
-      '.csv',
-      '.tsv',
-      '.xlsm',
-      '.xlsb',
-    ],
-    'mdi-file-powerpoint': [
-      '.ppt',
-      '.pptx',
-      '.odp',
-      '.pps',
-      '.ppsx',
-      '.pot',
-      '.potx',
-    ],
-    'mdi-file-music': [
-      '.mp3',
-      '.wav',
-      '.flac',
-      '.ogg',
-      '.aac',
-      '.wma',
-      '.m4a',
-      '.aiff',
-      '.alac',
-    ],
-    'mdi-file-video': [
-      '.mp4',
-      '.mkv',
-      '.avi',
-      '.mov',
-      '.wmv',
-      '.flv',
-      '.webm',
-      '.mpeg',
-      '.mpg',
-      '.m4v',
-      '.3gp',
-      '.3g2',
-    ],
-    'mdi-file-code': [
-      '.html',
-      '.css',
-      '.js',
-      '.ts',
-      '.jsx',
-      '.tsx',
-      '.json',
-      '.xml',
-      '.yaml',
-      '.yml',
-      '.md',
-      '.markdown',
-      '.cpp',
-      '.c',
-      '.h',
-      '.hpp',
-      '.java',
-      '.py',
-      '.rb',
-      '.php',
-      '.sql',
-      '.sh',
-      '.bat',
-      '.ps1',
-      '.psm1',
-      '.psd1',
-      '.ps1xml',
-      '.pssc',
-      '.psc1',
-      '.pssc',
-      '.pl',
-      '.perl',
-      '.go',
-      '.rs',
-      '.swift',
-      '.kt',
-      '.kts',
-      '.clj',
-      '.cljs',
-      '.scala',
-      '.groovy',
-      '.gradle',
-      '.dockerfile',
-      '.properties',
-      '.ini',
-      '.cfg',
-      '.conf',
-      '.toml',
-      '.yaml',
-      '.yml',
-      '.json',
-      '.xml',
-      '.csv',
-      '.tsv',
-      '.log',
-      '.r',
-      '.sas',
-      '.stata',
-      '.do',
-      '.m',
-      '.mat',
-      '.rmd',
-      '.ipynb',
-    ],
-    'mdi-folder-zip': [
-      '.zip',
-      '.rar',
-      '.7z',
-      '.tar',
-      '.gz',
-      '.bz2',
-      '.xz',
-      '.lz',
-      '.lzma',
-      '.lzo',
-      '.zst',
-      '.z',
-      '.tar.gz',
-      '.tgz',
-      '.tar.bz2',
-      '.tbz2',
-      '.tar.xz',
-      '.txz',
-      '.tar.lz',
-      '.tlz',
-      '.tar.lzma',
-      '.tar.lzo',
-      '.tar.zst',
-      '.tzst',
-    ],
-    'mdi-file-cad': [
-      '.dwg',
-      '.dxf',
-      '.dgn',
-      '.stl',
-      '.obj',
-      '.fbx',
-      '.3ds',
-      '.skp',
-      '.step',
-      '.stp',
-      '.igs',
-      '.iges',
-      '.x_t',
-      '.x_b',
-      '.sat',
-      '.sab',
-      '.3dm',
-      '.prt',
-      '.asm',
-      '.xas',
-      '.xpr',
-    ],
-    'mdi-file-key': [
-      '.key',
-      '.pem',
-      '.pub',
-      '.asc',
-      '.gpg',
-      '.pgp',
-      '.p12',
-      '.pfx',
-      '.cer',
-      '.crt',
-      '.der',
-      '.keychain',
-      '.jks',
-      '.keystore',
-      '.bks',
-      '.pkcs12',
-      '.p7b',
-      '.p7c',
-      '.p7r',
-      '.p7s',
-      '.p8',
-    ],
-  }
-
-  const fileName = props.name.toLowerCase()
-  for (const [icon, formats] of Object.entries(fileTypeMap)) {
-    if (formats.some(format => fileName.endsWith(format))) {
-      return icon
-    }
-  }
-
-  return 'mdi-file-document'
-}
-
 const supportsHover = window.matchMedia('(hover: hover)').matches
 </script>
 
@@ -276,7 +39,7 @@ const supportsHover = window.matchMedia('(hover: hover)').matches
     :download="props.name"
     :class="{ success: props.success, loading: !props.success }"
   >
-    <span class="mdi" :class="decideFileType()"></span>
+    <span class="mdi" :class="decideFileType(props.name)"></span>
     <div class="download-item-detail">
       <p class="download-item-name">{{ props.name }}</p>
       <progress
@@ -285,7 +48,7 @@ const supportsHover = window.matchMedia('(hover: hover)').matches
         :max="props.size"
       ></progress>
       <img
-        v-if="isImageType() && props.success && autoDisplayImage"
+        v-if="isImageType(props.name) && props.success && autoDisplayImage"
         class="download-item-content"
         :src="props.url"
         alt="Photo"
