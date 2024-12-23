@@ -1,0 +1,12 @@
+node_modules
+
+dist
+dist-ssr
+
+*.log
+
+*.config.js
+
+*.json
+
+package-lock.json
