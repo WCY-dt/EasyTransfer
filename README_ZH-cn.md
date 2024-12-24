@@ -15,14 +15,7 @@
 
 EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传输工具。您只需访问一个简单的网页，即可使用设备代码连接到**任何网络**中的**任何设备**。
 
-它使用 webRTC 和 Vue.js 构建，并且
-
-- **无需**安装任何软件
-- **无需**注册账户
-- **无需**扫描二维码
-- **无需**分享 URL 链接
-- **无需**上传文件到服务器[^1]
-- **无需**担心网络环境
+本项目使用 webRTC 和 Vue.js 构建。
 
 ## 使用方法
 
@@ -35,19 +28,41 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 >
 > 本项目目前使用了免费的 STUN/TURN 服务器，每月有流量限制，请不要滥用。更推荐您自行部署一个 STUN/TURN 服务器，以获得更快的速度和更高的稳定性。
 
+## 功能特点
+
+是什么让 EasyTransfer 与众不同？是这些特点：
+
+- 🫣 **匿名**：不需要注册账号，不需要登录，不需要提供任何个人信息
+- 🔒 **加密**：默认加密，确保文件传输的安全性
+- 🔄 **端到端**：文件直接从发送方传输到接收方，不经过服务器[^1]
+- 🌐 **跨网络**：同时支持局域网和公网之间的文件传输
+- 🛠️ **易用**：使用四位设备代码连接设备，无任何多余操作
+- 📎 **多媒体消息**：支持发送文字及多种文件类型，还支持拍照发送
+- ⚙️ **自定义设置**：所有模块均可以自定义及自行部署
+
 ## 自行部署
 
 请参照[项目 Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/导航)。
 
 ## 致谢
 
-- 感谢 [metered](https://www.metered.ca/) 提供免费的 STUN 和 TURN 服务器。
-- 感谢 [glitch](https://glitch.com/) 提供了免费的信令服务器。
+感谢以下机构提供的免费服务：
 
-[^1]: 在通信双方需要内网穿透时，文件可能会上传到本项目提供的免费 TURN 服务器。您可以自行部署一个可信的 TURN 服务器来避免这种情况。
+|                                                           | 机构                               | 提供的服务                 |
+| --------------------------------------------------------- | ---------------------------------- | -------------------------- |
+| <img src="imgs/metered.webp" alt="metered" width="100" /> | [metered](https://www.metered.ca/) | 免费的 STUN 和 TURN 服务器 |
+| <img src="imgs/glitch.webp" alt="glitch" width="100" />   | [glitch](https://glitch.com/)      | 免费的信令服务器           |
 
 ## 统计
 
-> 感谢[阮一峰老师](http://www.ruanyifeng.com/blog/2024/12/weekly-issue-329.html)的推荐！
+感谢以下组织或个人推荐本项目[^2]：
+
+| <img src="imgs/ruanyf.webp" alt="ruanyf" width="100" /> | <img src="imgs/appinn.webp" alt="小众软件" width="100" /> | <img src="imgs/ahhhhfs.webp" alt="ahhhhfs" width="100" /> | <img src="imgs/iiiiShare.webp" alt="i资源分享" width="100" /> |
+| ------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------- |
+| [阮一峰](https://github.com/ruanyf)                     | [小众软件](https://meta.appinn.net/)                      | [ahhhhfs](https://www.ahhhhfs.com/)                       | [i资源分享](https://x.com/iiiiShare)                          |
 
 [<img src="https://api.star-history.com/svg?repos=WCY-dt/EasyTransfer&type=Date" alt="Star History Chart" style="zoom: 67%;" />](https://star-history.com/#WCY-dt/EasyTransfer&Date)
+
+[^1]: 在通信双方需要内网穿透时，文件可能会上传到本项目提供的免费 TURN 服务器。您可以自行部署一个可信的 TURN 服务器来避免这种情况。
+
+[^2]: 如果您推荐了本项目但未在此处列出，请联系我。
