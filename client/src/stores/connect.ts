@@ -170,15 +170,26 @@ export const useConnectStore = defineStore('connect', () => {
     }
   }
 
+  let previousIceServers = iceServers.value
+  let previousMaxConnectionNumber = maxConnectionNumber.value
+
   watch([iceServers, maxConnectionNumber], async () => {
     if (peerConnection.value) {
-      console.warn('[INFO] ===Reconnecting===')
+      if (
+        iceServers.value !== previousIceServers ||
+        maxConnectionNumber.value !== previousMaxConnectionNumber
+      ) {
+        console.warn('[INFO] ===Reconnecting===')
 
-      await Promise.all(sendChannels.value.map(channel => channel.close()))
+        await Promise.all(sendChannels.value.map(channel => channel.close()))
 
-      peerConnection.value.close()
-      socket?.disconnect()
-      window.location.reload()
+        peerConnection.value.close()
+        socket?.disconnect()
+        window.location.reload()
+
+        previousIceServers = iceServers.value
+        previousMaxConnectionNumber = maxConnectionNumber.value
+      }
     }
   })
 
