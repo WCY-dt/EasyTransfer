@@ -31,9 +31,9 @@ It is built using webRTC and Vue.js, and there is
 3. After waiting for the connection to succeed, you can drag and drop the file to the file area on the web page, or click the file area to select the file. Supports sending multiple files at once.
 4. In the settings, you can customize the STUN server and TURN server, or specify the maximum number of connections.
 
-## Notes
-
-- This project is hosted on a free server. Please do not abuse it.
+> [!NOTE]
+>
+> This project currently uses free STUN/TURN servers, which has a monthly traffic limit. Please do not abuse it. It is recommended that you deploy a STUN/TURN server yourself to obtain faster speed and higher stability.
 
 ## Self-deployment
 

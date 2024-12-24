@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.10] - 2024-12-24
+
+### Changed
+
+- Only reload when specific settings are changed
+
+### Fixed
+
+- Fixed the CI/CD pipeline to deploy the correct version
+
 ## [3.1.9] - 2024-12-23
 
 ### Added
@@ -40,7 +50,7 @@ All notable changes to this project will be documented in this file.
 
 ## [3.1.6] - 2024-12-10
 
-## Changed
+### Changed
 
 - Refactored the server code from JS to TS to improve the code quality and maintainability
 - Improved webpage design
