@@ -1,6 +1,7 @@
 import { ref, watch, Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { IceServer } from '@/types'
+import { defaultMaxConnectionNumber, defaultIceServers } from '@/const'
 
 export const useSettingStore = defineStore('setting', () => {
   // autoDisplayImage
@@ -36,7 +37,7 @@ export const useSettingStore = defineStore('setting', () => {
   })
 
   // maxConnectionNumber
-  const maxConnectionNumber: Ref<number> = ref(10)
+  const maxConnectionNumber: Ref<number> = ref(defaultMaxConnectionNumber)
 
   if (localStorage.getItem('maxConnectionNumber')) {
     maxConnectionNumber.value = JSON.parse(
@@ -52,43 +53,7 @@ export const useSettingStore = defineStore('setting', () => {
   })
 
   // iceServers
-  const iceServers: Ref<IceServer[]> = ref([
-    {
-      urls: 'stun:stun.l.google.com:19302',
-    },
-    {
-      urls: 'stun:stun.l.google.com:5349',
-    },
-    {
-      urls: 'stun:stun1.l.google.com:3478',
-    },
-    {
-      urls: 'stun:stun1.l.google.com:5349',
-    },
-    {
-      urls: 'stun:stun2.l.google.com:19302',
-    },
-    {
-      urls: 'stun:stun2.l.google.com:5349',
-    },
-    {
-      urls: 'stun:stun3.l.google.com:3478',
-    },
-    {
-      urls: 'stun:stun3.l.google.com:5349',
-    },
-    {
-      urls: 'stun:stun4.l.google.com:19302',
-    },
-    {
-      urls: 'stun:stun4.l.google.com:5349',
-    },
-    {
-      urls: 'turn:turn.ch3nyang.top:3478',
-      username: 'easytransfer',
-      credential: 'sharesimplyandstayanonymous',
-    },
-  ])
+  const iceServers: Ref<IceServer[]> = ref(defaultIceServers)
 
   if (localStorage.getItem('iceServers')) {
     const existingIceServers = JSON.parse(
