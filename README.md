@@ -26,7 +26,7 @@ It is built using webRTC and Vue.js.
 
 > [!NOTE]
 >
-> This project currently uses free STUN/TURN servers, which has a monthly traffic limit. Please do not abuse it. It is recommended that you deploy a STUN/TURN server yourself to obtain faster speed and higher stability.
+> It is recommended that you deploy a STUN/TURN server yourself to obtain faster speed and higher stability.
 
 ## Features
 
@@ -43,15 +43,6 @@ What makes EasyTransfer different? It's these features:
 ## Self-deployment
 
 Please refer to the [project Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/Navigator).
-
-## Acknowledgements
-
-Thanks to the following organizations for providing free services:
-
-|                                                           | Organization                       | Service provided           |
-| --------------------------------------------------------- | ---------------------------------- | -------------------------- |
-| <img src="imgs/metered.webp" alt="metered" width="100" /> | [metered](https://www.metered.ca/) | Free STUN and TURN servers |
-| <img src="imgs/glitch.webp" alt="glitch" width="100" />   | [glitch](https://glitch.com/)      | Free signaling server      |
 
 ## Statistics
 

@@ -26,7 +26,7 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 
 > [!NOTE]
 >
-> 本项目目前使用了免费的 STUN/TURN 服务器，每月有流量限制，请不要滥用。更推荐您自行部署一个 STUN/TURN 服务器，以获得更快的速度和更高的稳定性。
+> 更推荐您自行部署一个 STUN/TURN 服务器，以获得更快的速度和更高的稳定性。
 
 ## 功能特点
 
@@ -43,15 +43,6 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 ## 自行部署
 
 请参照[项目 Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/导航)。
-
-## 致谢
-
-感谢以下机构提供的免费服务：
-
-|                                                           | 机构                               | 提供的服务                 |
-| --------------------------------------------------------- | ---------------------------------- | -------------------------- |
-| <img src="imgs/metered.webp" alt="metered" width="100" /> | [metered](https://www.metered.ca/) | 免费的 STUN 和 TURN 服务器 |
-| <img src="imgs/glitch.webp" alt="glitch" width="100" />   | [glitch](https://glitch.com/)      | 免费的信令服务器           |
 
 ## 统计
 

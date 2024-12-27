@@ -54,32 +54,51 @@ export const useSettingStore = defineStore('setting', () => {
   // iceServers
   const iceServers: Ref<IceServer[]> = ref([
     {
-      urls: 'stun:stun.relay.metered.ca:80',
+      urls: 'stun:stun.l.google.com:19302',
     },
     {
-      urls: 'turn:global.relay.metered.ca:80',
-      username: 'cf841207b56ebddc17948dde',
-      credential: '0dGvvEm7eq2UaqlW',
+      urls: 'stun:stun.l.google.com:5349',
     },
     {
-      urls: 'turn:global.relay.metered.ca:80?transport=tcp',
-      username: 'cf841207b56ebddc17948dde',
-      credential: '0dGvvEm7eq2UaqlW',
+      urls: 'stun:stun1.l.google.com:3478',
     },
     {
-      urls: 'turn:global.relay.metered.ca:443',
-      username: 'cf841207b56ebddc17948dde',
-      credential: '0dGvvEm7eq2UaqlW',
+      urls: 'stun:stun1.l.google.com:5349',
     },
     {
-      urls: 'turns:global.relay.metered.ca:443?transport=tcp',
-      username: 'cf841207b56ebddc17948dde',
-      credential: '0dGvvEm7eq2UaqlW',
+      urls: 'stun:stun2.l.google.com:19302',
+    },
+    {
+      urls: 'stun:stun2.l.google.com:5349',
+    },
+    {
+      urls: 'stun:stun3.l.google.com:3478',
+    },
+    {
+      urls: 'stun:stun3.l.google.com:5349',
+    },
+    {
+      urls: 'stun:stun4.l.google.com:19302',
+    },
+    {
+      urls: 'stun:stun4.l.google.com:5349',
+    },
+    {
+      urls: 'turn:turn.ch3nyang.top:3478',
+      username: 'easytransfer',
+      credential: 'sharesimplyandstayanonymous',
     },
   ])
 
   if (localStorage.getItem('iceServers')) {
-    iceServers.value = JSON.parse(localStorage.getItem('iceServers') as string)
+    const existingIceServers = JSON.parse(
+      localStorage.getItem('iceServers') as string,
+    )
+    const newIceServers = [...iceServers.value, ...existingIceServers]
+    const uniqueIceServers = Array.from(
+      new Set(newIceServers.map(server => JSON.stringify(server))),
+    ).map(server => JSON.parse(server))
+    iceServers.value = uniqueIceServers
   }
 
   watch(iceServers, () => {
