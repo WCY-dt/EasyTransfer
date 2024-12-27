@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.11] - 2024-12-27
+
+### Changed
+
+- Deploy the TURN server on turn.ch3nyang.top instead of metered
+- Use the STUN server on Google instead of metered
+- Isolate default setting variables to a separate file
+
 ## [3.1.10] - 2024-12-24
 
 ### Changed
