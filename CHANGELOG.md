@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.12] - 2025-01-02
+
+### Changed
+
+- Isolate default setting values to a new file
+
+### Fixed
+
+- Fixed the issue where the TURN server can not be accessed
+
 ## [3.1.11] - 2024-12-27
 
 ### Changed
