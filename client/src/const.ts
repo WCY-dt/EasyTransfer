@@ -38,4 +38,9 @@ export const defaultIceServers: IceServer[] = [
     username: 'easytransfer',
     credential: 'sharesimplyandstayanonymous',
   },
+  {
+    urls: 'turn:103.124.107.241:3478',
+    username: 'easytransfer',
+    credential: 'sharesimplyandstayanonymous',
+  },
 ]
