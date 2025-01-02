@@ -22,10 +22,9 @@ const version = 'v' + (process.package_version as string)
         </div>
       </div>
       <div class="link-cluster">
-        <a class="link-item shadow" @click="toggleSettings"
-          ><span class="mdi mdi-cog"></span
-          ><span class="text">Settings</span></a
-        >
+        <button class="link-item shadow" @click="toggleSettings">
+          <span class="mdi mdi-cog"></span><span class="text">Settings</span>
+        </button>
         <a
           href="https://github.com/WCY-dt/EasyTransfer"
           class="link-item shadow github"
@@ -126,6 +125,10 @@ header {
   }
 
   .link-item {
+    border: none;
+    outline: none;
+    background: none;
+
     display: flex;
     align-items: center;
     justify-content: center;

@@ -88,6 +88,7 @@ onMounted(async () => {
         class="connect-button"
         :disabled="!enableConnect || !registered"
         @click="connectTarget"
+        aria-label="Connect"
       >
         <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
         <span v-else class="mdi mdi-connection"></span>
