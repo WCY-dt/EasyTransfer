@@ -12,7 +12,10 @@ const fileInput: Ref<HTMLInputElement | null> = ref(null)
 
 async function sendFiles() {
   if (fileInput.value && fileInput.value.files) {
-    await sendStore.sendFiles(fileInput.value.files, 'TRANSFER_TYPE_FILE')
+    await sendStore.sendFiles(
+      Array.from(fileInput.value.files),
+      'TRANSFER_TYPE_FILE',
+    )
   }
 }
 
@@ -20,7 +23,7 @@ async function onFileDrop(event: DragEvent) {
   if (!isConnectSuccess.value) return
   event.preventDefault()
   if (fileInput.value) {
-    fileInput.value.files = event.dataTransfer.files
+    fileInput.value.files = event.dataTransfer?.files ?? null
     await sendFiles()
   }
 }

@@ -55,13 +55,15 @@ function onSnapshotClick(): void {
         photo.value.height,
       )
     }
-    window.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop())
+    window.stream
+      ?.getTracks()
+      .forEach((track: MediaStreamTrack) => track.stop())
     showStream.value = false
   }
 }
 
 function onCameraCloseClick(): void {
-  window.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop())
+  window.stream?.getTracks().forEach((track: MediaStreamTrack) => track.stop())
   showCamera.value = false
   showStream.value = false
 }

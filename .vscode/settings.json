@@ -3,7 +3,8 @@
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.autoIndent": "advanced",
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[css]": {
     "editor.tabSize": 2,
@@ -24,14 +25,14 @@
     "vite.config.*": "jsconfig*, vitest.config.*, cypress.config.*, playwright.config.*",
     "package.json": "package-lock.json, pnpm*, .yarnrc*, yarn*, .eslint*, eslint*, .prettier*, prettier*, .editorconfig"
   },
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
-  },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "markdownlint.config": {
     "MD024": false, // Disables "Multiple headers with the same content" rule
     "MD033": false, // Disables "Inline HTML" rule
     "MD041": false // Disables "First line in file should be a top level header" rule
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   }
 }

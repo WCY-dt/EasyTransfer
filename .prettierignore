@@ -10,3 +10,5 @@ dist-ssr
 *.json
 
 package-lock.json
+
+.hintrc

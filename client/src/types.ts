@@ -1,3 +1,11 @@
+export {}
+
+declare global {
+  interface Window {
+    stream?: MediaStream
+  }
+}
+
 export interface IceServer {
   urls: string
   username?: string
