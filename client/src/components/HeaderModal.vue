@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import SettingsModal from '@/components/SettingsModal.vue'
 
 const showSettings = ref<boolean>(false)
@@ -8,13 +8,35 @@ const toggleSettings = (): void => {
 }
 
 const version = 'v' + (process.package_version as string)
+
+const isScrolled = ref(false)
+
+const handleScroll = () => {
+  if (window.scrollY > 50) {
+    isScrolled.value = true
+  } else {
+    isScrolled.value = false
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
-  <header>
+  <header :class="{ blur: isScrolled, shadow: isScrolled }">
     <div class="header-cluster">
       <div class="logo-cluster">
-        <img src="/src/assets/favicon.svg" alt="EasyTransfer Logo" />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path
+            d="M21.4 7.5C22.2 8.3 22.2 9.6 21.4 10.3L18.6 13.1L10.8 5.3L13.6 2.5C14.4 1.7 15.7 1.7 16.4 2.5L18.2 4.3L21.2 1.3L22.6 2.7L19.6 5.7L21.4 7.5M15.6 13.3L14.2 11.9L11.4 14.7L9.3 12.6L12.1 9.8L10.7 8.4L7.9 11.2L6.4 9.8L3.6 12.6C2.8 13.4 2.8 14.7 3.6 15.4L5.4 17.2L1.4 21.2L2.8 22.6L6.8 18.6L8.6 20.4C9.4 21.2 10.7 21.2 11.4 20.4L14.2 17.6L12.8 16.2L15.6 13.3Z"
+          />
+        </svg>
         <div class="logo-text">
           <h1>EasyTransfer</h1>
           <span>{{ version }}</span>
@@ -53,6 +75,8 @@ header {
 
   font-family: var(--normal-font-family);
 
+  transition: all 0.3s ease-in-out;
+
   .header-cluster {
     width: calc(min(100%, 125rem));
     padding: 1rem 1rem;
@@ -60,6 +84,8 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    transition: all 0.3s ease-in-out;
   }
 
   .logo-cluster {
@@ -67,9 +93,14 @@ header {
     align-items: center;
     gap: 0.5rem;
 
-    img {
+    transition: all 0.3s ease-in-out;
+
+    svg {
+      fill: var(--light-color);
       width: 3rem;
       height: 3rem;
+
+      transition: all 0.3s ease-in-out;
     }
 
     .logo-text {
@@ -84,6 +115,8 @@ header {
         padding: 0;
 
         line-height: 1rem;
+
+        transition: all 0.3s ease-in-out;
       }
 
       h1 {
@@ -119,6 +152,8 @@ header {
     justify-content: center;
     gap: 0.8rem;
 
+    transition: all 0.3s ease-in-out;
+
     @media (max-width: 425px) {
       gap: 0.4rem;
     }
@@ -146,7 +181,10 @@ header {
 
     cursor: pointer;
 
-    transition: all 0.1s ease-in-out;
+    transition:
+      padding 0.3s ease-in-out,
+      color 0.1s ease-in-out,
+      background-color 0.1s ease-in-out;
 
     &.github {
       color: var(--dark-color);
@@ -179,6 +217,61 @@ header {
 
       .text {
         display: none;
+      }
+    }
+  }
+
+  &.blur.shadow {
+    --blur-effect: blur(10px);
+
+    background-color: var(--light-blur-color);
+
+    .header-cluster {
+      padding: 0.5rem 1rem;
+
+      .logo-cluster {
+        gap: 0.3rem;
+
+        svg {
+          fill: var(--primary-color);
+          width: 2.5rem;
+          height: 2.5rem;
+        }
+
+        .logo-text {
+          * {
+            color: var(--primary-color);
+          }
+
+          h1 {
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+          }
+
+          span {
+            font-size: 0.8rem;
+          }
+
+          p {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .link-cluster {
+      gap: 0.6rem;
+
+      @media (max-width: 425px) {
+        gap: 0.3rem;
+      }
+    }
+
+    .link-item {
+      padding: 0.3rem 0.8rem;
+
+      @media (max-width: 768px) {
+        padding: 0.3rem;
       }
     }
   }

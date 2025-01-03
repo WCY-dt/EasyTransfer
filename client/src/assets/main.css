@@ -16,8 +16,10 @@
 :root {
   --primary-color: #007bff;
   --primary-dark-color: #0056b3;
+  --primary-semi-light-color: #b6d9ff;
   --primary-light-color: #dcecfc;
   --primary-extra-light-color: #f0f8ff;
+  --primary-blur-color: #007bff4f;
   --secondary-color: #6c757d;
   --secondary-light-color: #f0f0f0;
   --secondary-extra-light-color: #0000000f;
@@ -79,13 +81,11 @@ body {
 
   font-family: var(--normal-font-family);
 
-  background-color: var(--primary-extra-light-color);
-  background-image: linear-gradient(
-      to right,
-      var(--primary-light-color) 1px,
-      transparent 1px
-    ),
-    linear-gradient(to bottom, var(--primary-light-color) 1px, transparent 1px);
+  background-color: var(--primary-light-color);
+  background-image: radial-gradient(
+    var(--primary-semi-light-color) 1px,
+    transparent 1px
+  );
   background-size: 20px 20px;
   color: var(--dark-color);
 }
