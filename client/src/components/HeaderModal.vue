@@ -158,6 +158,11 @@ header {
       line-height: 1.5rem;
     }
 
+    .text {
+      font-family: var(--normal-font-family);
+      font-size: 1rem;
+    }
+
     @media (hover: hover) {
       &:hover {
         color: var(--primary-light-color);
