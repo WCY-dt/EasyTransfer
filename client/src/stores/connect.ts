@@ -19,6 +19,7 @@ export const useConnectStore = defineStore('connect', () => {
   const sendChannels: Ref<RTCDataChannel[]> = ref([])
   const maxBufferedAmount = 1024 * 16
   const maxRetransmits = 10
+  const isConnecting = ref(false)
 
   function initializeConnection() {
     sendChannels.value = []
@@ -38,6 +39,8 @@ export const useConnectStore = defineStore('connect', () => {
   }
 
   function connectTarget() {
+    isConnecting.value = true
+
     peerConnection.value
       ?.createOffer()
       .then(offer => peerConnection.value?.setLocalDescription(offer))
@@ -77,6 +80,8 @@ export const useConnectStore = defineStore('connect', () => {
       (sdp: RTCSessionDescriptionInit, id: string, number: number) => {
         targetId.value = id
         maxConnectionNumber.value = number
+
+        isConnecting.value = true
 
         peerConnection.value
           ?.setRemoteDescription(new RTCSessionDescription(sdp))
@@ -141,15 +146,18 @@ export const useConnectStore = defineStore('connect', () => {
         channel.bufferedAmountLowThreshold = maxBufferedAmount
 
         channel.onopen = () => {
+          isConnecting.value = false
           isConnectSuccess.value = true
         }
 
         channel.onerror = error => {
           console.error(`[ERR] Data channel error: ${error}`)
+          isConnecting.value = false
           isConnectSuccess.value = false
         }
 
         channel.onclose = () => {
+          isConnecting.value = false
           isConnectSuccess.value = false
         }
 
@@ -201,6 +209,7 @@ export const useConnectStore = defineStore('connect', () => {
     targetId,
     sendChannels,
     maxBufferedAmount,
+    isConnecting,
     initializeConnection,
     registerClient,
     connectTarget,

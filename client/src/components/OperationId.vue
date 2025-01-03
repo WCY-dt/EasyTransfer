@@ -10,13 +10,12 @@ connectStore.initializeConnection()
 
 const settingStore = useSettingStore()
 
-const { isConnectSuccess, registered, clientId, targetId } =
+const { isConnectSuccess, registered, clientId, targetId, isConnecting } =
   storeToRefs(connectStore)
 
 const { iceServers } = storeToRefs(settingStore)
 
 const enableConnect = ref<boolean>(false)
-const isConnecting = ref<boolean>(false)
 const copied = ref<boolean>(false)
 
 const buttonStatus = computed(() => ({
@@ -39,7 +38,6 @@ watch(isConnectSuccess, (newValue: boolean) => {
   if (newValue) {
     enableConnect.value = false
   }
-  isConnecting.value = false
 })
 
 function validateInput(value: string) {
@@ -58,7 +56,6 @@ function copyId() {
 }
 
 function connectTarget() {
-  isConnecting.value = true
   targetId.value = targetId.value.toUpperCase()
   connectStore.connectTarget()
 }
