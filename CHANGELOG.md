@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.14] - 2025-01-04
+
+### Changed
+
+- Improved webpage design
+
+### Fixed
+
+- Fixed connection status tracking, now correct icon will display
+- Fixed all the warnings in the code
+
 ## [3.1.13] - 2025-01-03
 
 ### Added
