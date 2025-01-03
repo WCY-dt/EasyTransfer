@@ -44,15 +44,19 @@ What makes EasyTransfer different? It's these features:
 
 Please refer to the [project Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/Navigator).
 
+## Changelog
+
+Please refer to the [CHANGELOG](https://github.com/WCY-dt/EasyTransfer/blob/main/CHANGELOG.md).
+
 ## Statistics
 
 Thanks to these organizations or individuals for recommending this project[^2]:
 
-| <img src="imgs/ruanyf.webp" alt="ruanyf" width="100" /> | <img src="imgs/appinn.webp" alt="小众软件" width="100" /> | <img src="imgs/ahhhhfs.webp" alt="ahhhhfs" width="100" /> | <img src="imgs/iiiiShare.webp" alt="i资源分享" width="100" /> |
-| ------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------- |
-| [Ruan Yifeng](https://github.com/ruanyf)                | [Appinn](https://meta.appinn.net/)                        | [ahhhhfs](https://www.ahhhhfs.com/)                       | [iShare](https://x.com/iiiiShare)                             |
+| <img src="imgs/ruanyf.webp" alt="ruanyf" width="75" /> | <img src="imgs/appinn.webp" alt="小众软件" width="75" /> | <img src="imgs/ahhhhfs.webp" alt="ahhhhfs" width="75" /> | <img src="imgs/iiiiShare.webp" alt="i资源分享" width="75" /> |
+| :----------------------------------------------------: | :------------------------------------------------------: | :------------------------------------------------------: | :----------------------------------------------------------: |
+|        [Ruan Yifeng](https://github.com/ruanyf)        |            [Appinn](https://meta.appinn.net/)            |           [ahhhhfs](https://www.ahhhhfs.com/)            |              [iShare](https://x.com/iiiiShare)               |
 
-[<img src="https://api.star-history.com/svg?repos=WCY-dt/EasyTransfer&type=Date" alt="Star History Chart" style="zoom: 67%;" />](https://star-history.com/#WCY-dt/EasyTransfer&Date)
+[<img src="https://api.star-history.com/svg?repos=WCY-dt/EasyTransfer&type=Date" alt="Star History Chart" style="zoom: 40%;" />](https://star-history.com/#WCY-dt/EasyTransfer&Date)
 
 [^1]: If the communicating peers need to penetrate the intranet, the file may be uploaded to the free TURN server provided by this project. You can avoid this by deploying a trusted TURN server yourself.
 
