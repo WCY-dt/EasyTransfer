@@ -18,7 +18,7 @@ import UploadModal from '@/components/UploadModal.vue'
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6rem;
+  gap: 4rem;
 
   z-index: 300;
 }

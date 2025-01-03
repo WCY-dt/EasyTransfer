@@ -2,12 +2,18 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
+import { useSettingStore } from '@/stores/setting'
+import { checkTurnServer } from '@/utils/connectionTest'
 
 const connectStore = useConnectStore()
 connectStore.initializeConnection()
 
+const settingStore = useSettingStore()
+
 const { isConnectSuccess, registered, clientId, targetId } =
   storeToRefs(connectStore)
+
+const { iceServers } = storeToRefs(settingStore)
 
 const enableConnect = ref<boolean>(false)
 const isConnecting = ref<boolean>(false)
@@ -19,6 +25,8 @@ const buttonStatus = computed(() => ({
   ready: enableConnect.value && !isConnectSuccess.value && registered.value,
   success: !enableConnect.value && isConnectSuccess.value && registered.value,
 }))
+
+const isTurnServerAvailable = ref<boolean>(false)
 
 watch(targetId, (newVal: string) => {
   if (newVal !== newVal.toUpperCase()) {
@@ -57,6 +65,8 @@ function connectTarget() {
 
 onMounted(async () => {
   await connectStore.registerClient()
+
+  isTurnServerAvailable.value = await checkTurnServer(iceServers.value)
 })
 </script>
 
@@ -93,6 +103,17 @@ onMounted(async () => {
         <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
         <span v-else class="mdi mdi-connection"></span>
       </button>
+    </div>
+    <div class="isTurnServerAvailable">
+      <span
+        class="dot"
+        :class="{ green: isTurnServerAvailable, red: !isTurnServerAvailable }"
+      ></span>
+      <span class="notice">{{
+        isTurnServerAvailable
+          ? 'Turn server is available'
+          : 'Turn server is not available'
+      }}</span>
     </div>
   </div>
 </template>
@@ -289,6 +310,36 @@ onMounted(async () => {
         font-size: 3rem;
         line-height: 3rem;
       }
+    }
+  }
+
+  .isTurnServerAvailable {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    margin-top: 2rem;
+
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    .dot {
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 50%;
+
+      &.green {
+        background-color: var(--success-color);
+      }
+
+      &.red {
+        background-color: var(--error-color);
+      }
+    }
+
+    .notice {
+      color: var(--dark-color);
     }
   }
 }

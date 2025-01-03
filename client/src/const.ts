@@ -34,11 +34,6 @@ export const defaultIceServers: IceServer[] = [
     urls: 'stun:stun4.l.google.com:5349',
   },
   {
-    urls: 'turn:turn.ch3nyang.top:3478',
-    username: 'easytransfer',
-    credential: 'sharesimplyandstayanonymous',
-  },
-  {
     urls: 'turn:103.124.107.241:3478',
     username: 'easytransfer',
     credential: 'sharesimplyandstayanonymous',
