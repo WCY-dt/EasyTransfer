@@ -6,6 +6,14 @@ declare global {
   }
 }
 
+declare global {
+  namespace NodeJS {
+    interface Process {
+      package_version?: string
+    }
+  }
+}
+
 export interface IceServer {
   urls: string
   username?: string

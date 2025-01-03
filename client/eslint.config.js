@@ -35,6 +35,7 @@ export default [
       ...pluginVue.configs['flat/essential'].rules,
       ...pluginTypeScript.configs.recommended.rules,
       ...skipFormatting.rules,
+      '@typescript-eslint/no-namespace': 'off',
     },
   },
   {
