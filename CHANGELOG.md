@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.13] - 2025-01-03
+
+### Added
+
+- Support TURN server availability check and display status
+
+### Fixed
+
+- Fixed bugs of webpage style
+
 ## [3.1.12] - 2025-01-02
 
 ### Changed
@@ -18,7 +28,6 @@ All notable changes to this project will be documented in this file.
 
 - Deploy the TURN server on turn.ch3nyang.top instead of metered
 - Use the STUN server on Google instead of metered
-- Isolate default setting variables to a separate file
 
 ## [3.1.10] - 2024-12-24
 
