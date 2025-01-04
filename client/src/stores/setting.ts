@@ -36,6 +36,19 @@ export const useSettingStore = defineStore('setting', () => {
     )
   })
 
+  // autoDownload
+  const autoDownload: Ref<boolean> = ref(true)
+
+  if (localStorage.getItem('autoDownload')) {
+    autoDownload.value = JSON.parse(
+      localStorage.getItem('autoDownload') as string,
+    )
+  }
+
+  watch(autoDownload, () => {
+    localStorage.setItem('autoDownload', JSON.stringify(autoDownload.value))
+  })
+
   // maxConnectionNumber
   const maxConnectionNumber: Ref<number> = ref(defaultMaxConnectionNumber)
 
@@ -73,6 +86,7 @@ export const useSettingStore = defineStore('setting', () => {
   return {
     autoDisplayImage,
     directlyOpenLink,
+    autoDownload,
     maxConnectionNumber,
     iceServers,
   }
