@@ -81,9 +81,9 @@ body {
 
   font-family: var(--normal-font-family);
 
-  background-color: var(--primary-light-color);
+  background-color: var(--light-color);
   background-image: radial-gradient(
-    var(--primary-semi-light-color) 1px,
+    var(--primary-light-color) 1px,
     transparent 1px
   );
   background-size: 20px 20px;
