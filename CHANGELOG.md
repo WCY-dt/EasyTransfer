@@ -2,11 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.1.14] - 2025-01-04
+## [3.1.15] - 2025-01-04
+
+### Added
+
+- Support auto download of file when file is ready
+- Support setting of auto download
 
 ### Changed
 
 - Improved webpage design
+
+## [3.1.14] - 2025-01-03
 
 ### Fixed
 
