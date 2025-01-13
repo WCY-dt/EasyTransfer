@@ -48,16 +48,4 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 
 请参照[CHANGELOG](https://github.com/WCY-dt/EasyTransfer/blob/main/CHANGELOG.md)。
 
-## 统计
-
-感谢以下组织或个人推荐本项目[^2]：
-
-| <img src="imgs/ruanyf.webp" alt="ruanyf" width="75" /> | <img src="imgs/appinn.webp" alt="小众软件" width="75" /> | <img src="imgs/ahhhhfs.webp" alt="ahhhhfs" width="75" /> | <img src="imgs/iiiiShare.webp" alt="i资源分享" width="75" /> |
-| :----------------------------------------------------: | :------------------------------------------------------: | :------------------------------------------------------: | :----------------------------------------------------------: |
-|          [阮一峰](https://github.com/ruanyf)           |           [小众软件](https://meta.appinn.net/)           |           [ahhhhfs](https://www.ahhhhfs.com/)            |             [i资源分享](https://x.com/iiiiShare)             |
-
-[<img src="https://api.star-history.com/svg?repos=WCY-dt/EasyTransfer&type=Date" alt="Star History Chart" style="zoom: 40%;" />](https://star-history.com/#WCY-dt/EasyTransfer&Date)
-
 [^1]: 在通信双方需要内网穿透时，文件可能会上传到本项目提供的免费 TURN 服务器。您可以自行部署一个可信的 TURN 服务器来避免这种情况。
-
-[^2]: 如果您推荐了本项目但未在此处列出，请联系我。
