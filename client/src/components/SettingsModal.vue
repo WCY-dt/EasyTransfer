@@ -6,8 +6,13 @@ import { IceServer } from '@/types'
 
 const settingStore = useSettingStore()
 
-const { maxConnectionNumber, iceServers, autoDisplayImage, directlyOpenLink } =
-  storeToRefs(settingStore)
+const {
+  maxConnectionNumber,
+  iceServers,
+  autoDisplayImage,
+  directlyOpenLink,
+  autoDownload,
+} = storeToRefs(settingStore)
 
 const emit = defineEmits(['close'])
 const close = (): void => {
@@ -21,6 +26,7 @@ const maxConnectionNumberTmp = ref<number | null>(null)
 const iceServersTmp = ref<string | null>(null)
 const autoDisplayImageTmp = ref<boolean | null>(null)
 const directlyOpenLinkTmp = ref<boolean | null>(null)
+const autoDownloadTmp = ref<boolean | null>(null)
 
 onMounted((): void => {
   maxConnectionNumberTmp.value = maxConnectionNumber.value
@@ -30,6 +36,7 @@ onMounted((): void => {
 
   autoDisplayImageTmp.value = autoDisplayImage.value
   directlyOpenLinkTmp.value = directlyOpenLink.value
+  autoDownloadTmp.value = autoDownload.value
 })
 
 function saveSettings(): void {
@@ -50,6 +57,10 @@ function saveSettings(): void {
 
   if (directlyOpenLink.value !== directlyOpenLinkTmp.value) {
     directlyOpenLink.value = directlyOpenLinkTmp.value
+  }
+
+  if (autoDownload.value !== autoDownloadTmp.value) {
+    autoDownload.value = autoDownloadTmp.value
   }
 
   close()
@@ -146,6 +157,16 @@ const checkSettings = (): void => {
           />
           <span class="blur shadow"></span>
         </label>
+        <label for="auto-download">Auto download</label>
+        <label class="switch-input blur shadow">
+          <input
+            class="blur shadow"
+            type="checkbox"
+            id="auto-download"
+            v-model="autoDownloadTmp"
+          />
+          <span class="blur shadow"></span>
+        </label>
       </div>
       <div class="setting-button">
         <button @click="close" class="cancel-button">Cancel</button>
@@ -186,13 +207,11 @@ const checkSettings = (): void => {
 
   border-radius: var(--border-radius);
 
-  background-color: var(--primary-extra-light-color);
-  background-image: linear-gradient(
-      to right,
-      var(--primary-light-color) 1px,
-      transparent 1px
-    ),
-    linear-gradient(to bottom, var(--primary-light-color) 1px, transparent 1px);
+  background-color: var(--light-color);
+  background-image: radial-gradient(
+    var(--primary-light-color) 1px,
+    transparent 1px
+  );
   background-size: 20px 20px;
 
   z-index: 1002;

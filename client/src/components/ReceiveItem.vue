@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
 import { ItemDisplayProps } from '@/types'
@@ -20,7 +20,8 @@ const props = withDefaults(defineProps<ItemDisplayProps>(), {
 })
 
 const settingStore = useSettingStore()
-const { autoDisplayImage, directlyOpenLink } = storeToRefs(settingStore)
+const { autoDisplayImage, directlyOpenLink, autoDownload } =
+  storeToRefs(settingStore)
 
 const copied = ref(false)
 
@@ -33,6 +34,19 @@ function onTextClick(): void {
 }
 
 const supportsHover = window.matchMedia('(hover: hover)').matches
+
+const downloadLink = ref(null)
+
+watch(
+  () => props.success,
+  success => {
+    if (success && autoDownload.value && props.type === 'TRANSFER_TYPE_FILE') {
+      setTimeout(() => {
+        downloadLink.value.click()
+      }, 1000)
+    }
+  },
+)
 </script>
 
 <template>
@@ -59,7 +73,7 @@ const supportsHover = window.matchMedia('(hover: hover)').matches
         alt="Photo"
       />
       <video
-        v-if="isVideoType(props.name) && props.success"
+        v-if="isVideoType(props.name) && props.success && autoDisplayImage"
         class="download-item-content"
         :src="props.url"
         :controls="!supportsHover"
