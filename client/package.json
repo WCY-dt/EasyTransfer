@@ -31,7 +31,7 @@
     "sass-loader": "^16.0.4",
     "typescript": "^5.7.2",
     "vite": "^6.0.11",
-    "typescript-eslint": "^8.19.0",
+    "typescript-eslint": "^8.22.0",
     "vite-plugin-vue-devtools": "^7.6.8"
   }
 }
