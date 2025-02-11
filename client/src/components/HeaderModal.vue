@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import SettingsModal from '@/components/SettingsModal.vue'
 
 const showSettings = ref<boolean>(false)
@@ -8,28 +8,10 @@ const toggleSettings = (): void => {
 }
 
 const version = 'v' + (process.package_version as string)
-
-const isScrolled = ref(false)
-
-const handleScroll = () => {
-  if (window.scrollY > 50) {
-    isScrolled.value = true
-  } else {
-    isScrolled.value = false
-  }
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
 </script>
 
 <template>
-  <header :class="{ blur: isScrolled, shadow: isScrolled }">
+  <header>
     <div class="header-cluster">
       <div class="logo-cluster">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
