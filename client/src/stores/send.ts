@@ -27,20 +27,12 @@ export const useSendStore = defineStore('send', () => {
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  async function updateFileProgress(index: number, progress: number) {
-    uploadFileItems.value[index].progress = progress
-
-    uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
-  }
-
-  async function updateFileUrl(index: number, url: string) {
-    uploadFileItems.value[index].url = url
-
-    uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
-  }
-
-  async function updateFileSuccess(index: number, success: boolean) {
-    uploadFileItems.value[index].success = success
+  async function updateFileItemAttirbute<K extends keyof ItemDisplayProps>(
+    index: number,
+    key: K,
+    value: ItemDisplayProps[K],
+  ) {
+    uploadFileItems.value[index][key] = value
 
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
@@ -176,14 +168,23 @@ export const useSendStore = defineStore('send', () => {
             offset.value + (e.target?.result as ArrayBuffer).byteLength
 
           if (offset.value < currentFileSize.value) {
-            await updateFileProgress(currentSendingFileNo, offset.value)
-          } else {
-            await updateFileProgress(
+            await updateFileItemAttirbute(
               currentSendingFileNo,
+              'progress',
+              offset.value,
+            )
+          } else {
+            await updateFileItemAttirbute(
+              currentSendingFileNo,
+              'progress',
               currentFileSize.value,
             )
-            await updateFileUrl(currentSendingFileNo, URL.createObjectURL(file))
-            await updateFileSuccess(currentSendingFileNo, true)
+            await updateFileItemAttirbute(
+              currentSendingFileNo,
+              'url',
+              URL.createObjectURL(file),
+            )
+            await updateFileItemAttirbute(currentSendingFileNo, 'success', true)
           }
 
           resolve()
@@ -247,7 +248,7 @@ export const useSendStore = defineStore('send', () => {
 
     currentSendingFileNo++
 
-    updateFileSuccess(currentSendingFileNo, true)
+    updateFileItemAttirbute(currentSendingFileNo, 'success', true)
   }
 
   function checkSendTextAvailability(text: string): boolean {
