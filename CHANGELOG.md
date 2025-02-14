@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.16] - 2025-02-14
+
+### Changed
+
+- Improved webpage design
+- Pinia is bumped to v3
+
 ## [3.1.15] - 2025-01-04
 
 ### Added
