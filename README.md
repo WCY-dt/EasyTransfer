@@ -42,7 +42,13 @@ What makes EasyTransfer different? It's these features:
 
 ## Self-deployment
 
-Please refer to the [project Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/Navigator).
+This project supports multiple deployment methods, including direct deployment to the free Glitch server or using Docker to deploy to a local server.
+
+For specific deployment methods, please refer to the [Project Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/Navigator).
+
+## Contributing
+
+If you want to contribute code to this project, please refer to the [Contribution Guide](https://github.com/WCY-dt/EasyTransfer/blob/main/CONTRIBUTING.md).
 
 ## Changelog
 
