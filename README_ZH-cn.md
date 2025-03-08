@@ -1,5 +1,5 @@
 <div align="center">
-<img src="client/public/favicon.svg" alt="logo" width="100" height="100" />
+<img src="assets/favicon.svg" alt="logo" width="100" height="100" />
 
 <h1>EasyTransfer</h1>
 
@@ -11,7 +11,7 @@
 
 </div>
 
-![样例](./og-image.png)
+![样例](assets/og-image.png)
 
 EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传输工具。您只需访问一个简单的网页，即可使用设备代码连接到**任何网络**中的**任何设备**。
 
