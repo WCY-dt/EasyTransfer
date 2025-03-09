@@ -7,7 +7,7 @@
 
 [![GitHub issues](https://img.shields.io/github/issues/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/issues) [![GitHub pull requests](https://img.shields.io/github/issues-pr/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/pulls) [![GitHub license](https://img.shields.io/github/license/WCY-dt/EasyTransfer)](https://github.com/WCY-dt/EasyTransfer/blob/main/LICENSE) ![GitHub package.json version](https://img.shields.io/github/package-json/v/WCY-dt/EasyTransfer?filename=client%2Fpackage.json)
 
-<strong style="font-size: 24px;">👉 立即体验：<a href="https://file.ch3nyang.top/">EasyTransfer</a></strong>
+<a href="https://file.ch3nyang.top/"><img src="assets/exp_now_zhcn.svg" alt="立即体验" height="50" /></a>
 
 </div>
 
