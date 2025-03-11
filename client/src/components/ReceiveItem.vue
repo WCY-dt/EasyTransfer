@@ -35,14 +35,30 @@ function onTextClick(): void {
 
 const supportsHover = window.matchMedia('(hover: hover)').matches
 
-const downloadLink = ref(null)
+const downloadLink = ref<HTMLAnchorElement | null>(null)
+
+// Auto download may be restricted in some environments, such as iOS and DuckDuckGo desktop.
+const isRestrictedEnv = () => {
+  const ua = navigator.userAgent
+  return (
+    /(iPhone|iPod|iPad).*AppleWebKit/i.test(ua) ||
+    /DuckDuckGo\/\d+\.\d+/.test(ua)
+  )
+}
 
 watch(
   () => props.success,
   success => {
-    if (success && autoDownload.value && props.type === 'TRANSFER_TYPE_FILE') {
+    if (
+      success &&
+      autoDownload.value &&
+      props.type === 'TRANSFER_TYPE_FILE' &&
+      !isRestrictedEnv()
+    ) {
       setTimeout(() => {
-        downloadLink.value.click()
+        if (downloadLink.value) {
+          downloadLink.value.click()
+        }
       }, 1000)
     }
   },
