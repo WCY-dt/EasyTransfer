@@ -55,7 +55,17 @@ io.on("connection", (socket: Socket) => {
     "offer",
     (sdp: RTCSessionDescriptionInit, srcId: string, targetId: string) => {
       console.log("[offer] ", srcId, " --> ", targetId);
-      clients[targetId].emit("offer", sdp, srcId, maxConnectionNumbers[srcId]);
+      try {
+        clients[targetId].emit(
+          "offer",
+          sdp,
+          srcId,
+          maxConnectionNumbers[srcId],
+        );
+      } catch (error) {
+        console.error("[error] ", error);
+        clients[srcId].emit("error", "Target client not found");
+      }
     },
   );
 
