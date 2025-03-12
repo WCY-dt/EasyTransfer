@@ -73,13 +73,22 @@ io.on("connection", (socket: Socket) => {
     "answer",
     (sdp: RTCSessionDescriptionInit, srcId: string, targetId: string) => {
       console.log("[answer] ", srcId, " --> ", targetId);
-      clients[targetId].emit("answer", sdp, srcId);
+      try {
+        clients[targetId].emit("answer", sdp, srcId);
+      } catch (error) {
+        console.error("[error] ", error);
+        clients[srcId].emit("error", "Target client not found");
+      }
     },
   );
 
   socket.on("candidate", (candidate: RTCIceCandidate, targetId: string) => {
     console.log("[candidate] ", targetId);
-    clients[targetId].emit("candidate", candidate);
+    try {
+      clients[targetId].emit("candidate", candidate);
+    } catch (error) {
+      console.error("[error] ", error);
+    }
   });
 
   socket.on("disconnect", () => {

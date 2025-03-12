@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2025-03-12
+
+### Fixed
+
+- Fix the issue where wrong target will cause server to crash
+
 ## [3.1.18] - 2025-03-12
 
 ### Changed
