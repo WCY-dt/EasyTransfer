@@ -50,27 +50,31 @@ export const useSettingStore = defineStore('setting', () => {
   })
 
   // maxConnectionNumber
+  const maxConnectionNumberStorageName =
+    'maxConnectionNumber-' + (process.package_version as string)
   const maxConnectionNumber: Ref<number> = ref(defaultMaxConnectionNumber)
 
-  if (localStorage.getItem('maxConnectionNumber')) {
+  if (localStorage.getItem(maxConnectionNumberStorageName)) {
     maxConnectionNumber.value = JSON.parse(
-      localStorage.getItem('maxConnectionNumber') as string,
+      localStorage.getItem(maxConnectionNumberStorageName) as string,
     )
   }
 
   watch(maxConnectionNumber, () => {
     localStorage.setItem(
-      'maxConnectionNumber',
+      maxConnectionNumberStorageName,
       JSON.stringify(maxConnectionNumber.value),
     )
   })
 
   // iceServers
+  const iceServersStorageName =
+    'iceServers-' + (process.package_version as string)
   const iceServers: Ref<IceServer[]> = ref(defaultIceServers)
 
-  if (localStorage.getItem('iceServers')) {
+  if (localStorage.getItem(iceServersStorageName)) {
     const existingIceServers = JSON.parse(
-      localStorage.getItem('iceServers') as string,
+      localStorage.getItem(iceServersStorageName) as string,
     )
     const newIceServers = [...iceServers.value, ...existingIceServers]
     const uniqueIceServers = Array.from(
@@ -80,7 +84,10 @@ export const useSettingStore = defineStore('setting', () => {
   }
 
   watch(iceServers, () => {
-    localStorage.setItem('iceServers', JSON.stringify(iceServers.value))
+    localStorage.setItem(
+      iceServersStorageName,
+      JSON.stringify(iceServers.value),
+    )
   })
 
   return {

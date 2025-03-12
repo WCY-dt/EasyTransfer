@@ -65,6 +65,12 @@ export const useConnectStore = defineStore('connect', () => {
   }
 
   function handleServerMsg() {
+    socket?.on('error', (error: string) => {
+      console.error(`[ERROR] ${error}`)
+      isConnecting.value = false
+      isConnectSuccess.value = false
+    })
+
     socket?.on('success', (id: string) => {
       clientId.value = id
       registered.value = true

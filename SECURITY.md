@@ -6,8 +6,8 @@ We release patches for security vulnerabilities in the following versions:
 
 | Part   | Version | Supported          |
 | ------ | ------- | ------------------ |
-| Server | 3.0.x   | :white_check_mark: |
-| Server | < 3.0   | :x:                |
+| Server | 3.1.x   | :white_check_mark: |
+| Server | < 3.1   | :x:                |
 | Client | 3.1.x   | :white_check_mark: |
 | Client | < 3.1   | :x:                |
 

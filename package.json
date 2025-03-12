@@ -1,6 +1,6 @@
 {
   "name": "file-transfer-server",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "description": "Server for file transfer",
   "main": "dist/server.js",
   "type": "module",

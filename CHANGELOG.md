@@ -2,11 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.18] - 2025-03-12
+
+### Changed
+
+- STUN/TURN servers will reset on new version release
+
+### Fixed
+
+- Fix the issue where wrong target will cause server to crash
+
 ## [3.1.17] - 2025-03-11
 
 ### Fixed
 
-- Fixed the issue where auto download is disabled in certain browsers
+- Fix the issue where auto download is disabled in certain browsers
 
 ## [3.1.16] - 2025-02-14
 
