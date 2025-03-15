@@ -2,11 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2025-03-12
+## [3.1.19] - 2025-03-15
+
+### Changed
+
+- Using `@mdi/js` instead of webfont
 
 ### Fixed
 
 - Fix the issue where wrong target will cause server to crash
+- Fix photo stream style and add layout
 
 ## [3.1.18] - 2025-03-12
 
