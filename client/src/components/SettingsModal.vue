@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
 import { IceServer } from '@/types'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiCog } from '@mdi/js'
 
 const settingStore = useSettingStore()
 
@@ -40,7 +42,10 @@ onMounted((): void => {
 })
 
 function saveSettings(): void {
-  if (maxConnectionNumber.value !== maxConnectionNumberTmp.value) {
+  if (
+    maxConnectionNumberTmp.value !== null &&
+    maxConnectionNumber.value !== maxConnectionNumberTmp.value
+  ) {
     maxConnectionNumber.value = maxConnectionNumberTmp.value
   }
 
@@ -51,15 +56,24 @@ function saveSettings(): void {
     iceServers.value = iceServersValue
   }
 
-  if (autoDisplayImage.value !== autoDisplayImageTmp.value) {
+  if (
+    autoDisplayImageTmp.value !== null &&
+    autoDisplayImage.value !== autoDisplayImageTmp.value
+  ) {
     autoDisplayImage.value = autoDisplayImageTmp.value
   }
 
-  if (directlyOpenLink.value !== directlyOpenLinkTmp.value) {
+  if (
+    directlyOpenLinkTmp.value !== null &&
+    directlyOpenLink.value !== directlyOpenLinkTmp.value
+  ) {
     directlyOpenLink.value = directlyOpenLinkTmp.value
   }
 
-  if (autoDownload.value !== autoDownloadTmp.value) {
+  if (
+    autoDownloadTmp.value !== null &&
+    autoDownload.value !== autoDownloadTmp.value
+  ) {
     autoDownload.value = autoDownloadTmp.value
   }
 
@@ -110,7 +124,9 @@ const checkSettings = (): void => {
 <template>
   <div class="overlay blur" @click.self="close">
     <div class="settings-cluster shadow">
-      <h2><span class="mdi mdi-cog"></span>Settings</h2>
+      <h2>
+        <SvgIcon type="mdi" :path="mdiCog" size="2rem" class="mdi" />Settings
+      </h2>
       <div class="setting-item">
         <label for="max-connection-number">Max connection number</label>
         <div class="range-input">

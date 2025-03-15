@@ -4,6 +4,13 @@ import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { useSettingStore } from '@/stores/setting'
 import { checkTurnServer } from '@/utils/connectionTest'
+import SvgIcon from '@jamescoyle/vue-icon'
+import {
+  mdiCheckBold,
+  mdiContentCopy,
+  mdiDotsHorizontal,
+  mdiConnection,
+} from '@mdi/js'
 
 const connectStore = useConnectStore()
 connectStore.initializeConnection()
@@ -76,8 +83,8 @@ onMounted(async () => {
     >
       {{ clientId }}
       <div class="cover blur">
-        <span class="mdi mdi-check-bold" v-if="copied"></span>
-        <span class="mdi mdi-content-copy" v-else></span>
+        <SvgIcon type="mdi" :path="mdiCheckBold" size="4rem" v-if="copied" />
+        <SvgIcon type="mdi" :path="mdiContentCopy" size="4rem" v-else />
       </div>
     </div>
     <div class="targetId-cluster shadow" :class="buttonStatus">
@@ -97,8 +104,20 @@ onMounted(async () => {
         @click="connectTarget"
         aria-label="Connect"
       >
-        <span v-if="isConnecting" class="mdi mdi-dots-horizontal"></span>
-        <span v-else class="mdi mdi-connection"></span>
+        <SvgIcon
+          type="mdi"
+          :path="mdiDotsHorizontal"
+          size="3rem"
+          class="mdi"
+          v-if="isConnecting"
+        />
+        <SvgIcon
+          type="mdi"
+          :path="mdiConnection"
+          size="3rem"
+          class="mdi"
+          v-else
+        />
       </button>
     </div>
     <div class="isTurnServerAvailable">
@@ -227,6 +246,10 @@ onMounted(async () => {
       }
 
       .connect-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         background-color: var(--secondary-color);
 
         cursor: not-allowed;

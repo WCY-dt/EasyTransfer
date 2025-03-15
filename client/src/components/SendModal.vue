@@ -3,6 +3,8 @@ import { ref, watch } from 'vue'
 import { useSendStore } from '@/stores/send'
 import SendItem from '@/components/SendItem.vue'
 import { ItemDisplayProps } from '@/types'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiUploadNetwork } from '@mdi/js'
 
 const sendStore = useSendStore()
 
@@ -20,7 +22,7 @@ watch(
 <template>
   <div class="upload-cluster">
     <div class="upload-cluster-title">
-      <span class="mdi mdi-upload-network"></span>
+      <SvgIcon type="mdi" :path="mdiUploadNetwork" size="2.5rem" class="mdi" />
       <p class="upload-cluster-title-text">Upload</p>
     </div>
     <p

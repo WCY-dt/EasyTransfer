@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SettingsModal from '@/components/SettingsModal.vue'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiCog, mdiGithub } from '@mdi/js'
 
 const showSettings = ref<boolean>(false)
 const toggleSettings = (): void => {
@@ -27,14 +29,19 @@ const version = 'v' + (process.package_version as string)
       </div>
       <div class="link-cluster">
         <button class="link-item shadow" @click="toggleSettings">
-          <span class="mdi mdi-cog"></span><span class="text">Settings</span>
+          <SvgIcon type="mdi" :path="mdiCog" size="1.5rem" /><span class="text"
+            >Settings</span
+          >
         </button>
         <a
           href="https://github.com/WCY-dt/EasyTransfer"
           class="link-item shadow github"
-          ><span class="mdi mdi-github"></span
-          ><span class="text">Star on GitHub</span></a
         >
+          <SvgIcon type="mdi" :path="mdiGithub" size="1.5rem" /><span
+            class="text"
+            >Star on GitHub</span
+          >
+        </a>
       </div>
     </div>
   </header>

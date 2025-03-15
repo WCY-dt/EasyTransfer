@@ -3,6 +3,8 @@ import { ref, Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { useSendStore } from '@/stores/send'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiFileUpload } from '@mdi/js'
 
 const connectStore = useConnectStore()
 const { isConnectSuccess } = storeToRefs(connectStore)
@@ -55,7 +57,7 @@ function onFileClick() {
       ref="fileInput"
       :disabled="!isConnectSuccess"
     />
-    <span class="mdi mdi-file-upload"></span>
+    <SvgIcon type="mdi" :path="mdiFileUpload" size="3rem" class="mdi" />
     <p class="file-input-title">File</p>
   </div>
 </template>

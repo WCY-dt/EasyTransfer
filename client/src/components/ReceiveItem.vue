@@ -9,6 +9,15 @@ import {
   isVideoType,
   decideFileType,
 } from '@/utils/msgType'
+import SvgIcon from '@jamescoyle/vue-icon'
+import {
+  mdiDownload,
+  mdiMessageText,
+  mdiCheckBold,
+  mdiContentCopy,
+  mdiLinkVariant,
+  mdiOpenInNew,
+} from '@mdi/js'
 
 const props = withDefaults(defineProps<ItemDisplayProps>(), {
   url: 'javascript:void(0)',
@@ -74,7 +83,12 @@ watch(
     :download="props.name"
     :class="{ success: props.success, loading: !props.success }"
   >
-    <span class="mdi" :class="decideFileType(props.name)"></span>
+    <SvgIcon
+      type="mdi"
+      :path="decideFileType(props.name)"
+      size="2.5rem"
+      class="mdi"
+    />
     <div class="download-item-detail">
       <p class="download-item-name">{{ props.name }}</p>
       <progress
@@ -105,7 +119,7 @@ watch(
         'none-hover': !supportsHover,
       }"
     >
-      <span class="mdi mdi-download"></span>
+      <SvgIcon type="mdi" :path="mdiDownload" size="2.5rem" class="mdi" />
     </div>
   </a>
   <div
@@ -117,7 +131,7 @@ watch(
     :class="{ success: props.success, loading: !props.success }"
     @click="onTextClick"
   >
-    <span class="mdi mdi-message-text"></span>
+    <SvgIcon type="mdi" :path="mdiMessageText" size="2.5rem" class="mdi" />
     <div class="download-item-detail">
       <p class="download-item-content">{{ props.name }}</p>
     </div>
@@ -128,8 +142,20 @@ watch(
         'none-hover': !supportsHover,
       }"
     >
-      <span class="mdi mdi-check-bold" v-if="copied"></span>
-      <span class="mdi mdi-content-copy" v-else></span>
+      <SvgIcon
+        type="mdi"
+        :path="mdiCheckBold"
+        size="2.5rem"
+        class="mdi"
+        v-if="copied"
+      />
+      <SvgIcon
+        type="mdi"
+        :path="mdiContentCopy"
+        size="2.5rem"
+        class="mdi"
+        v-else
+      />
     </div>
   </div>
   <a
@@ -145,7 +171,7 @@ watch(
     target="_blank"
     rel="noopener noreferrer"
   >
-    <span class="mdi mdi-link-variant"></span>
+    <SvgIcon type="mdi" :path="mdiLinkVariant" size="2.5rem" class="mdi" />
     <div class="download-item-detail">
       <p class="download-item-content">{{ props.name }}</p>
     </div>
@@ -156,7 +182,7 @@ watch(
         'none-hover': !supportsHover,
       }"
     >
-      <span class="mdi mdi-open-in-new"></span>
+      <SvgIcon type="mdi" :path="mdiOpenInNew" size="2.5rem" class="mdi" />
     </div>
   </a>
 </template>
