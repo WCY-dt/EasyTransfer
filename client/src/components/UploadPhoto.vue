@@ -98,35 +98,45 @@ async function onCameraSendClick(): Promise<void> {
 </script>
 
 <template>
-  <div v-show="showCamera" id="cameradisplay" class="camera-display-cluster">
-    <button class="close-button" @click="onCameraCloseClick">
-      <SvgIcon type="mdi" :path="mdiClose" size="2rem" class="mdi" />
-    </button>
-    <video
-      v-show="showStream"
-      class="stream-display"
-      ref="stream"
-      autoplay
-      playsinline
-    ></video>
-    <button
-      v-show="showStream"
-      class="snapshot-button"
-      @click="onSnapshotClick"
-    >
-      <SvgIcon type="mdi" :path="mdiCamera" size="2rem" class="mdi" />
-    </button>
-    <canvas v-show="!showStream" class="photo-display" ref="photo"></canvas>
-    <button v-show="!showStream" class="send-button" @click="onCameraSendClick">
-      <SvgIcon
-        type="mdi"
-        :path="mdiCheckBold"
-        size="2rem"
-        class="mdi"
-        v-if="photoSent"
-      />
-      <SvgIcon type="mdi" :path="mdiSend" size="2rem" class="mdi" v-else />
-    </button>
+  <div
+    v-show="showCamera"
+    class="overlay blur"
+    @click.self="onCameraCloseClick"
+  >
+    <div id="cameradisplay" class="camera-display-cluster shadow">
+      <button class="close-button" @click="onCameraCloseClick">
+        <SvgIcon type="mdi" :path="mdiClose" size="2rem" class="mdi" />
+      </button>
+      <video
+        v-show="showStream"
+        class="stream-display"
+        ref="stream"
+        autoplay
+        playsinline
+      ></video>
+      <button
+        v-show="showStream"
+        class="snapshot-button"
+        @click="onSnapshotClick"
+      >
+        <SvgIcon type="mdi" :path="mdiCamera" size="2rem" class="mdi" />
+      </button>
+      <canvas v-show="!showStream" class="photo-display" ref="photo"></canvas>
+      <button
+        v-show="!showStream"
+        class="send-button"
+        @click="onCameraSendClick"
+      >
+        <SvgIcon
+          type="mdi"
+          :path="mdiCheckBold"
+          size="2rem"
+          class="mdi"
+          v-if="photoSent"
+        />
+        <SvgIcon type="mdi" :path="mdiSend" size="2rem" class="mdi" v-else />
+      </button>
+    </div>
   </div>
   <div
     id="camera"
@@ -140,6 +150,20 @@ async function onCameraSendClick(): Promise<void> {
 </template>
 
 <style scoped lang="scss">
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+}
+
 .upload-photo-cluster {
   grid-column: 2 / 3;
   grid-row: 1 / 2;
@@ -209,13 +233,10 @@ async function onCameraSendClick(): Promise<void> {
   align-items: center;
   justify-content: center;
 
-  width: auto;
+  width: calc(min(94vw, 40rem)) !important;
   border-radius: var(--border-radius);
 
   background-color: var(--primary-light-color);
-  box-shadow:
-    0 0 1rem rgba(0, 0, 0, 0.3),
-    0 0 0.5rem rgba(0, 0, 0, 0.5);
 
   z-index: 500;
 
@@ -232,7 +253,7 @@ async function onCameraSendClick(): Promise<void> {
 
   .close-button {
     top: 2rem;
-    right: 2rem;
+    right: 1.5rem;
 
     font-size: 2rem;
 
