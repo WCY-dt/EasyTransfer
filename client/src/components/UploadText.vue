@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { useSendStore } from '@/stores/send'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiCheckBold, mdiSend } from '@mdi/js'
 
 const connectStore = useConnectStore()
 const { isConnectSuccess } = storeToRefs(connectStore)
@@ -42,10 +44,14 @@ function onTextClick(): void {
       :disabled="!isConnectSuccess"
       @click="onTextClick"
     >
-      <span
+      <SvgIcon
+        type="mdi"
+        :path="mdiCheckBold"
+        size="1.5rem"
         class="mdi"
-        :class="{ 'mdi-send': !textSent, 'mdi-check-bold': textSent }"
-      ></span>
+        v-if="textSent"
+      />
+      <SvgIcon type="mdi" :path="mdiSend" size="1.5rem" class="mdi" v-else />
       <p v-if="!textSent" class="upload-text-title">Send Message</p>
       <p v-else class="upload-text-title">Succeed</p>
     </button>

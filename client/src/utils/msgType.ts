@@ -1,3 +1,30 @@
+import {
+  mdiFileImage,
+  mdiFileWord,
+  mdiFileTable,
+  mdiFilePowerpoint,
+  mdiFileMusic,
+  mdiFileVideo,
+  mdiFileCode,
+  mdiFolderZip,
+  mdiFileCad,
+  mdiFileKey,
+  mdiFileDocument,
+} from '@mdi/js'
+
+const iconNameToPath: { [key: string]: string } = {
+  mdiFileImage: mdiFileImage,
+  mdiFileWorld: mdiFileWord,
+  mdiFileTable: mdiFileTable,
+  mdiFilePowerpoint: mdiFilePowerpoint,
+  mdiFileMusic: mdiFileMusic,
+  mdiFileVideo: mdiFileVideo,
+  mdiFileCode: mdiFileCode,
+  mdiFolderZip: mdiFolderZip,
+  mdiFileCad: mdiFileCad,
+  mdiFileKey: mdiFileKey,
+}
+
 export function isLinkMessage(text: string): boolean {
   return !!urlPattern.test(text)
 }
@@ -14,11 +41,11 @@ export function decideFileType(name: string): string {
   const fileName = name.toLowerCase()
   for (const [icon, formats] of Object.entries(fileTypeMap)) {
     if (formats.some(format => fileName.endsWith(format))) {
-      return icon
+      return iconNameToPath[icon as keyof typeof iconNameToPath]
     }
   }
 
-  return 'mdi-file-document'
+  return mdiFileDocument
 }
 
 const urlPattern = new RegExp(
@@ -57,10 +84,10 @@ const videoFormats = [
 ]
 
 const fileTypeMap: { [key: string]: string[] } = {
-  'mdi-file-image': imageFormats,
-  'mdi-file-word': ['.doc', '.docx', '.odt', '.rtf', '.txt', '.wps', '.wpd'],
-  'mdi-file-table': ['.xls', '.xlsx', '.ods', '.csv', '.tsv', '.xlsm', '.xlsb'],
-  'mdi-file-powerpoint': [
+  mdiFileImage: imageFormats,
+  mdiFileWorld: ['.doc', '.docx', '.odt', '.rtf', '.txt', '.wps', '.wpd'],
+  mdiFileTable: ['.xls', '.xlsx', '.ods', '.csv', '.tsv', '.xlsm', '.xlsb'],
+  mdiFilePowerpoint: [
     '.ppt',
     '.pptx',
     '.odp',
@@ -69,7 +96,7 @@ const fileTypeMap: { [key: string]: string[] } = {
     '.pot',
     '.potx',
   ],
-  'mdi-file-music': [
+  mdiFileMusic: [
     '.mp3',
     '.wav',
     '.flac',
@@ -80,8 +107,8 @@ const fileTypeMap: { [key: string]: string[] } = {
     '.aiff',
     '.alac',
   ],
-  'mdi-file-video': videoFormats,
-  'mdi-file-code': [
+  mdiFileVideo: videoFormats,
+  mdiFileCode: [
     '.html',
     '.css',
     '.js',
@@ -146,7 +173,7 @@ const fileTypeMap: { [key: string]: string[] } = {
     '.rmd',
     '.ipynb',
   ],
-  'mdi-folder-zip': [
+  mdiFolderZip: [
     '.zip',
     '.rar',
     '.7z',
@@ -172,7 +199,7 @@ const fileTypeMap: { [key: string]: string[] } = {
     '.tar.zst',
     '.tzst',
   ],
-  'mdi-file-cad': [
+  mdiFileCad: [
     '.dwg',
     '.dxf',
     '.dgn',
@@ -195,7 +222,7 @@ const fileTypeMap: { [key: string]: string[] } = {
     '.xas',
     '.xpr',
   ],
-  'mdi-file-key': [
+  mdiFileKey: [
     '.key',
     '.pem',
     '.pub',

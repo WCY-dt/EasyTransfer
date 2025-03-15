@@ -5,6 +5,8 @@ import { useConnectStore } from '@/stores/connect'
 import { useReceiveStore } from '@/stores/receive'
 import ReceiveItem from '@/components/ReceiveItem.vue'
 import { ItemDisplayProps } from '@/types'
+import SvgIcon from '@jamescoyle/vue-icon'
+import { mdiDownloadNetwork } from '@mdi/js'
 
 const connectCore = useConnectStore()
 const receiveStore = useReceiveStore()
@@ -30,7 +32,12 @@ watch(
 <template>
   <div class="download-cluster">
     <div class="download-cluster-title">
-      <span class="mdi mdi-download-network"></span>
+      <SvgIcon
+        type="mdi"
+        :path="mdiDownloadNetwork"
+        size="2.5rem"
+        class="mdi"
+      />
       <p class="download-cluster-title-text">Download</p>
     </div>
     <p
