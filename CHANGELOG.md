@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2025-04-12
+
+### Changed
+
+- Stop supporting syncing with glitch
+
 ## [3.1.19] - 2025-03-15
 
 ### Changed
