@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
-    "lib": ["ES2016", "DOM"],
+    "target": "ES2020",
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "outDir": "./dist",
@@ -11,6 +14,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["server/server.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/server.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

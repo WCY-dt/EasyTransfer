@@ -22,21 +22,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Node.js for server
-        uses: actions/setup-node@v4
-        with:
-          node-version: 16.x
-
-      - name: Check server
-        run: |
-          npm install
-          npm run lint
-          npm run format -- --check
-
-      - name: Set up Node.js for client
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: latest
+
+      - name: Check server
+        run: |
+          cd server
+          npm install
+          npm run lint
+          npm run format -- --check
 
       - name: Check client
         run: |
@@ -47,7 +43,7 @@ jobs:
 
       - name: Check if the code is formatted and linted
         run: |
-          git diff --exit-code -- . ':(exclude)package-lock.json' ':(exclude)client/package-lock.json'
+          git diff --exit-code -- . ':(exclude)server/package-lock.json' ':(exclude)client/package-lock.json'
 
           if [ $? -eq 0 ]; then
             echo "Code is formatted and linted"

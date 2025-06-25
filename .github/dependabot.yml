@@ -3,10 +3,10 @@ updates:
   - package-ecosystem: "npm"
     directories:
       - "/client"
+      - "/server"
     schedule:
       interval: "monthly"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
-    open-pull-requests-limit: 1

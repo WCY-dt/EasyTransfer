@@ -1,0 +1,32 @@
+{
+  "name": "file-transfer-server",
+  "version": "3.1.1",
+  "description": "Server for file transfer",
+  "main": "dist/src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && node dist/src/server.js",
+    "dev": "tsc && nodemon dist/src/server.js",
+    "lint": "eslint . --fix",
+    "format": "prettier --write src/"
+  },
+  "keywords": [
+    "file",
+    "transfer",
+    "server"
+  ],
+  "author": "ch3nyang",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.4",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.29.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.1",
+    "typescript": "^5.8.3"
+  }
+}
