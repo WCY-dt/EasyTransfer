@@ -22,7 +22,7 @@
     "@typescript-eslint/eslint-plugin": "^8.35.0",
     "@typescript-eslint/parser": "^8.35.0",
     "@vitejs/plugin-vue": "^6.0.0",
-    "@vitejs/plugin-vue-jsx": "^5.0.0",
+    "@vitejs/plugin-vue-jsx": "^5.0.1",
     "@vue/cli-plugin-typescript": "^5.0.8",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/runtime-core": "^3.5.17",
