@@ -5,7 +5,8 @@
   "main": "dist/src/server.js",
   "type": "module",
   "scripts": {
-    "start": "tsc && node dist/src/server.js",
+    "build": "tsc",
+    "start": "node dist/src/server.js",
     "dev": "tsc && nodemon dist/src/server.js",
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
