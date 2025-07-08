@@ -55,6 +55,13 @@ io.on("connection", (socket: Socket) => {
     "offer",
     (sdp: RTCSessionDescriptionInit, srcId: string, targetId: string) => {
       console.log("[offer] ", srcId, " --> ", targetId);
+      if (!clients[targetId]) {
+        console.error("[error] Target client not found:", targetId);
+        if (clients[srcId]) {
+          clients[srcId].emit("error", "Target client not found");
+        }
+        return;
+      }
       try {
         clients[targetId].emit(
           "offer",
@@ -64,7 +71,9 @@ io.on("connection", (socket: Socket) => {
         );
       } catch (error) {
         console.error("[error] ", error);
-        clients[srcId].emit("error", "Target client not found");
+        if (clients[srcId]) {
+          clients[srcId].emit("error", "Failed to send offer");
+        }
       }
     },
   );
@@ -73,21 +82,34 @@ io.on("connection", (socket: Socket) => {
     "answer",
     (sdp: RTCSessionDescriptionInit, srcId: string, targetId: string) => {
       console.log("[answer] ", srcId, " --> ", targetId);
+      if (!clients[targetId]) {
+        console.error("[error] Target client not found:", targetId);
+        if (clients[srcId]) {
+          clients[srcId].emit("error", "Target client not found");
+        }
+        return;
+      }
       try {
         clients[targetId].emit("answer", sdp, srcId);
       } catch (error) {
         console.error("[error] ", error);
-        clients[srcId].emit("error", "Target client not found");
+        if (clients[srcId]) {
+          clients[srcId].emit("error", "Failed to send answer");
+        }
       }
     },
   );
 
   socket.on("candidate", (candidate: RTCIceCandidate, targetId: string) => {
     console.log("[candidate] ", targetId);
+    if (!clients[targetId]) {
+      console.error("[error] Target client not found for candidate:", targetId);
+      return;
+    }
     try {
       clients[targetId].emit("candidate", candidate);
     } catch (error) {
-      console.error("[error] ", error);
+      console.error("[error] Failed to send candidate:", error);
     }
   });
 
@@ -96,6 +118,8 @@ io.on("connection", (socket: Socket) => {
     for (const clientId in clients) {
       if (clients[clientId] === socket) {
         delete clients[clientId];
+        delete maxConnectionNumbers[clientId];
+        console.log("[cleanup] Removed client:", clientId);
         break;
       }
     }

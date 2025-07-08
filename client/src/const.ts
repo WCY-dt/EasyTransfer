@@ -4,7 +4,7 @@ export const defaultMaxConnectionNumber: number = 10
 
 export const defaultIceServers: IceServer[] = [
   {
-    urls: 'turn:103.124.107.241:3478',
+    urls: 'turn:82.29.67.202:3478',
     username: 'easytransfer',
     credential: 'sharesimplyandstayanonymous',
   },
