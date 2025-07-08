@@ -2,11 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2025-04-12
+## [3.2.0] - 2025-07-09
+
+**New Features:** The self-hosted signal server is now available.
 
 ### Changed
 
-- Stop supporting syncing with glitch
+- Move signal server to self-hosted
+- Modify TURN/STUN server IP
 
 ## [3.1.19] - 2025-03-15
 
