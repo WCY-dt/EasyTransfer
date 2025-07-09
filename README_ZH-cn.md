@@ -42,8 +42,6 @@ EasyTransfer 是一款免费、匿名、加密且易于使用的 E2EE 文件传�
 
 ## 自行部署
 
-本项目支持多种部署方式，包括直接部署到免费的 Glitch 服务器或者使用 Docker 部署到本地服务器。
-
 具体部署方法请参照[项目 Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/导航)。
 
 ## 贡献本项目
