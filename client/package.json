@@ -15,7 +15,7 @@
     "@mdi/js": "^7.4.47",
     "pinia": "^3.0.3",
     "socket.io-client": "^4.8.1",
-    "vue": "^3.5.17"
+    "vue": "^3.5.18"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
