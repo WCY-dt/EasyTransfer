@@ -25,7 +25,7 @@
     "@vitejs/plugin-vue-jsx": "^5.0.1",
     "@vue/cli-plugin-typescript": "^5.0.8",
     "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/runtime-core": "^3.5.17",
+    "@vue/runtime-core": "^3.5.18",
     "eslint": "^9.29.0",
     "eslint-plugin-vue": "^10.2.0",
     "prettier": "^3.6.2",
