@@ -3,6 +3,7 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
 import { io, Socket } from 'socket.io-client'
 import { PeerConnectionConfig, RTCSessionDescriptionInit } from '@/types'
+import { TRANSFER_CONFIG } from '@/config/transferConfig'
 
 export const useConnectStore = defineStore('connect', () => {
   const settingStore = useSettingStore()
@@ -17,7 +18,7 @@ export const useConnectStore = defineStore('connect', () => {
   let candidateQueue: RTCIceCandidateInit[] = []
   const isConnectSuccess: Ref<boolean> = ref(false)
   const sendChannels: Ref<RTCDataChannel[]> = ref([])
-  const maxBufferedAmount = 1024 * 16
+  const maxBufferedAmount = TRANSFER_CONFIG.maxBufferedAmount
   const maxRetransmits = 10
   const isConnecting = ref(false)
 

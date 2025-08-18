@@ -2,14 +2,33 @@ import { ref, Ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { ItemDisplayProps } from '@/types'
+import { FileProtocol } from '@/utils/fileProtocol'
+import { FileChunkManager } from '@/utils/fileChunk'
+import { RetryManager } from '@/utils/retryManager'
+import type {
+  FileReceiveState,
+  PendingMeta,
+  RetryData,
+} from '@/types/fileTransfer'
 
 export const useReceiveStore = defineStore('receive', () => {
   const connectStore = useConnectStore()
-
   const { peerConnection } = storeToRefs(connectStore)
 
+  // State variables
   const downloadFileItems: Ref<ItemDisplayProps[]> = ref([])
+  const activeFiles = new Map<string, FileReceiveState>()
+  const pendingMeta: PendingMeta = {
+    types: [],
+    names: [],
+    sizes: [],
+    ids: [],
+  }
 
+  let receiveChannel: RTCDataChannel | null = null
+  let retryManager: RetryManager | null = null
+
+  // UI state management functions
   function addDownloadFileItem(
     url: string,
     name: string,
@@ -24,42 +43,33 @@ export const useReceiveStore = defineStore('receive', () => {
       progress,
       type,
     })
-
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
   function updateFileProgress(index: number, progress: number) {
     downloadFileItems.value[index].progress = progress
-
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
   function updateFileUrl(index: number, url: string) {
     downloadFileItems.value[index].url = url
-
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
   function updateFileSuccess(index: number, success: boolean) {
     downloadFileItems.value[index].success = success
-
     downloadFileItems.value = [...downloadFileItems.value] // trigger reactivity
   }
 
-  let receivedDataArray: ArrayBuffer[] = []
-  let receivedData: ArrayBuffer[] = []
-  let currentFileType = ''
-  let currentFileName = ''
-  let currentFileSize = 0
-  let currentFileProgress = 0
-  let currentFileUrl = ''
+  // Retry request sending function
+  function sendRetryRequest(retryData: RetryData): void {
+    if (receiveChannel && receiveChannel.readyState === 'open') {
+      const message = FileProtocol.encodeRetryMessage(retryData)
+      receiveChannel.send(message)
+    }
+  }
 
-  let fileTypeQueue: string[] = []
-  let fileNameQueue: string[] = []
-  let fileSizeQueue: number[] = []
-
-  let currentReceivingFileNo = -1
-
+  // Main receive function
   function receiveFiles() {
     if (!peerConnection.value) {
       console.error('[ERR] Peer connection not ready')
@@ -69,10 +79,14 @@ export const useReceiveStore = defineStore('receive', () => {
     peerConnection.value.ondatachannel = (event: RTCDataChannelEvent) => {
       initReceiveBuffer()
 
-      const receiveChannel = event.channel
+      receiveChannel = event.channel
+
+      // Initialize retry manager
+      retryManager = new RetryManager(activeFiles, sendRetryRequest)
+      retryManager.startTimeoutCheck()
 
       receiveChannel.onopen = () => {
-        // console.log(`[INFO] Receive channel opened`)
+        console.log(`[INFO] Receive channel opened`)
       }
 
       receiveChannel.onerror = (error: Event) => {
@@ -80,148 +94,225 @@ export const useReceiveStore = defineStore('receive', () => {
       }
 
       receiveChannel.onclose = () => {
-        // console.log(`[INFO] Receive channel closed`)
+        console.log(`[INFO] Receive channel closed`)
+        if (retryManager) {
+          retryManager.destroy()
+        }
         window.location.reload()
       }
 
       receiveChannel.onmessage = (event: MessageEvent) => {
-        // console.log(`[INFO] Channel received message`)
         handleReceiveChannelMsg(event)
       }
     }
   }
 
-  const metaPrefix = 'CONTENT_META'
-  const metaPrefixBytes = new TextEncoder().encode(metaPrefix)
-
+  // Message handling function
   async function handleReceiveChannelMsg(event: MessageEvent) {
-    const dataView = new DataView(event.data)
+    const message = FileProtocol.parseMessage(event.data)
 
-    let isMeta = true
-
-    // 检查前缀字节是否匹配
-    for (let i = 0; i < metaPrefixBytes.length; i++) {
-      if (dataView.getUint8(i) !== metaPrefixBytes[i]) {
-        isMeta = false
+    switch (message.type) {
+      case 'meta':
+        if (typeof message.data === 'string') {
+          await handleFileMeta(message.data)
+        } else {
+          console.error('[ERR] Expected string data for meta message')
+        }
         break
-      }
-    }
-
-    if (isMeta) {
-      const decodedData = new TextDecoder().decode(event.data)
-      const data = decodedData.slice(metaPrefix.length)
-      await handleFileMeta(data)
-    } else {
-      handleFileContent(event.data)
+      case 'retry':
+        if (typeof message.data === 'string') {
+          handleRetryRequest(message.data)
+        } else {
+          console.error('[ERR] Expected string data for retry message')
+        }
+        break
+      case 'content':
+        if (message.data instanceof ArrayBuffer) {
+          handleFileContent(message.data)
+        } else {
+          console.error('[ERR] Expected ArrayBuffer data for content message')
+        }
+        break
     }
   }
 
+  // Retry request handling
+  function handleRetryRequest(data: string) {
+    const retryData = FileProtocol.parseRetryData(data)
+    if (retryData) {
+      console.log(
+        `[INFO] Received retry request for file: ${retryData.fileName}`,
+      )
+      // This is temporarily only logged, the actual resend logic should be implemented on the sender side
+    }
+  }
+
+  // File metadata handling
   async function handleFileMeta(data: string) {
-    const metaType = data[0]
-    data = data.slice(1)
+    const metaType = data[0] as 's' | 't' | 'n' | 'i'
+    const metaValue = data.slice(1)
 
     switch (metaType) {
       case 's':
-        fileSizeQueue.push(parseInt(data))
+        pendingMeta.sizes.push(parseInt(metaValue))
         break
       case 't':
-        fileTypeQueue.push(data)
+        pendingMeta.types.push(metaValue)
         break
       case 'n':
-        fileNameQueue.push(data)
+        pendingMeta.names.push(metaValue)
+        break
+      case 'i':
+        pendingMeta.ids.push(metaValue)
         break
       default:
         console.error(`[ERR] Invalid meta type: ${metaType}`)
         break
     }
 
+    // When complete file metadata is collected, create new file receive state
     if (
-      fileNameQueue.length === fileSizeQueue.length &&
-      fileNameQueue.length === fileTypeQueue.length
+      pendingMeta.names.length === pendingMeta.sizes.length &&
+      pendingMeta.names.length === pendingMeta.types.length &&
+      pendingMeta.names.length === pendingMeta.ids.length &&
+      pendingMeta.names.length > 0
     ) {
-      // console.log(
-      //   `[INFO] ===New to receive ${fileTypeQueue[fileTypeQueue.length - 1]} | ${fileNameQueue[fileNameQueue.length - 1]} | ${fileSizeQueue[fileSizeQueue.length - 1]}===`,
-      // );
-
-      addDownloadFileItem(
-        'javascript:void(0)',
-        fileNameQueue[fileNameQueue.length - 1],
-        fileSizeQueue[fileSizeQueue.length - 1],
-        0,
-        fileTypeQueue[fileTypeQueue.length - 1],
-      )
-
-      if (fileTypeQueue[fileTypeQueue.length - 1] === 'TRANSFER_TYPE_TEXT') {
-        fileTypeQueue.shift()
-        fileNameQueue.shift()
-        fileSizeQueue.shift()
-        currentReceivingFileNo++
-
-        updateFileSuccess(currentReceivingFileNo, true)
-      }
-    }
-  }
-
-  function handleFileContent(data: ArrayBuffer) {
-    if (!currentFileName && fileNameQueue.length > 0) {
-      currentFileType = fileTypeQueue.shift()!
-      currentFileName = fileNameQueue.shift()!
-      currentFileSize = fileSizeQueue.shift()!
-      currentReceivingFileNo++
+      const type = pendingMeta.types.shift()!
+      const name = pendingMeta.names.shift()!
+      const size = pendingMeta.sizes.shift()!
+      const fileId = pendingMeta.ids.shift()!
 
       console.log(
-        `[INFO] ===Receiving file ${currentFileType} | ${currentFileName} | ${currentFileSize}===`,
+        `[INFO] ===New file to receive: ${type} | ${name} | ${size} | ID: ${fileId}===`,
       )
-    }
 
-    // receive file
-    // console.log(`[INFO] data: ${data}`);
-    const dataView = new DataView(data)
-    const currentChunkIdx = dataView.getUint16(0, false)
-    const currentChunkData = data.slice(2)
+      // Add to display list
+      addDownloadFileItem('javascript:void(0)', name, size, 0, type)
 
-    if (!receivedDataArray[currentChunkIdx]) {
-      currentFileProgress += currentChunkData.byteLength
-    }
+      const arrayIndex = downloadFileItems.value.length - 1
 
-    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`);
-
-    receivedDataArray[currentChunkIdx] = currentChunkData
-
-    updateFileProgress(currentReceivingFileNo, currentFileProgress)
-
-    // console.log(receivedDataArray.map((item, index) => item ? index : null).filter(item => item !== null));
-
-    // console.log(`[INFO] Received ${currentFileProgress} of ${currentFileSize} (chunk: ${currentChunkIdx})`);
-
-    // check if file is fully received
-    if (currentFileProgress === currentFileSize) {
-      receivedData = receivedDataArray
-      currentFileUrl = URL.createObjectURL(new Blob(receivedData))
-      // check if is svg file
-      if (currentFileName.endsWith('.svg')) {
-        currentFileUrl = URL.createObjectURL(
-          new Blob(receivedData, { type: 'image/svg+xml' }),
-        )
+      // Create file receive state
+      const expectedChunks = FileChunkManager.calculateExpectedChunks(size)
+      const fileState: FileReceiveState = {
+        id: fileId,
+        type,
+        name,
+        size,
+        progress: 0,
+        url: '',
+        receivedChunks: [],
+        isComplete: false,
+        arrayIndex,
+        expectedChunks,
+        missingChunks: new Set(),
+        retryCount: 0,
+        lastActivity: Date.now(),
       }
-      updateFileUrl(currentReceivingFileNo, currentFileUrl)
-      updateFileSuccess(currentReceivingFileNo, true)
 
-      // console.log(`[INFO] File ${currentFileName} received successfully`);
+      activeFiles.set(fileId, fileState)
 
-      initReceiveBuffer()
+      // If it's text type, mark as successful directly
+      if (type === 'TRANSFER_TYPE_TEXT') {
+        fileState.isComplete = true
+        updateFileSuccess(arrayIndex, true)
+      }
     }
   }
 
-  function initReceiveBuffer() {
-    receivedDataArray = []
-    receivedData = []
+  // File content handling
+  function handleFileContent(data: ArrayBuffer) {
+    const chunkData = FileProtocol.parseFileChunk(data)
+    const currentFile = activeFiles.get(chunkData.fileId)
 
-    currentFileType = ''
-    currentFileName = ''
-    currentFileSize = 0
-    currentFileProgress = 0
-    currentFileUrl = ''
+    if (!currentFile) {
+      console.error(`[ERR] Cannot find file state for ID: ${chunkData.fileId}`)
+      return
+    }
+
+    if (currentFile.isComplete) {
+      console.warn(
+        `[WARN] Received chunk for already completed file: ${currentFile.name}`,
+      )
+      return
+    }
+
+    // Update last activity time
+    if (retryManager) {
+      retryManager.updateFileActivity(currentFile)
+    }
+
+    console.log(
+      `[INFO] ===Receiving chunk ${chunkData.chunkIndex} for file ${currentFile.name} (ID: ${chunkData.fileId})===`,
+    )
+
+    // Add chunk data (avoid duplicate progress calculation)
+    if (!currentFile.receivedChunks[chunkData.chunkIndex]) {
+      currentFile.progress += chunkData.data.byteLength
+    }
+
+    currentFile.receivedChunks[chunkData.chunkIndex] = chunkData.data
+
+    // Update display progress
+    updateFileProgress(currentFile.arrayIndex, currentFile.progress)
+
+    // Check if file reception is complete
+    if (currentFile.progress === currentFile.size) {
+      // Check if all chunks have been received
+      const allChunksReceived = FileChunkManager.checkChunksComplete(
+        currentFile.receivedChunks,
+        currentFile.expectedChunks,
+      )
+
+      if (allChunksReceived) {
+        // Merge all chunks
+        const receivedData = currentFile.receivedChunks
+        let fileUrl: string
+
+        // Check if it's an SVG file
+        if (currentFile.name.endsWith('.svg')) {
+          const blob = FileChunkManager.mergeChunksWithType(
+            receivedData,
+            'image/svg+xml',
+          )
+          fileUrl = URL.createObjectURL(blob)
+        } else {
+          const blob = FileChunkManager.mergeChunks(receivedData)
+          fileUrl = URL.createObjectURL(blob)
+        }
+
+        currentFile.url = fileUrl
+        currentFile.isComplete = true
+
+        updateFileUrl(currentFile.arrayIndex, fileUrl)
+        updateFileSuccess(currentFile.arrayIndex, true)
+
+        console.log(`[INFO] File ${currentFile.name} received successfully`)
+      } else if (retryManager) {
+        // Although size matches but chunks are missing, request retry
+        console.warn(
+          `[WARN] File ${currentFile.name} size matches but chunks are missing`,
+        )
+        retryManager.requestMissingChunks(currentFile)
+      }
+    }
+  }
+
+  // Initialize receive buffer
+  function initReceiveBuffer() {
+    // Clean up all active file states
+    activeFiles.clear()
+
+    // Clean up pending metadata
+    pendingMeta.types = []
+    pendingMeta.names = []
+    pendingMeta.sizes = []
+    pendingMeta.ids = []
+
+    // Clean up retry manager
+    if (retryManager) {
+      retryManager.destroy()
+      retryManager = null
+    }
   }
 
   return {

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.0] - 2025-08-19
+
+**New Features:** The new version introduces huge availability improvements and performance enhancements.
+
+### Added
+
+- Support for retry on transfer failure
+- Support for parallel transfer of multiple files
+
 ## [3.2.0] - 2025-07-09
 
 **New Features:** The self-hosted signal server is now available.

@@ -2,13 +2,27 @@ import { ref, Ref } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import { useConnectStore } from '@/stores/connect'
 import { ItemDisplayProps } from '@/types'
+import { FileProtocol } from '@/utils/fileProtocol'
+import { FileChunkManager } from '@/utils/fileChunk'
+import type { SentFileInfo, RetryData } from '@/types/fileTransfer'
 
 export const useSendStore = defineStore('send', () => {
   const connectStore = useConnectStore()
   const { sendChannels } = storeToRefs(connectStore)
 
+  // State variables
   const uploadFileItems: Ref<ItemDisplayProps[]> = ref([])
+  const sentFiles = new Map<string, SentFileInfo>()
+  let chunkQueue: (ArrayBuffer | Uint8Array | string)[] = []
+  let currentSendingFileNo = -1
 
+  // File state variables
+  let currentFileType = ''
+  const currentFileName: Ref<string> = ref('Drop file here or click to upload')
+  const currentFileSize: Ref<number> = ref(0)
+  let fileReader: FileReader | null = null
+
+  // UI state management functions
   function addUploadFileItem(
     url: string,
     name: string,
@@ -23,7 +37,6 @@ export const useSendStore = defineStore('send', () => {
       progress,
       type,
     })
-
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
@@ -33,26 +46,84 @@ export const useSendStore = defineStore('send', () => {
     value: ItemDisplayProps[K],
   ) {
     uploadFileItems.value[index][key] = value
-
     uploadFileItems.value = [...uploadFileItems.value] // trigger reactivity
   }
 
-  let currentSendingFileNo = -1
-
-  let chunkQueue: (ArrayBuffer | Uint8Array | string)[] = []
-
+  // Initialize send channel event listening
   for (let i = 0; i < sendChannels.value.length; i++) {
     sendChannels.value[i].onbufferedamountlow = async () => {
       await processQueue()
     }
+
+    // Listen for retry requests from receiver
+    sendChannels.value[i].onmessage = (event: MessageEvent) => {
+      handleRetryRequest(event)
+    }
   }
 
+  // Retry request handling
+  function handleRetryRequest(event: MessageEvent) {
+    const message = FileProtocol.parseMessage(event.data)
+
+    if (message.type === 'retry') {
+      if (typeof message.data === 'string') {
+        const retryData = FileProtocol.parseRetryData(message.data)
+        if (retryData) {
+          console.log(
+            `[INFO] Received retry request for file: ${retryData.fileName}`,
+          )
+          resendMissingChunks(retryData)
+        }
+      } else {
+        console.error('[ERR] Expected string data for retry message')
+      }
+    }
+  }
+
+  // Resend missing chunks
+  async function resendMissingChunks(retryData: RetryData) {
+    const { fileId, fileName, missingChunks } = retryData
+
+    // Find sent file information
+    const sentFileInfo = sentFiles.get(fileId)
+
+    if (!sentFileInfo) {
+      console.error(`[ERR] Cannot find sent file info for: ${fileName}`)
+      return
+    }
+
+    console.log(
+      `[INFO] Resending ${missingChunks.length} missing chunks for file: ${fileName}`,
+    )
+
+    // Resend missing chunks
+    for (const chunkIdx of missingChunks) {
+      if (chunkIdx < sentFileInfo.slices.length) {
+        const slice = sentFileInfo.slices[chunkIdx]
+
+        const fileReader = new FileReader()
+        fileReader.onload = async e => {
+          const chunkData = e.target?.result as ArrayBuffer
+          const encodedChunk = FileProtocol.encodeFileChunk(
+            fileId,
+            chunkIdx,
+            chunkData,
+          )
+          await sendData(encodedChunk)
+          console.log(`[INFO] Resent chunk ${chunkIdx} for file: ${fileName}`)
+        }
+
+        fileReader.readAsArrayBuffer(slice)
+      }
+    }
+  }
+
+  // Data sending and queue management
   async function sendData(
     data: ArrayBuffer | Uint8Array | string,
     meta: boolean = false,
   ) {
     chunkQueue.push(data)
-
     await processQueue(meta)
   }
 
@@ -81,13 +152,7 @@ export const useSendStore = defineStore('send', () => {
     }
   }
 
-  let currentFileType = ''
-  const currentFileName: Ref<string> = ref('Drop file here or click to upload')
-  const currentFileSize: Ref<number> = ref(0)
-  const chunkSize = 16384
-  let fileReader: FileReader | null = null
-  const offset: Ref<number> = ref(0)
-
+  // Main file sending function
   async function sendFiles(files: File[], type: string) {
     const fileNum = files.length
 
@@ -96,28 +161,43 @@ export const useSendStore = defineStore('send', () => {
       return
     }
 
+    // First send metadata for all files and collect file IDs
+    const fileIds: string[] = []
     for (let i = 0; i < fileNum; i++) {
       if (checkSendFileAvailability(files[i].size)) {
-        await sendFileMeta(files[i], type)
+        const fileId = await sendFileMeta(files[i], type)
+        fileIds.push(fileId)
       }
     }
 
+    // Then send file content
     for (let i = 0; i < fileNum; i++) {
-      if (checkSendFileAvailability(files[i].size)) {
-        await sendFileContent(files[i], type)
+      if (checkSendFileAvailability(files[i].size) && fileIds[i]) {
+        await sendFileContent(files[i], type, fileIds[i])
       }
     }
   }
 
-  async function sendFileMeta(file: File, type: string) {
-    await sendData('CONTENT_METAt' + type, true)
-    await sendData('CONTENT_METAn' + file.name, true)
-    await sendData('CONTENT_METAs' + file.size, true)
+  // Send file metadata
+  async function sendFileMeta(file: File, type: string): Promise<string> {
+    // Generate file unique identifier
+    const fileId = FileChunkManager.generateFileId(file.name, file.size)
+
+    await sendData(FileProtocol.encodeMetaMessage('t', type), true)
+    await sendData(FileProtocol.encodeMetaMessage('n', file.name), true)
+    await sendData(
+      FileProtocol.encodeMetaMessage('s', file.size.toString()),
+      true,
+    )
+    await sendData(FileProtocol.encodeMetaMessage('i', fileId), true)
 
     addUploadFileItem('javascript:void(0)', file.name, file.size, 0, type)
+
+    return fileId
   }
 
-  async function sendFileContent(file: File, type: string) {
+  // Send file content
+  async function sendFileContent(file: File, type: string, fileId: string) {
     currentSendingFileNo++
 
     currentFileType = type
@@ -125,59 +205,54 @@ export const useSendStore = defineStore('send', () => {
     currentFileSize.value = file.size
 
     console.log(
-      `[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value}`,
+      `[INFO] Sending file ${currentFileType} | ${currentFileName.value} | ${currentFileSize.value} | ID: ${fileId}`,
     )
 
     await addFileReader()
 
-    const slices = sliceFile(file)
-    await sendSlices(slices, file)
+    const slices = FileChunkManager.sliceFile(file)
+
+    // Save file information for retry
+    sentFiles.set(fileId, {
+      file,
+      type,
+      slices,
+      arrayIndex: currentSendingFileNo,
+    })
+
+    await sendSlices(slices, file, fileId)
   }
 
-  function sliceFile(file: File): Blob[] {
-    const slices: Blob[] = []
-    let offset = 0
+  // Send file slices
+  async function sendSlices(slices: Blob[], file: File, fileId: string) {
+    let currentOffset = 0 // Use separate offset counter for each file
 
-    while (offset < file.size) {
-      const slice = file.slice(offset, offset + chunkSize - 2)
-      slices.push(slice)
-      offset += chunkSize - 2
-    }
-
-    return slices
-  }
-
-  async function sendSlices(slices: Blob[], file: File) {
     const promises = slices.map((slice, idx) => {
       return new Promise<void>((resolve, reject) => {
         const fileReader = new FileReader()
 
         fileReader.onload = async e => {
-          const currentChunkIdxArray = new Uint8Array(2)
-          currentChunkIdxArray[0] = (idx & 0xff00) >> 8
-          currentChunkIdxArray[1] = idx & 0xff
-
-          const dataArray = new Uint8Array(
-            (e.target?.result as ArrayBuffer).byteLength + 2,
+          const chunkData = e.target?.result as ArrayBuffer
+          const encodedChunk = FileProtocol.encodeFileChunk(
+            fileId,
+            idx,
+            chunkData,
           )
-          dataArray.set(currentChunkIdxArray, 0)
-          dataArray.set(new Uint8Array(e.target?.result as ArrayBuffer), 2)
 
-          await sendData(dataArray)
-          offset.value =
-            offset.value + (e.target?.result as ArrayBuffer).byteLength
+          await sendData(encodedChunk)
+          currentOffset += chunkData.byteLength
 
-          if (offset.value < currentFileSize.value) {
+          if (currentOffset < file.size) {
             await updateFileItemAttirbute(
               currentSendingFileNo,
               'progress',
-              offset.value,
+              currentOffset,
             )
           } else {
             await updateFileItemAttirbute(
               currentSendingFileNo,
               'progress',
-              currentFileSize.value,
+              file.size,
             )
             await updateFileItemAttirbute(
               currentSendingFileNo,
@@ -201,6 +276,7 @@ export const useSendStore = defineStore('send', () => {
     await Promise.all(promises)
   }
 
+  // File reader initialization
   async function addFileReader() {
     fileReader = new FileReader()
 
@@ -213,6 +289,7 @@ export const useSendStore = defineStore('send', () => {
     })
   }
 
+  // File sending availability check
   function checkSendFileAvailability(size: number): boolean {
     if (size === 0) {
       console.error(`[ERR] File is empty`)
@@ -227,6 +304,7 @@ export const useSendStore = defineStore('send', () => {
     return true
   }
 
+  // Text sending
   async function sendText(text: string) {
     await sendTextContent(text)
   }
@@ -234,9 +312,15 @@ export const useSendStore = defineStore('send', () => {
   async function sendTextContent(text: string) {
     if (!checkSendTextAvailability(text)) return
 
-    await sendData('CONTENT_METAt' + 'TRANSFER_TYPE_TEXT', true)
-    await sendData('CONTENT_METAn' + text, true)
-    await sendData('CONTENT_METAs' + text.length, true)
+    await sendData(
+      FileProtocol.encodeMetaMessage('t', 'TRANSFER_TYPE_TEXT'),
+      true,
+    )
+    await sendData(FileProtocol.encodeMetaMessage('n', text), true)
+    await sendData(
+      FileProtocol.encodeMetaMessage('s', text.length.toString()),
+      true,
+    )
 
     addUploadFileItem(
       'javascript:void(0)',
