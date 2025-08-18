@@ -312,6 +312,9 @@ export const useSendStore = defineStore('send', () => {
   async function sendTextContent(text: string) {
     if (!checkSendTextAvailability(text)) return
 
+    // Generate text unique identifier
+    const textId = FileChunkManager.generateFileId(text, text.length)
+
     await sendData(
       FileProtocol.encodeMetaMessage('t', 'TRANSFER_TYPE_TEXT'),
       true,
@@ -321,6 +324,7 @@ export const useSendStore = defineStore('send', () => {
       FileProtocol.encodeMetaMessage('s', text.length.toString()),
       true,
     )
+    await sendData(FileProtocol.encodeMetaMessage('i', textId), true)
 
     addUploadFileItem(
       'javascript:void(0)',

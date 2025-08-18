@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.3.0] - 2025-08-19
+## [3.3.1] - 2025-08-19
+
+### Fixed
+
+- Fixed the issue where plain text can not be sent correctly
+
+## [3.3.0] - 2025-08-18
 
 **New Features:** The new version introduces huge availability improvements and performance enhancements.
 
