@@ -29,7 +29,7 @@
     "eslint": "^9.36.0",
     "eslint-plugin-vue": "^10.4.0",
     "prettier": "^3.6.2",
-    "sass": "^1.89.2",
+    "sass": "^1.93.2",
     "sass-loader": "^16.0.5",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.45.0",
