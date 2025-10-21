@@ -2,19 +2,24 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import vueDevTools from 'vite-plugin-vue-devtools'
 import fs from 'fs'
 
 const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+
+  let devToolsPlugin = null
+  if (mode === 'development') {
+    const { default: vueDevTools } = await import('vite-plugin-vue-devtools')
+    devToolsPlugin = vueDevTools()
+  }
 
   return {
     plugins: [
       vue(),
       vueJsx(),
-      ...(mode === 'development' ? [vueDevTools()] : []), // Include devtools only in development mode
+      ...(devToolsPlugin ? [devToolsPlugin] : []),
     ],
     resolve: {
       alias: {
