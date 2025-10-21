@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       vue(),
       vueJsx(),
-      vueDevTools(),
+      ...(mode === 'development' ? [vueDevTools()] : []), // Include devtools only in development mode
     ],
     resolve: {
       alias: {
@@ -27,7 +27,10 @@ export default defineConfig(({ mode }) => {
       jsxInject: `import { h } from 'vue'`
     },
     define: {
-      'process.env': env,
+      'process.env': {
+        VITE_SIGNAL_SERVER_URL: env.VITE_SIGNAL_SERVER_URL,
+        VITE_API_SERVER_URL: env.VITE_API_SERVER_URL,
+      },
       'process.package_version': JSON.stringify(packageJson.version),
     }
   }

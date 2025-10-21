@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.2] - 2025-10-21
+
+### Added
+
+- Add GitHub Actions workflow to run pre build checks
+
+### Changed
+
+- Bump dependencies to fix security vulnerabilities
+
 ## [3.3.1] - 2025-08-19
 
 ### Fixed

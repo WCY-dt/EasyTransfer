@@ -1,37 +1,37 @@
-name: Deploy Client
+name: Pre-build Checks
 
 permissions:
-  contents: write
+  contents: read
 
 on:
-  push:
+  pull_request:
     branches:
       - main
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  pre-build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: latest
 
-      - name: Install dependencies
+      - name: Pre-build server
+        run: |
+          cd server
+          npm install
+          npm run build
+
+      - name: Pre-build client
         run: |
           cd client
           npm install
-
-      - name: Build project
-        run: |
-          cd client
           npm run build
-
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: client/dist
