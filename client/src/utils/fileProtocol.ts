@@ -115,7 +115,7 @@ export class FileProtocol {
     const message = TRANSFER_CONFIG.retryPrefix + JSON.stringify(retryData)
     const encoder = new TextEncoder()
     const encoded = encoder.encode(message)
-    return encoded.buffer.slice(
+    return (encoded.buffer as ArrayBuffer).slice(
       encoded.byteOffset,
       encoded.byteOffset + encoded.byteLength,
     )
