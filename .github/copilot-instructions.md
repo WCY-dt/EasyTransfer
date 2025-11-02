@@ -141,6 +141,7 @@ npm run format    # Format code with Prettier
 ### Pinia Store Usage
 ```typescript
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 export const useMyStore = defineStore('myStore', () => {
   const state = ref(initialValue)
