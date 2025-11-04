@@ -68,8 +68,8 @@ describe("generateId", () => {
     for (let i = 0; i < 50; i++) {
       ids.add(generateId());
     }
-    // With 50 calls, we should have at least 45 unique IDs (allowing for some rare collisions)
-    expect(ids.size).toBeGreaterThan(45);
+    // With 50 calls and a large ID space (32^4 = 1,048,576), collisions should be extremely rare
+    expect(ids.size).toBeGreaterThanOrEqual(49);
   });
 
   it("should handle empty clients object", () => {

@@ -5,7 +5,8 @@ import { TRANSFER_CONFIG } from '@/config/transferConfig'
 describe('FileChunkManager', () => {
   describe('sliceFile', () => {
     it('should split a file into chunks', () => {
-      const content = 'a'.repeat(200000)
+      // Create a file large enough to require multiple chunks
+      const content = 'a'.repeat(TRANSFER_CONFIG.chunkSize * 3)
       const blob = new Blob([content])
       const file = new File([blob], 'test.txt', { type: 'text/plain' })
 
