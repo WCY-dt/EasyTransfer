@@ -3,9 +3,12 @@ import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
 import { IceServer } from '@/types'
+import { supportedLanguages, supportedThemes } from '@/const'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCog } from '@mdi/js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const settingStore = useSettingStore()
 
 const {
@@ -14,6 +17,9 @@ const {
   autoDisplayImage,
   directlyOpenLink,
   autoDownload,
+  language,
+  soundNotification,
+  theme,
 } = storeToRefs(settingStore)
 
 const emit = defineEmits(['close'])
@@ -22,13 +28,16 @@ const close = (): void => {
 }
 
 const saveAvailable = ref<boolean>(true)
-const saveText = ref<string>('Save')
+const saveText = ref<string>(t('settings.save'))
 
 const maxConnectionNumberTmp = ref<number | null>(null)
 const iceServersTmp = ref<string | null>(null)
 const autoDisplayImageTmp = ref<boolean | null>(null)
 const directlyOpenLinkTmp = ref<boolean | null>(null)
 const autoDownloadTmp = ref<boolean | null>(null)
+const languageTmp = ref<string | null>(null)
+const soundNotificationTmp = ref<boolean | null>(null)
+const themeTmp = ref<string | null>(null)
 
 onMounted((): void => {
   maxConnectionNumberTmp.value = maxConnectionNumber.value
@@ -39,6 +48,9 @@ onMounted((): void => {
   autoDisplayImageTmp.value = autoDisplayImage.value
   directlyOpenLinkTmp.value = directlyOpenLink.value
   autoDownloadTmp.value = autoDownload.value
+  languageTmp.value = language.value
+  soundNotificationTmp.value = soundNotification.value
+  themeTmp.value = theme.value
 })
 
 function saveSettings(): void {
@@ -77,12 +89,27 @@ function saveSettings(): void {
     autoDownload.value = autoDownloadTmp.value
   }
 
+  if (languageTmp.value !== null && language.value !== languageTmp.value) {
+    language.value = languageTmp.value
+  }
+
+  if (
+    soundNotificationTmp.value !== null &&
+    soundNotification.value !== soundNotificationTmp.value
+  ) {
+    soundNotification.value = soundNotificationTmp.value
+  }
+
+  if (themeTmp.value !== null && theme.value !== themeTmp.value) {
+    theme.value = themeTmp.value
+  }
+
   close()
 }
 
 const checkSettings = (): void => {
   saveAvailable.value = false
-  saveText.value = 'Checking...'
+  saveText.value = t('settings.checking')
 
   if (
     maxConnectionNumberTmp.value !== null &&
@@ -98,26 +125,26 @@ const checkSettings = (): void => {
     )
   } catch {
     saveAvailable.value = false
-    saveText.value = 'ICE Servers format incorrect'
+    saveText.value = t('settings.iceServersFormatIncorrect')
     return
   }
 
   if (iceServersValue.length === 0) {
     saveAvailable.value = false
-    saveText.value = 'ICE Servers cannot be empty'
+    saveText.value = t('settings.iceServersCannotBeEmpty')
     return
   }
 
   for (let server of iceServersValue) {
     if (!server.urls) {
       saveAvailable.value = false
-      saveText.value = 'ICE Servers must have urls property'
+      saveText.value = t('settings.iceServersMustHaveUrls')
       return
     }
   }
 
   saveAvailable.value = true
-  saveText.value = 'Save'
+  saveText.value = t('settings.save')
 }
 </script>
 
@@ -125,10 +152,34 @@ const checkSettings = (): void => {
   <div class="overlay blur" @click.self="close">
     <div class="settings-cluster shadow">
       <h2>
-        <SvgIcon type="mdi" :path="mdiCog" size="2rem" class="mdi" />Settings
+        <SvgIcon type="mdi" :path="mdiCog" size="2rem" class="mdi" />{{
+          t('settings.title')
+        }}
       </h2>
       <div class="setting-item">
-        <label for="max-connection-number">Max connection number</label>
+        <label for="language">{{ t('settings.language') }}</label>
+        <select id="language" class="blur shadow" v-model="languageTmp">
+          <option
+            v-for="lang in supportedLanguages"
+            :key="lang.code"
+            :value="lang.code"
+          >
+            {{ lang.name }}
+          </option>
+        </select>
+        <label for="theme">{{ t('settings.theme') }}</label>
+        <select id="theme" class="blur shadow" v-model="themeTmp">
+          <option
+            v-for="themeOption in supportedThemes"
+            :key="themeOption.code"
+            :value="themeOption.code"
+          >
+            {{ t(`theme.${themeOption.code}`) }}
+          </option>
+        </select>
+        <label for="max-connection-number">{{
+          t('settings.maxConnectionNumber')
+        }}</label>
         <div class="range-input">
           <input
             type="range"
@@ -145,7 +196,7 @@ const checkSettings = (): void => {
             ><span>16</span>
           </div>
         </div>
-        <label for="ice-servers">ICE Servers</label>
+        <label for="ice-servers">{{ t('settings.iceServers') }}</label>
         <textarea
           id="ice-servers"
           class="blur shadow"
@@ -153,7 +204,9 @@ const checkSettings = (): void => {
           spellcheck="false"
           @input="checkSettings"
         ></textarea>
-        <label for="enable-img-display">Auto display image</label>
+        <label for="enable-img-display" class="label-for-switch">{{
+          t('settings.autoDisplayImage')
+        }}</label>
         <label class="switch-input blur shadow">
           <input
             class="blur shadow"
@@ -163,7 +216,9 @@ const checkSettings = (): void => {
           />
           <span class="blur shadow"></span>
         </label>
-        <label for="enable-open-link">Directly open link</label>
+        <label for="enable-open-link" class="label-for-switch">{{
+          t('settings.directlyOpenLink')
+        }}</label>
         <label class="switch-input blur shadow">
           <input
             class="blur shadow"
@@ -173,7 +228,9 @@ const checkSettings = (): void => {
           />
           <span class="blur shadow"></span>
         </label>
-        <label for="auto-download">Auto download</label>
+        <label for="auto-download" class="label-for-switch">{{
+          t('settings.autoDownload')
+        }}</label>
         <label class="switch-input blur shadow">
           <input
             class="blur shadow"
@@ -183,9 +240,18 @@ const checkSettings = (): void => {
           />
           <span class="blur shadow"></span>
         </label>
+        <!-- <label for="sound-notification" class="label-for-switch">{{
+          t('settings.soundNotification')
+          }}</label>
+        <label class="switch-input blur shadow">
+          <input class="blur shadow" type="checkbox" id="sound-notification" v-model="soundNotificationTmp" />
+          <span class="blur shadow"></span>
+        </label> -->
       </div>
       <div class="setting-button">
-        <button @click="close" class="cancel-button">Cancel</button>
+        <button @click="close" class="cancel-button">
+          {{ t('settings.cancel') }}
+        </button>
         <button
           @click="saveSettings()"
           class="save-button"
@@ -215,11 +281,13 @@ const checkSettings = (): void => {
 }
 
 .settings-cluster {
-  display: felx;
+  display: flex;
   flex-direction: column;
   gap: 0;
 
   min-width: min(60rem, 90vw);
+  max-height: 90vh;
+  overflow: hidden;
 
   border-radius: var(--border-radius);
 
@@ -255,15 +323,25 @@ const checkSettings = (): void => {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 1.5rem;
+    align-items: center;
 
     width: 100%;
     padding: 2rem 1.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     label {
       font-size: 1.2rem;
       font-weight: 700;
 
       text-align: right;
+      align-self: start;
+      padding-top: 0.4rem;
+
+      &.label-for-switch {
+        padding-top: 0;
+        align-self: center;
+      }
     }
 
     .switch-input {
@@ -413,6 +491,7 @@ const checkSettings = (): void => {
       border-radius: var(--border-radius);
       min-height: 16rem;
 
+      color: var(--dark-color);
       background-color: var(--light-blur-color);
 
       font-size: 1.2rem;
@@ -427,6 +506,48 @@ const checkSettings = (): void => {
       &:focus {
         border: none;
         outline: 2px solid var(--primary-color);
+      }
+    }
+
+    select {
+      appearance: base-select;
+
+      width: 100%;
+      padding: 0.5rem;
+      border: none;
+      border-radius: var(--border-radius);
+
+      color: var(--dark-color);
+      background-color: var(--light-blur-color);
+
+      font-size: 1.2rem;
+      font-family: inherit;
+
+      cursor: pointer;
+
+      transition: all 0.1s ease-in-out;
+
+      &:focus {
+        border: none;
+        outline: 2px solid var(--primary-color);
+      }
+
+      &::picker(select) {
+        appearance: base-select;
+
+        color: var(--dark-color);
+        background-color: var(--light-color);
+
+        border-color: var(--primary-color);
+        border-radius: var(--border-radius);
+      }
+
+      option {
+        padding: 0.5rem 1rem;
+
+        &::checkmark {
+          display: none;
+        }
       }
     }
   }

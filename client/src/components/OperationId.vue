@@ -11,7 +11,9 @@ import {
   mdiDotsHorizontal,
   mdiConnection,
 } from '@mdi/js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const connectStore = useConnectStore()
 connectStore.initializeConnection()
 
@@ -79,7 +81,7 @@ onMounted(async () => {
     <div
       class="clientId-cluster"
       @click="copyId"
-      :class="clientId === 'LOADING' ? 'disabled' : 'ready'"
+      :class="clientId === t('operation.loading') ? 'disabled' : 'ready'"
     >
       {{ clientId }}
       <div class="cover blur">
@@ -88,12 +90,12 @@ onMounted(async () => {
       </div>
     </div>
     <div class="targetId-cluster shadow" :class="buttonStatus">
-      <span class="input-hint shadow">Enter the peer's code</span>
+      <span class="input-hint shadow">{{ t('operation.enterPeerCode') }}</span>
       <input
         type="text"
         id="targetIdInput"
         class="targetId-input blur"
-        placeholder="code"
+        :placeholder="t('operation.code').toLowerCase()"
         maxlength="4"
         v-model="targetId"
       />
@@ -102,7 +104,7 @@ onMounted(async () => {
         class="connect-button"
         :disabled="!enableConnect || !registered"
         @click="connectTarget"
-        aria-label="Connect"
+        :aria-label="t('operation.connect')"
       >
         <SvgIcon
           type="mdi"
@@ -127,8 +129,8 @@ onMounted(async () => {
       ></span>
       <span class="notice">{{
         isTurnServerAvailable
-          ? 'Turn server is available'
-          : 'Turn server is not available'
+          ? t('operation.turnServerAvailable')
+          : t('operation.turnServerNotAvailable')
       }}</span>
     </div>
   </div>

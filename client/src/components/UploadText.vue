@@ -5,7 +5,9 @@ import { useConnectStore } from '@/stores/connect'
 import { useSendStore } from '@/stores/send'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCheckBold, mdiSend } from '@mdi/js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const connectStore = useConnectStore()
 const { isConnectSuccess } = storeToRefs(connectStore)
 const sendStore = useSendStore()
@@ -33,7 +35,7 @@ function onTextClick(): void {
     <textarea
       id="textInput"
       class="text-input blur"
-      placeholder="Send a short message..."
+      :placeholder="t('upload.sendMessage')"
       :disabled="!isConnectSuccess"
       v-model="textInput"
       ref="textInput.value"
@@ -43,6 +45,7 @@ function onTextClick(): void {
       class="send-button"
       :disabled="!isConnectSuccess"
       @click="onTextClick"
+      :aria-label="t('upload.sendMessageButton')"
     >
       <SvgIcon
         type="mdi"
@@ -52,8 +55,12 @@ function onTextClick(): void {
         v-if="textSent"
       />
       <SvgIcon type="mdi" :path="mdiSend" size="1.5rem" class="mdi" v-else />
-      <p v-if="!textSent" class="upload-text-title">Send Message</p>
-      <p v-else class="upload-text-title">Succeed</p>
+      <p v-if="!textSent" class="upload-text-title">
+        {{ t('upload.sendMessageButton') }}
+      </p>
+      <p v-else class="upload-text-title">
+        {{ t('upload.sendMessageSuccess') }}
+      </p>
     </button>
   </div>
 </template>
@@ -98,6 +105,7 @@ function onTextClick(): void {
     border: none;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 
+    color: var(--dark-color);
     background-color: var(--light-blur-color);
 
     font-family: inherit;

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.0] - 2025-11-04
+
+**New Features:** The new version introduces settings for language preference and theme preference.
+
+### Added
+
+- Support for language preference setting (i18n), including English, Simplified Chinese, Traditional Chinese, Japanese, Korean, Russian, French, Spanish, and German
+- Support for theme preference setting (light/dark/auto)
+
+### Changed
+
+- Improved settings styling
+
 ## [3.3.2] - 2025-10-21
 
 ### Added

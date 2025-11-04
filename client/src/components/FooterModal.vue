@@ -1,22 +1,31 @@
 <script setup lang="ts">
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiInformation, mdiCommentQuote, mdiGithub } from '@mdi/js'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 </script>
 
 <template>
   <footer>
-    <p>© 2024 EasyTransfer. All rights reserved.</p>
+    <p>{{ t('footer.copyright') }}</p>
     <p>
       <a href="https://github.com/WCY-dt/EasyTransfer/blob/main/README.md">
-        <SvgIcon type="mdi" :path="mdiInformation" size="1.2rem" />About
+        <SvgIcon type="mdi" :path="mdiInformation" size="1.2rem" />{{
+          t('footer.about')
+        }}
       </a>
       |
       <a href="https://github.com/WCY-dt/EasyTransfer/issues/new/choose">
-        <SvgIcon type="mdi" :path="mdiCommentQuote" size="1.2rem" />Feedback
+        <SvgIcon type="mdi" :path="mdiCommentQuote" size="1.2rem" />{{
+          t('footer.feedback')
+        }}
       </a>
       |
       <a href="https://github.com/WCY-dt/EasyTransfer">
-        <SvgIcon type="mdi" :path="mdiGithub" size="1.2rem" />GitHub
+        <SvgIcon type="mdi" :path="mdiGithub" size="1.2rem" />{{
+          t('footer.github')
+        }}
       </a>
     </p>
   </footer>

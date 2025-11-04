@@ -7,15 +7,18 @@ This document provides guidance for AI agents (including GitHub Copilot Workspac
 ## Quick Start for AI Agents
 
 ### Repository Overview
+
 **EasyTransfer** is an end-to-end encrypted, anonymous file transfer application that enables peer-to-peer file sharing across any network using simple device codes.
 
 **Core Technologies:**
+
 - Frontend: Vue 3 + TypeScript + Vite + Pinia
 - Backend: Node.js + TypeScript + Socket.io
 - Communication: WebRTC (peer-to-peer) + Socket.io (signaling)
 
 ### Project Structure
-```
+
+```plaintext
 ├── client/               # Vue.js frontend application
 │   ├── src/
 │   │   ├── components/   # Vue components
@@ -35,6 +38,7 @@ This document provides guidance for AI agents (including GitHub Copilot Workspac
 ## Development Workflow
 
 ### 1. Setup and Installation
+
 ```bash
 # Client setup
 cd client
@@ -46,6 +50,7 @@ npm install
 ```
 
 ### 2. Running the Application
+
 ```bash
 # Start client dev server (in /client)
 npm run dev
@@ -55,6 +60,7 @@ npm run dev
 ```
 
 ### 3. Build Process
+
 ```bash
 # Build client (in /client)
 npm run build
@@ -64,6 +70,7 @@ npm run build
 ```
 
 ### 4. Code Quality Checks
+
 ```bash
 # Lint and format client (in /client)
 npm run lint
@@ -79,12 +86,14 @@ npm run format
 ### Architecture Understanding
 
 #### 1. **WebRTC Peer-to-Peer Architecture**
+
 - Files are transferred **directly** between peers using WebRTC data channels
 - Server acts only as a **signaling server** for connection establishment
 - No file data passes through the server (true peer-to-peer)
 
 #### 2. **Connection Flow**
-```
+
+```plaintext
 Device A                Socket.io Server              Device B
    |                            |                          |
    |---(1) Generate Code------->|                          |
@@ -96,6 +105,7 @@ Device A                Socket.io Server              Device B
 ```
 
 #### 3. **State Management**
+
 - Uses Pinia for Vue state management
 - Stores handle connection state, peer information, transfer progress
 - Reactive updates drive UI changes
@@ -103,12 +113,14 @@ Device A                Socket.io Server              Device B
 ### Critical Features
 
 #### Security & Privacy
+
 - **E2EE**: All transfers are end-to-end encrypted via WebRTC
 - **Anonymous**: No user accounts or personal information
 - **No Storage**: Files never stored on server
 - **Configurable Servers**: Users can specify their own STUN/TURN servers
 
 #### File Transfer
+
 - Supports multiple file types and sizes
 - Chunked transfer for large files
 - Progress tracking
@@ -116,6 +128,7 @@ Device A                Socket.io Server              Device B
 - Support for text messages
 
 #### Network Capabilities
+
 - Works across LAN and WAN
 - NAT traversal using STUN/TURN
 - Handles various network configurations
@@ -149,6 +162,7 @@ Device A                Socket.io Server              Device B
 ### Common Tasks and Patterns
 
 #### Adding a New Vue Component
+
 ```vue
 <script setup lang="ts">
 import { ref, computed } from 'vue'
@@ -175,6 +189,7 @@ const emit = defineEmits<{
 ```
 
 #### Adding Socket.io Event Handlers (Server)
+
 ```typescript
 io.on('connection', (socket) => {
   socket.on('event-name', (data) => {
@@ -185,6 +200,7 @@ io.on('connection', (socket) => {
 ```
 
 #### Adding Socket.io Event Handlers (Client)
+
 ```typescript
 import { socket } from '@/config/socket'
 
@@ -196,6 +212,7 @@ socket.emit('event-name', payload)
 ```
 
 #### Working with Pinia Stores
+
 ```typescript
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -236,6 +253,7 @@ export const useMyStore = defineStore('myStore', () => {
 ## Testing Strategy
 
 ### What to Test
+
 1. **WebRTC Connection**: Verify peers can connect
 2. **File Transfer**: Test various file sizes and types
 3. **Network Conditions**: Test on LAN and WAN
@@ -243,12 +261,15 @@ export const useMyStore = defineStore('myStore', () => {
 5. **UI Responsiveness**: Verify UI updates correctly
 
 ### Running Tests
+
 Currently, the project uses:
+
 - ESLint for code quality
 - Prettier for formatting
 - Manual testing for functionality
 
 **Note**: No automated test suite exists yet. When making changes:
+
 - Test manually with the running application
 - Verify WebRTC connections work
 - Test file transfers complete successfully
@@ -256,40 +277,48 @@ Currently, the project uses:
 ## Common Pitfalls and How to Avoid Them
 
 ### 1. WebRTC Connection Issues
+
 - **Problem**: Connections fail in certain network configurations
 - **Solution**: Ensure STUN/TURN configuration is correct; test with different network setups
 
 ### 2. Memory Issues with Large Files
+
 - **Problem**: Large file transfers cause memory overflow
 - **Solution**: Use proper chunking; avoid loading entire files into memory
 
 ### 3. State Synchronization
+
 - **Problem**: UI doesn't update when state changes
 - **Solution**: Use Vue reactivity properly (ref, reactive); ensure Pinia stores are used correctly
 
 ### 4. Socket.io Event Naming
+
 - **Problem**: Mismatched event names between client and server
 - **Solution**: Define event names as constants; keep client and server in sync
 
 ### 5. TypeScript Type Errors
+
 - **Problem**: Type mismatches cause build errors
 - **Solution**: Define proper interfaces; avoid `any`; use type guards
 
 ## Debugging Tips
 
 ### Client Debugging
+
 - Use Vue DevTools for component inspection
 - Check browser console for WebRTC errors
 - Monitor Network tab for Socket.io traffic
 - Use `console.log` strategically (remove before committing)
 
 ### Server Debugging
+
 - Use `nodemon` for auto-restart during development
 - Check server logs for Socket.io connections
 - Use Node.js debugger for complex issues
 - Monitor connection count and cleanup
 
 ### WebRTC Debugging
+
 - Check ICE candidate gathering
 - Verify STUN/TURN server connectivity
 - Monitor data channel state
@@ -298,13 +327,17 @@ Currently, the project uses:
 ## CI/CD Integration
 
 ### GitHub Actions Workflows
+
 The project uses GitHub Actions for:
+
 - **Lint and Format Check** (`check.yml`): Runs on PRs and main branch
 - **Pre-build** (`pre-build.yml`): Validates builds
 - **Deploy** (`deploy.yml`): Deploys to production
 
 ### Pre-commit Checklist for AI Agents
+
 Before committing changes:
+
 - [ ] Run `npm run lint` in both client and server
 - [ ] Run `npm run format` in both client and server  
 - [ ] Build succeeds: `npm run build` in both directories
@@ -317,6 +350,7 @@ Before committing changes:
 ## Dependencies Management
 
 ### Adding New Dependencies
+
 1. **Evaluate necessity**: Is this dependency really needed?
 2. **Check security**: Use `npm audit` to check for vulnerabilities
 3. **Consider bundle size**: Will this bloat the client bundle?
@@ -326,6 +360,7 @@ Before committing changes:
    - Development: `npm install -D <package>`
 
 ### Updating Dependencies
+
 - Use Dependabot for automated updates (already configured)
 - Test thoroughly after updating major versions
 - Check CHANGELOG of dependencies for breaking changes
@@ -333,6 +368,7 @@ Before committing changes:
 ## Security Considerations
 
 ### Must Follow
+
 - ✅ Never log sensitive data (file contents, user info)
 - ✅ Validate and sanitize all inputs
 - ✅ Use HTTPS in production
@@ -341,6 +377,7 @@ Before committing changes:
 - ✅ Use secure WebRTC protocols (DTLS-SRTP)
 
 ### Must Avoid
+
 - ❌ Storing files on server
 - ❌ Logging connection details or file metadata
 - ❌ Using `any` type in security-critical code
@@ -350,6 +387,7 @@ Before committing changes:
 ## Documentation Updates
 
 When making changes, update:
+
 - **README.md**: For user-facing features
 - **CONTRIBUTING.md**: For development process changes
 - **CHANGELOG.md**: For notable changes
@@ -359,6 +397,7 @@ When making changes, update:
 ## Useful Resources
 
 ### External Documentation
+
 - [Vue 3 Documentation](https://vuejs.org/)
 - [Pinia Documentation](https://pinia.vuejs.org/)
 - [Vite Documentation](https://vite.dev/)
@@ -367,6 +406,7 @@ When making changes, update:
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
 
 ### Project Documentation
+
 - [EasyTransfer Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/Navigator)
 - [Contributing Guide](CONTRIBUTING.md)
 - [Security Policy](SECURITY.md)
@@ -374,6 +414,7 @@ When making changes, update:
 ## Questions and Support
 
 If you're an AI agent and encounter:
+
 - **Unclear code**: Check related files and commit history
 - **Missing context**: Review README.md and related documentation
 - **Uncertain about approach**: Follow existing patterns in the codebase

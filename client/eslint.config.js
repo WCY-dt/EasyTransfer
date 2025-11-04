@@ -20,6 +20,7 @@ export default [
       globals: {
         alert: true,
         console: true,
+        document: true,
         localStorage: true,
         navigator: true,
         process: true,
