@@ -5,7 +5,9 @@ import SendItem from '@/components/SendItem.vue'
 import { ItemDisplayProps } from '@/types'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiUploadNetwork } from '@mdi/js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const sendStore = useSendStore()
 
 const reactiveUploadFileItems = ref<ItemDisplayProps[]>([])
@@ -23,13 +25,13 @@ watch(
   <div class="upload-cluster">
     <div class="upload-cluster-title">
       <SvgIcon type="mdi" :path="mdiUploadNetwork" size="2.5rem" class="mdi" />
-      <p class="upload-cluster-title-text">Upload</p>
+      <p class="upload-cluster-title-text">{{ t('upload.title') }}</p>
     </div>
     <p
       v-if="reactiveUploadFileItems.length === 0"
       class="noting-to-upload-text"
     >
-      Nothing to upload
+      {{ t('upload.nothingToUpload') }}
     </p>
     <SendItem
       v-for="(uploadFileItem, index) in reactiveUploadFileItems"

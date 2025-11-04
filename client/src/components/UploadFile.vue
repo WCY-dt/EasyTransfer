@@ -5,7 +5,9 @@ import { useConnectStore } from '@/stores/connect'
 import { useSendStore } from '@/stores/send'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiFileUpload } from '@mdi/js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const connectStore = useConnectStore()
 const { isConnectSuccess } = storeToRefs(connectStore)
 const sendStore = useSendStore()
@@ -58,7 +60,7 @@ function onFileClick() {
       :disabled="!isConnectSuccess"
     />
     <SvgIcon type="mdi" :path="mdiFileUpload" size="3rem" class="mdi" />
-    <p class="file-input-title">File</p>
+    <p class="file-input-title">{{ t('upload.file') }}</p>
   </div>
 </template>
 

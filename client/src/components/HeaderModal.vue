@@ -3,7 +3,9 @@ import { ref } from 'vue'
 import SettingsModal from '@/components/SettingsModal.vue'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCog, mdiGithub } from '@mdi/js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const showSettings = ref<boolean>(false)
 const toggleSettings = (): void => {
   showSettings.value = !showSettings.value
@@ -22,16 +24,16 @@ const version = 'v' + (process.package_version as string)
           />
         </svg>
         <div class="logo-text">
-          <h1>EasyTransfer</h1>
+          <h1>{{ t('header.title') }}</h1>
           <span>{{ version }}</span>
-          <p>Share simply & stay anonymous.</p>
+          <p>{{ t('header.tagline') }}</p>
         </div>
       </div>
       <div class="link-cluster">
         <button class="link-item shadow" @click="toggleSettings">
-          <SvgIcon type="mdi" :path="mdiCog" size="1.5rem" /><span class="text"
-            >Settings</span
-          >
+          <SvgIcon type="mdi" :path="mdiCog" size="1.5rem" /><span class="text">{{
+            t('header.settings')
+          }}</span>
         </button>
         <a
           href="https://github.com/WCY-dt/EasyTransfer"
@@ -39,7 +41,7 @@ const version = 'v' + (process.package_version as string)
         >
           <SvgIcon type="mdi" :path="mdiGithub" size="1.5rem" /><span
             class="text"
-            >Star on GitHub</span
+            >{{ t('header.starOnGitHub') }}</span
           >
         </a>
       </div>

@@ -1,10 +1,22 @@
 import { createI18n } from 'vue-i18n'
 import en from './locales/en'
 import zhCN from './locales/zh-CN'
+import ja from './locales/ja'
+import ko from './locales/ko'
+import es from './locales/es'
+import fr from './locales/fr'
+import de from './locales/de'
+import ru from './locales/ru'
 
 const messages = {
   en,
   'zh-CN': zhCN,
+  ja,
+  ko,
+  es,
+  fr,
+  de,
+  ru,
 }
 
 export const i18n = createI18n({

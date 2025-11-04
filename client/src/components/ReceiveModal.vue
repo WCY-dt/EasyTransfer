@@ -7,7 +7,9 @@ import ReceiveItem from '@/components/ReceiveItem.vue'
 import { ItemDisplayProps } from '@/types'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiDownloadNetwork } from '@mdi/js'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const connectCore = useConnectStore()
 const receiveStore = useReceiveStore()
 const { isConnectSuccess } = storeToRefs(connectCore)
@@ -38,13 +40,13 @@ watch(
         size="2.5rem"
         class="mdi"
       />
-      <p class="download-cluster-title-text">Download</p>
+      <p class="download-cluster-title-text">{{ t('download.title') }}</p>
     </div>
     <p
       v-if="reactiveDownloadFileItems.length === 0"
       class="noting-to-download-text"
     >
-      Nothing to download
+      {{ t('download.nothingToDownload') }}
     </p>
     <ReceiveItem
       v-for="(downloadFileItem, index) in reactiveDownloadFileItems"

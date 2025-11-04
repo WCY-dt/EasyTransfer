@@ -16,6 +16,7 @@ export default {
   upload: {
     title: '上传',
     file: '文件',
+    photo: '照片',
     nothingToUpload: '无内容上传',
     sendMessage: '发送一条短消息...',
     sendMessageButton: '发送消息',

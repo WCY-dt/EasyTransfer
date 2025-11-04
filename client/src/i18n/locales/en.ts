@@ -16,6 +16,7 @@ export default {
   upload: {
     title: 'Upload',
     file: 'File',
+    photo: 'Photo',
     nothingToUpload: 'Nothing to upload',
     sendMessage: 'Send a short message...',
     sendMessageButton: 'Send Message',
