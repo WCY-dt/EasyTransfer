@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.1] - 2025-11-04
+
+### Added
+
+- Added comprehensive unit tests for server utilities (ID generation and validation)
+- Added comprehensive unit tests for client utilities (FileChunkManager and msgType)
+- Integrated Vitest as the testing framework for both client and server
+- Added test scripts to package.json for easy test execution
+- Integrated tests into GitHub Actions CI/CD pipeline for automated checks
+
+### Changed
+
+- Updated GitHub Actions workflow to include build and test steps
+- Refactored server code to extract testable utility functions
+
 ## [3.4.0] - 2025-11-04
 
 **New Features:** The new version introduces settings for language preference and theme preference.
