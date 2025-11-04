@@ -44,6 +44,34 @@ What makes EasyTransfer different? It's these features:
 
 For specific deployment methods, please refer to the [Project Wiki](https://github.com/WCY-dt/EasyTransfer/wiki/Navigator).
 
+## Development
+
+### Client Commands (in `/client` directory)
+
+```bash
+npm run dev       # Start development server
+npm run build     # Build for production
+npm run preview   # Preview production build
+npm run lint      # Run ESLint with auto-fix
+npm run format    # Format code with Prettier
+npm test          # Run tests
+npm run test:watch  # Run tests in watch mode
+npm run test:ui   # Run tests with UI
+```
+
+### Server Commands (in `/server` directory)
+
+```bash
+npm run dev       # Build and start with nodemon
+npm run build     # Compile TypeScript
+npm run start     # Start production server
+npm run lint      # Run ESLint with auto-fix
+npm run format    # Format code with Prettier
+npm test          # Run tests
+npm run test:watch  # Run tests in watch mode
+npm run test:ui   # Run tests with UI
+```
+
 ## Contributing
 
 If you want to contribute code to this project, please refer to the [Contribution Guide](https://github.com/WCY-dt/EasyTransfer/blob/main/CONTRIBUTING.md).

@@ -79,7 +79,58 @@ npm run format
 # Lint and format server (in /server)
 npm run lint
 npm run format
+
+# Run tests (in /client or /server)
+npm test                # Run all tests
+npm run test:watch      # Run tests in watch mode
+npm run test:ui         # Run tests with UI
 ```
+
+## Commit Message Guidelines
+
+Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for semantic commit messages:
+
+### Format
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+
+- **feat**: A new feature
+- **fix**: A bug fix
+- **docs**: Documentation only changes
+- **style**: Changes that don't affect code meaning (formatting, whitespace)
+- **refactor**: Code change that neither fixes a bug nor adds a feature
+- **perf**: Performance improvement
+- **test**: Adding or updating tests
+- **build**: Changes to build system or dependencies
+- **ci**: Changes to CI configuration files and scripts
+- **chore**: Other changes that don't modify src or test files
+
+### Examples
+
+```bash
+feat(client): add dark mode theme support
+fix(server): resolve connection timeout issue
+docs(readme): update installation instructions
+test(client): add FileChunkManager unit tests
+refactor(utils): extract ID generation to utils
+ci: add automated testing to GitHub Actions
+```
+
+### Best Practices
+
+- Use present tense ("add" not "added")
+- Use imperative mood ("move" not "moves")
+- Keep first line under 72 characters
+- Reference issues/PRs in footer when applicable
+- Break long descriptions into body paragraphs
 
 ## Key Concepts for AI Agents
 
@@ -252,27 +303,45 @@ export const useMyStore = defineStore('myStore', () => {
 
 ## Testing Strategy
 
-### What to Test
+### Test Infrastructure
 
-1. **WebRTC Connection**: Verify peers can connect
-2. **File Transfer**: Test various file sizes and types
-3. **Network Conditions**: Test on LAN and WAN
-4. **Error Handling**: Test disconnections and failures
-5. **UI Responsiveness**: Verify UI updates correctly
+The project uses **Vitest** for comprehensive unit testing:
+
+- **Client Tests (157 tests)**:
+  - FileChunkManager (28 tests): file slicing, chunk management, merging, validation
+  - msgType utilities (33 tests): link detection, file type identification
+  - FileProtocol (24 tests): message parsing, encoding/decoding, round-trip validation
+  - RetryManager (28 tests): timeout handling, retry logic, state management
+  - ThemeManager (17 tests): theme application, color validation, accessibility
+  - WebRTC Connection Workflow (27 tests): connection lifecycle, signaling, data channels
+
+- **Server Tests (13 tests)**: ID generation, character validation, collision prevention
 
 ### Running Tests
 
-Currently, the project uses:
+```bash
+# In /client or /server directory
+npm test                # Run all tests once
+npm run test:watch      # Run tests in watch mode (auto-rerun on changes)
+npm run test:ui         # Run tests with interactive UI
+```
 
-- ESLint for code quality
-- Prettier for formatting
-- Manual testing for functionality
+### What to Test
 
-**Note**: No automated test suite exists yet. When making changes:
+1. **WebRTC Connection**: Verify peers can connect through signaling
+2. **File Transfer**: Test various file sizes and types
+3. **Protocol Handling**: Validate message encoding/decoding
+4. **Retry Logic**: Test timeout handling and retry mechanisms
+5. **Error Handling**: Test disconnections and failures
+6. **UI Components**: Verify theming and state management
 
-- Test manually with the running application
-- Verify WebRTC connections work
-- Test file transfers complete successfully
+### Testing Best Practices
+
+- Write tests for new utilities and functions
+- Mock external dependencies (WebRTC, Socket.io)
+- Test edge cases and error conditions
+- Keep tests focused and isolated
+- Run tests before committing changes
 
 ## Common Pitfalls and How to Avoid Them
 
@@ -340,12 +409,14 @@ Before committing changes:
 
 - [ ] Run `npm run lint` in both client and server
 - [ ] Run `npm run format` in both client and server  
+- [ ] Run `npm test` in both client and server (all tests pass)
 - [ ] Build succeeds: `npm run build` in both directories
-- [ ] Manual testing completed
+- [ ] Manual testing completed (if applicable)
 - [ ] No console.log statements left in code
 - [ ] TypeScript types are correct
 - [ ] No new ESLint warnings
 - [ ] Changes follow existing code style
+- [ ] Commit message follows semantic commit format
 
 ## Dependencies Management
 

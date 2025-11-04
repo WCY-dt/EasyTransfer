@@ -6,24 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Added comprehensive unit tests for server utilities (ID generation and validation) - 13 tests
-- Added comprehensive unit tests for client utilities:
-  - FileChunkManager: file slicing, chunk management, merging, validation - 28 tests
-  - msgType: link detection, file type identification - 33 tests
-  - FileProtocol: message parsing, encoding/decoding, round-trip validation - 24 tests
-  - RetryManager: timeout handling, retry logic, state management - 28 tests
-  - ThemeManager: theme application, color validation, accessibility - 17 tests
-  - WebRTC Connection Workflow: connection lifecycle, offer/answer exchange, ICE candidates, data channels - 27 tests
-- Integrated Vitest as the testing framework for both client and server
-- Added test scripts to package.json (test, test:watch, test:ui)
-- Integrated tests into GitHub Actions CI/CD pipeline for automated checks
-- Total: 170 tests (13 server + 157 client) with comprehensive coverage
+- Comprehensive unit tests (170 total: 13 server, 157 client)
+- Vitest testing framework for both client and server
+- Test scripts in package.json (test, test:watch, test:ui)
+- Automated testing in GitHub Actions CI/CD pipeline
 
 ### Changed
 
-- Updated GitHub Actions workflow to include build and test steps
-- Refactored server code to extract testable utility functions
+- GitHub Actions workflow now includes build and test steps
 - Improved ID generation algorithm for better reliability
+- Refactored server code to extract testable utility functions
 
 ## [3.4.0] - 2025-11-04
 
