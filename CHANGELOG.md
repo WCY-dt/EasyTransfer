@@ -13,10 +13,11 @@ All notable changes to this project will be documented in this file.
   - FileProtocol: message parsing, encoding/decoding, round-trip validation - 24 tests
   - RetryManager: timeout handling, retry logic, state management - 28 tests
   - ThemeManager: theme application, color validation, accessibility - 17 tests
+  - WebRTC Connection Workflow: connection lifecycle, offer/answer exchange, ICE candidates, data channels - 27 tests
 - Integrated Vitest as the testing framework for both client and server
 - Added test scripts to package.json (test, test:watch, test:ui)
 - Integrated tests into GitHub Actions CI/CD pipeline for automated checks
-- Total: 143 tests (13 server + 130 client) with comprehensive coverage
+- Total: 170 tests (13 server + 157 client) with comprehensive coverage
 
 ### Changed
 
