@@ -240,18 +240,13 @@ const checkSettings = (): void => {
           />
           <span class="blur shadow"></span>
         </label>
-        <label for="sound-notification" class="label-for-switch">{{
+        <!-- <label for="sound-notification" class="label-for-switch">{{
           t('settings.soundNotification')
-        }}</label>
+          }}</label>
         <label class="switch-input blur shadow">
-          <input
-            class="blur shadow"
-            type="checkbox"
-            id="sound-notification"
-            v-model="soundNotificationTmp"
-          />
+          <input class="blur shadow" type="checkbox" id="sound-notification" v-model="soundNotificationTmp" />
           <span class="blur shadow"></span>
-        </label>
+        </label> -->
       </div>
       <div class="setting-button">
         <button @click="close" class="cancel-button">

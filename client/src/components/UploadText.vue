@@ -58,7 +58,9 @@ function onTextClick(): void {
       <p v-if="!textSent" class="upload-text-title">
         {{ t('upload.sendMessageButton') }}
       </p>
-      <p v-else class="upload-text-title">Succeed</p>
+      <p v-else class="upload-text-title">
+        {{ t('upload.sendMessageSuccess') }}
+      </p>
     </button>
   </div>
 </template>
