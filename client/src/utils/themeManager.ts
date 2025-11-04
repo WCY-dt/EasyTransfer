@@ -45,7 +45,7 @@ const darkThemeColors = {
   '--gold-light-color': '#ffcd27',
 }
 
-export function applyTheme(theme: string): void {
+export function applyTheme(theme: 'light' | 'dark' | 'auto'): void {
   const root = document.documentElement
   let colors: Record<string, string>
 
@@ -67,27 +67,39 @@ export function applyTheme(theme: string): void {
   })
 }
 
-export function initTheme(): void {
+export function initTheme(): () => void {
   const settingStore = useSettingStore()
 
   // Apply initial theme
-  applyTheme(settingStore.theme)
+  applyTheme(settingStore.theme as 'light' | 'dark' | 'auto')
 
   // Watch for theme changes
-  watch(
+  const unwatch = watch(
     () => settingStore.theme,
     newTheme => {
-      applyTheme(newTheme)
+      applyTheme(newTheme as 'light' | 'dark' | 'auto')
     },
   )
 
   // Watch for system theme changes when in auto mode
+  let cleanupMediaQuery: (() => void) | null = null
   if (window.matchMedia) {
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    darkModeQuery.addEventListener('change', () => {
+    const handleChange = () => {
       if (settingStore.theme === 'auto') {
         applyTheme('auto')
       }
-    })
+    }
+    darkModeQuery.addEventListener('change', handleChange)
+    cleanupMediaQuery = () =>
+      darkModeQuery.removeEventListener('change', handleChange)
+  }
+
+  // Return cleanup function
+  return () => {
+    unwatch()
+    if (cleanupMediaQuery) {
+      cleanupMediaQuery()
+    }
   }
 }
