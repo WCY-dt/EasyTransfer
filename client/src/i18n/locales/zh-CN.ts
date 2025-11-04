@@ -1,13 +1,13 @@
 export default {
   header: {
     title: 'EasyTransfer',
-    tagline: '简单分享，保持匿名。',
+    tagline: '简单分享，保持匿名',
     settings: '设置',
-    starOnGitHub: '在 GitHub 上加星',
+    starOnGitHub: '在 GitHub 上 Star',
   },
   operation: {
-    loading: '加载中',
-    code: '代码',
+    loading: 'LOADING',
+    code: 'CODE',
     enterPeerCode: '输入对方的代码',
     connect: '连接',
     turnServerAvailable: 'TURN 服务器可用',
@@ -20,6 +20,7 @@ export default {
     nothingToUpload: '无内容上传',
     sendMessage: '发送一条短消息...',
     sendMessageButton: '发送消息',
+    sendMessageSuccess: '发送成功',
   },
   download: {
     title: '下载',
@@ -48,7 +49,7 @@ export default {
     auto: '自动',
   },
   footer: {
-    copyright: '© 2024 EasyTransfer。保留所有权利。',
+    copyright: '© 2025 EasyTransfer. 保留所有权利.',
     about: '关于',
     feedback: '反馈',
     github: 'GitHub',

@@ -16,6 +16,7 @@ EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer
 ## Technology Stack
 
 ### Client
+
 - **Framework**: Vue 3 with Composition API
 - **Language**: TypeScript
 - **Build Tool**: Vite
@@ -25,6 +26,7 @@ EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer
 - **Code Quality**: ESLint, Prettier
 
 ### Server
+
 - **Runtime**: Node.js
 - **Language**: TypeScript
 - **Framework**: Socket.io
@@ -34,6 +36,7 @@ EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer
 ## Development Commands
 
 ### Client (in `/client` directory)
+
 ```bash
 npm run dev       # Start development server
 npm run build     # Build for production
@@ -43,6 +46,7 @@ npm run format    # Format code with Prettier
 ```
 
 ### Server (in `/server` directory)
+
 ```bash
 npm run dev       # Build and start with nodemon
 npm run build     # Compile TypeScript
@@ -54,6 +58,7 @@ npm run format    # Format code with Prettier
 ## Code Style Guidelines
 
 ### General
+
 - Use TypeScript for type safety
 - Follow existing code patterns and conventions
 - Write clear, self-documenting code
@@ -61,6 +66,7 @@ npm run format    # Format code with Prettier
 - Use meaningful variable and function names
 
 ### Vue Components
+
 - Use Composition API with `<script setup>` syntax
 - Define props with TypeScript interfaces
 - Use reactive state management with Pinia stores
@@ -68,6 +74,7 @@ npm run format    # Format code with Prettier
 - Use Vue 3 best practices (ref, reactive, computed, watch)
 
 ### TypeScript
+
 - Enable strict type checking
 - Avoid `any` type - use proper types or `unknown`
 - Define interfaces for complex data structures
@@ -75,12 +82,14 @@ npm run format    # Format code with Prettier
 - Export types that are used across files
 
 ### File Naming
+
 - Vue components: PascalCase (e.g., `FileTransfer.vue`)
 - TypeScript files: camelCase (e.g., `socketManager.ts`)
 - Utilities: camelCase with descriptive names
 - Constants: UPPER_SNAKE_CASE or camelCase based on context
 
 ### Code Organization
+
 - Keep related functionality together
 - Separate business logic from UI components
 - Use utility functions for shared logic
@@ -90,18 +99,21 @@ npm run format    # Format code with Prettier
 ## Key Features to Understand
 
 ### WebRTC Implementation
+
 - Peer-to-peer connection establishment
 - STUN/TURN server configuration
 - Data channel management
 - ICE candidate handling
 
 ### Socket.io Integration
+
 - Device code generation and management
 - Signaling server for WebRTC
 - Connection state management
 - Error handling and reconnection logic
 
 ### File Transfer Flow
+
 1. Device code generation
 2. Peer connection via code
 3. WebRTC connection establishment
@@ -139,37 +151,40 @@ npm run format    # Format code with Prettier
 ## Common Patterns
 
 ### Pinia Store Usage
-```typescript
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
 
-export const useMyStore = defineStore('myStore', () => {
-  const state = ref(initialValue)
-  
+```typescript
+import { defineStore } from "pinia";
+import { ref } from "vue";
+
+export const useMyStore = defineStore("myStore", () => {
+  const state = ref(initialValue);
+
   const action = () => {
     // Action logic
-  }
-  
-  return { state, action }
-})
+  };
+
+  return { state, action };
+});
 ```
 
 ### Socket.io Event Handling
-```typescript
-socket.on('event-name', (data) => {
-  // Handle event
-})
 
-socket.emit('event-name', data)
+```typescript
+socket.on("event-name", (data) => {
+  // Handle event
+});
+
+socket.emit("event-name", data);
 ```
 
 ### WebRTC Connection Setup
+
 ```typescript
-const peerConnection = new RTCPeerConnection(config)
+const peerConnection = new RTCPeerConnection(config);
 
 peerConnection.ondatachannel = (event) => {
   // Handle data channel
-}
+};
 ```
 
 ## Important Files
@@ -184,6 +199,7 @@ peerConnection.ondatachannel = (event) => {
 ## Documentation
 
 When making changes:
+
 - Update README.md if adding user-facing features
 - Update CONTRIBUTING.md if changing development process
 - Add comments for complex algorithms or non-obvious logic

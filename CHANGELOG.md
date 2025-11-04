@@ -4,34 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [3.4.0] - 2025-11-04
 
+**New Features:** The new version introduces settings for language preference, sound notification, and theme preference.
+
 ### Added
 
-- Support for language preference setting (i18n) with default to English
-  - Users can now select their preferred language from 9 supported languages
-  - Language preference is stored in localStorage
-  - Note: Language setting is prepared for future i18n implementation; translations pending
+- Support for language preference setting (i18n), including English, Simplified Chinese, Traditional Chinese, Japanese, Korean, Russian, French, Spanish, and German
 - Support for sound notification setting with default to off
-  - Users can enable/disable notification sounds when receiving files
-  - Sound notification uses Web Audio API for browser compatibility
 - Support for theme preference setting (light/dark/auto)
-  - Users can customize the visual theme of the application
-  - Theme preference is stored in localStorage and applied dynamically
-  - Auto mode detects system theme preference
-  - Theme switching works in real-time without page reload
-
-### Fixed
-
-- Fixed typo in settings modal CSS (display: felx → flex)
-- Fixed alignment issues in settings modal between labels and controls
-- Fixed overflow issue when settings modal content exceeds viewport height
-- Added scrolling to settings modal to prevent content cutoff on small screens
-- Improved label alignment with proper vertical positioning
 
 ### Changed
 
-- Enhanced settings modal with better responsive layout
-- Added ESLint global for 'document' to prevent linting errors
-- Improved settings modal styling with max-height and overflow handling
+- Improved settings styling
 
 ## [3.3.2] - 2025-10-21
 

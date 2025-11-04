@@ -157,6 +157,26 @@ const checkSettings = (): void => {
         }}
       </h2>
       <div class="setting-item">
+        <label for="language">{{ t('settings.language') }}</label>
+        <select id="language" class="blur shadow" v-model="languageTmp">
+          <option
+            v-for="lang in supportedLanguages"
+            :key="lang.code"
+            :value="lang.code"
+          >
+            {{ lang.name }}
+          </option>
+        </select>
+        <label for="theme">{{ t('settings.theme') }}</label>
+        <select id="theme" class="blur shadow" v-model="themeTmp">
+          <option
+            v-for="themeOption in supportedThemes"
+            :key="themeOption.code"
+            :value="themeOption.code"
+          >
+            {{ t(`theme.${themeOption.code}`) }}
+          </option>
+        </select>
         <label for="max-connection-number">{{
           t('settings.maxConnectionNumber')
         }}</label>
@@ -220,16 +240,6 @@ const checkSettings = (): void => {
           />
           <span class="blur shadow"></span>
         </label>
-        <label for="language">{{ t('settings.language') }}</label>
-        <select id="language" class="blur shadow" v-model="languageTmp">
-          <option
-            v-for="lang in supportedLanguages"
-            :key="lang.code"
-            :value="lang.code"
-          >
-            {{ lang.name }}
-          </option>
-        </select>
         <label for="sound-notification" class="label-for-switch">{{
           t('settings.soundNotification')
         }}</label>
@@ -242,16 +252,6 @@ const checkSettings = (): void => {
           />
           <span class="blur shadow"></span>
         </label>
-        <label for="theme">{{ t('settings.theme') }}</label>
-        <select id="theme" class="blur shadow" v-model="themeTmp">
-          <option
-            v-for="themeOption in supportedThemes"
-            :key="themeOption.code"
-            :value="themeOption.code"
-          >
-            {{ t(`theme.${themeOption.code}`) }}
-          </option>
-        </select>
       </div>
       <div class="setting-button">
         <button @click="close" class="cancel-button">
@@ -496,6 +496,7 @@ const checkSettings = (): void => {
       border-radius: var(--border-radius);
       min-height: 16rem;
 
+      color: var(--dark-color);
       background-color: var(--light-blur-color);
 
       font-size: 1.2rem;
@@ -514,11 +515,14 @@ const checkSettings = (): void => {
     }
 
     select {
+      appearance: base-select;
+
       width: 100%;
       padding: 0.5rem;
       border: none;
       border-radius: var(--border-radius);
 
+      color: var(--dark-color);
       background-color: var(--light-blur-color);
 
       font-size: 1.2rem;
@@ -531,6 +535,24 @@ const checkSettings = (): void => {
       &:focus {
         border: none;
         outline: 2px solid var(--primary-color);
+      }
+
+      &::picker(select) {
+        appearance: base-select;
+
+        color: var(--dark-color);
+        background-color: var(--light-color);
+
+        border-color: var(--primary-color);
+        border-radius: var(--border-radius);
+      }
+
+      option {
+        padding: 0.5rem 1rem;
+
+        &::checkmark {
+          display: none;
+        }
       }
     }
   }

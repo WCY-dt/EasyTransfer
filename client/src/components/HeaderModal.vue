@@ -31,9 +31,10 @@ const version = 'v' + (process.package_version as string)
       </div>
       <div class="link-cluster">
         <button class="link-item shadow" @click="toggleSettings">
-          <SvgIcon type="mdi" :path="mdiCog" size="1.5rem" /><span class="text">{{
-            t('header.settings')
-          }}</span>
+          <SvgIcon type="mdi" :path="mdiCog" size="1.5rem" /><span
+            class="text"
+            >{{ t('header.settings') }}</span
+          >
         </button>
         <a
           href="https://github.com/WCY-dt/EasyTransfer"
@@ -162,8 +163,8 @@ header {
 
     padding: 0.5rem 1rem;
 
-    color: var(--light-color);
-    background-color: var(--primary-dark-color);
+    color: var(--primary-color);
+    background-color: var(--primary-light-color);
 
     border-radius: var(--border-radius);
 
@@ -195,6 +196,7 @@ header {
     @media (hover: hover) {
       &:hover {
         color: var(--primary-light-color);
+        background-color: var(--primary-semi-dark-color);
 
         &.github {
           color: var(--dark-color);

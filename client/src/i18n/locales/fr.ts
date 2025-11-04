@@ -3,10 +3,10 @@ export default {
     title: 'EasyTransfer',
     tagline: 'Partagez simplement et restez anonyme.',
     settings: 'Paramètres',
-    starOnGitHub: 'Étoile sur GitHub',
+    starOnGitHub: 'Star sur GitHub',
   },
   operation: {
-    loading: 'CHARGEMENT',
+    loading: 'LOADING',
     code: 'CODE',
     enterPeerCode: 'Entrez le code du pair',
     connect: 'Connecter',
@@ -20,6 +20,7 @@ export default {
     nothingToUpload: 'Rien à téléverser',
     sendMessage: 'Envoyer un court message...',
     sendMessageButton: 'Envoyer le Message',
+    sendMessageSuccess: 'Envoyé avec succès',
   },
   download: {
     title: 'Télécharger',
@@ -29,7 +30,7 @@ export default {
     title: 'Paramètres',
     maxConnectionNumber: 'Nombre maximum de connexions',
     iceServers: 'Serveurs ICE',
-    autoDisplayImage: 'Afficher automatiquement l\'image',
+    autoDisplayImage: "Afficher automatiquement l'image",
     directlyOpenLink: 'Ouvrir le lien directement',
     autoDownload: 'Téléchargement automatique',
     language: 'Langue',
@@ -48,9 +49,9 @@ export default {
     auto: 'Automatique',
   },
   footer: {
-    copyright: '© 2024 EasyTransfer. Tous droits réservés.',
+    copyright: '© 2025 EasyTransfer. Tous droits réservés.',
     about: 'À propos',
-    feedback: 'Retour d\'information',
+    feedback: "Retour d'information",
     github: 'GitHub',
   },
 }

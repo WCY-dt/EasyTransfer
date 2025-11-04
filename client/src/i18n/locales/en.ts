@@ -20,6 +20,7 @@ export default {
     nothingToUpload: 'Nothing to upload',
     sendMessage: 'Send a short message...',
     sendMessageButton: 'Send Message',
+    sendMessageSuccess: 'Sent successfully',
   },
   download: {
     title: 'Download',
@@ -48,7 +49,7 @@ export default {
     auto: 'Auto',
   },
   footer: {
-    copyright: '© 2024 EasyTransfer. All rights reserved.',
+    copyright: '© 2025 EasyTransfer. All rights reserved.',
     about: 'About',
     feedback: 'Feedback',
     github: 'GitHub',

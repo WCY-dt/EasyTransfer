@@ -3,11 +3,11 @@ export default {
     title: 'EasyTransfer',
     tagline: 'Делитесь просто и оставайтесь анонимными.',
     settings: 'Настройки',
-    starOnGitHub: 'Звезда на GitHub',
+    starOnGitHub: 'Star на GitHub',
   },
   operation: {
-    loading: 'ЗАГРУЗКА',
-    code: 'КОД',
+    loading: 'LOADING',
+    code: 'CODE',
     enterPeerCode: 'Введите код партнера',
     connect: 'Подключить',
     turnServerAvailable: 'TURN-сервер доступен',
@@ -20,6 +20,7 @@ export default {
     nothingToUpload: 'Нечего загружать',
     sendMessage: 'Отправить короткое сообщение...',
     sendMessageButton: 'Отправить Сообщение',
+    sendMessageSuccess: 'Успешно',
   },
   download: {
     title: 'Скачать',
@@ -48,7 +49,7 @@ export default {
     auto: 'Автоматически',
   },
   footer: {
-    copyright: '© 2024 EasyTransfer. Все права защищены.',
+    copyright: '© 2025 EasyTransfer. Все права защищены.',
     about: 'О программе',
     feedback: 'Обратная связь',
     github: 'GitHub',

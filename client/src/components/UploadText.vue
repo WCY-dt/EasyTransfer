@@ -55,7 +55,9 @@ function onTextClick(): void {
         v-if="textSent"
       />
       <SvgIcon type="mdi" :path="mdiSend" size="1.5rem" class="mdi" v-else />
-      <p v-if="!textSent" class="upload-text-title">Send Message</p>
+      <p v-if="!textSent" class="upload-text-title">
+        {{ t('upload.sendMessageButton') }}
+      </p>
       <p v-else class="upload-text-title">Succeed</p>
     </button>
   </div>
@@ -101,6 +103,7 @@ function onTextClick(): void {
     border: none;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 
+    color: var(--dark-color);
     background-color: var(--light-blur-color);
 
     font-family: inherit;

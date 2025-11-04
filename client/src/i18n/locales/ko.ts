@@ -3,11 +3,11 @@ export default {
     title: 'EasyTransfer',
     tagline: '간단히 공유하고 익명 유지.',
     settings: '설정',
-    starOnGitHub: 'GitHub에서 스타',
+    starOnGitHub: 'GitHub 에서 Star',
   },
   operation: {
-    loading: '로딩 중',
-    code: '코드',
+    loading: 'LOADING',
+    code: 'CODE',
     enterPeerCode: '상대방의 코드 입력',
     connect: '연결',
     turnServerAvailable: 'TURN 서버 사용 가능',
@@ -20,6 +20,7 @@ export default {
     nothingToUpload: '업로드할 항목 없음',
     sendMessage: '짧은 메시지 보내기...',
     sendMessageButton: '메시지 보내기',
+    sendMessageSuccess: '성공',
   },
   download: {
     title: '다운로드',
@@ -48,7 +49,7 @@ export default {
     auto: '자동',
   },
   footer: {
-    copyright: '© 2024 EasyTransfer. 모든 권리 보유.',
+    copyright: '© 2025 EasyTransfer. 모든 권리 보유.',
     about: '정보',
     feedback: '피드백',
     github: 'GitHub',

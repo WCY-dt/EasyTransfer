@@ -1,13 +1,13 @@
 export default {
   header: {
     title: 'EasyTransfer',
-    tagline: 'シンプルに共有、匿名性を維持。',
+    tagline: 'シンプルに共有、匿名性を維持',
     settings: '設定',
-    starOnGitHub: 'GitHubでスター',
+    starOnGitHub: 'GitHubでStar',
   },
   operation: {
-    loading: '読み込み中',
-    code: 'コード',
+    loading: 'LOADING',
+    code: 'CODE',
     enterPeerCode: '相手のコードを入力',
     connect: '接続',
     turnServerAvailable: 'TURNサーバーが利用可能です',
@@ -20,6 +20,7 @@ export default {
     nothingToUpload: 'アップロードするものがありません',
     sendMessage: '短いメッセージを送信...',
     sendMessageButton: 'メッセージを送信',
+    sendMessageSuccess: '送信成功',
   },
   download: {
     title: 'ダウンロード',
@@ -48,7 +49,7 @@ export default {
     auto: '自動',
   },
   footer: {
-    copyright: '© 2024 EasyTransfer。全著作権所有。',
+    copyright: '© 2025 EasyTransfer. 全著作権所有。',
     about: '概要',
     feedback: 'フィードバック',
     github: 'GitHub',

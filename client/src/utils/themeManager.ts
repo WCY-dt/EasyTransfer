@@ -3,6 +3,7 @@ import { watch } from 'vue'
 
 const lightThemeColors = {
   '--primary-color': '#007bff',
+  '--primary-semi-dark-color': '#0069d9',
   '--primary-dark-color': '#0056b3',
   '--primary-semi-light-color': '#b6d9ff',
   '--primary-light-color': '#dcecfc',
@@ -24,12 +25,13 @@ const lightThemeColors = {
 }
 
 const darkThemeColors = {
-  '--primary-color': '#4a9eff',
+  '--primary-color': '#007bff',
+  '--primary-semi-dark-color': '#0069d9',
   '--primary-dark-color': '#2d7dd2',
   '--primary-semi-light-color': '#7ab8ff',
   '--primary-light-color': '#2d3748',
   '--primary-extra-light-color': '#0a1929',
-  '--primary-blur-color': '#4a9eff4f',
+  '--primary-blur-color': '#007bff4f',
   '--secondary-color': '#b8c2cc',
   '--secondary-light-color': '#4a5568',
   '--secondary-extra-light-color': '#ffffff1a',
@@ -41,8 +43,8 @@ const darkThemeColors = {
   '--light-color': '#1a202c',
   '--light-blur-color': '#1a202c4f',
   '--dark-color': '#e2e8f0',
-  '--gold-color': '#fbbf24',
-  '--gold-light-color': '#fcd34d',
+  '--gold-color': '#d6a31e',
+  '--gold-light-color': '#d1ac4b',
 }
 
 export function applyTheme(theme: 'light' | 'dark' | 'auto'): void {
