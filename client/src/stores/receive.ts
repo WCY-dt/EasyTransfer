@@ -5,6 +5,7 @@ import { ItemDisplayProps } from '@/types'
 import { FileProtocol } from '@/utils/fileProtocol'
 import { FileChunkManager } from '@/utils/fileChunk'
 import { RetryManager } from '@/utils/retryManager'
+import { playNotificationSound } from '@/utils/soundNotification'
 import type {
   FileReceiveState,
   PendingMeta,
@@ -287,6 +288,9 @@ export const useReceiveStore = defineStore('receive', () => {
         updateFileSuccess(currentFile.arrayIndex, true)
 
         console.log(`[INFO] File ${currentFile.name} received successfully`)
+
+        // Play notification sound when file is received
+        playNotificationSound()
       } else if (retryManager) {
         // Although size matches but chunks are missing, request retry
         console.warn(

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.0] - 2025-11-04
+
+### Added
+
+- Support for language preference setting (i18n) with default to English
+  - Users can now select their preferred language from 9 supported languages
+  - Language preference is stored in localStorage
+- Support for sound notification setting with default to off
+  - Users can enable/disable notification sounds when receiving files
+  - Sound notification uses Web Audio API for browser compatibility
+- Support for theme preference setting (light/dark/auto)
+  - Users can customize the visual theme of the application
+  - Theme preference is stored in localStorage
+
 ## [3.3.2] - 2025-10-21
 
 ### Added

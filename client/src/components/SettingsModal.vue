@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useSettingStore } from '@/stores/setting'
 import { IceServer } from '@/types'
+import { supportedLanguages, supportedThemes } from '@/const'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiCog } from '@mdi/js'
 
@@ -14,6 +15,9 @@ const {
   autoDisplayImage,
   directlyOpenLink,
   autoDownload,
+  language,
+  soundNotification,
+  theme,
 } = storeToRefs(settingStore)
 
 const emit = defineEmits(['close'])
@@ -29,6 +33,9 @@ const iceServersTmp = ref<string | null>(null)
 const autoDisplayImageTmp = ref<boolean | null>(null)
 const directlyOpenLinkTmp = ref<boolean | null>(null)
 const autoDownloadTmp = ref<boolean | null>(null)
+const languageTmp = ref<string | null>(null)
+const soundNotificationTmp = ref<boolean | null>(null)
+const themeTmp = ref<string | null>(null)
 
 onMounted((): void => {
   maxConnectionNumberTmp.value = maxConnectionNumber.value
@@ -39,6 +46,9 @@ onMounted((): void => {
   autoDisplayImageTmp.value = autoDisplayImage.value
   directlyOpenLinkTmp.value = directlyOpenLink.value
   autoDownloadTmp.value = autoDownload.value
+  languageTmp.value = language.value
+  soundNotificationTmp.value = soundNotification.value
+  themeTmp.value = theme.value
 })
 
 function saveSettings(): void {
@@ -75,6 +85,21 @@ function saveSettings(): void {
     autoDownload.value !== autoDownloadTmp.value
   ) {
     autoDownload.value = autoDownloadTmp.value
+  }
+
+  if (languageTmp.value !== null && language.value !== languageTmp.value) {
+    language.value = languageTmp.value
+  }
+
+  if (
+    soundNotificationTmp.value !== null &&
+    soundNotification.value !== soundNotificationTmp.value
+  ) {
+    soundNotification.value = soundNotificationTmp.value
+  }
+
+  if (themeTmp.value !== null && theme.value !== themeTmp.value) {
+    theme.value = themeTmp.value
   }
 
   close()
@@ -183,6 +208,44 @@ const checkSettings = (): void => {
           />
           <span class="blur shadow"></span>
         </label>
+        <label for="language">Language</label>
+        <select
+          id="language"
+          class="blur shadow"
+          v-model="languageTmp"
+        >
+          <option
+            v-for="lang in supportedLanguages"
+            :key="lang.code"
+            :value="lang.code"
+          >
+            {{ lang.name }}
+          </option>
+        </select>
+        <label for="sound-notification">Sound notification</label>
+        <label class="switch-input blur shadow">
+          <input
+            class="blur shadow"
+            type="checkbox"
+            id="sound-notification"
+            v-model="soundNotificationTmp"
+          />
+          <span class="blur shadow"></span>
+        </label>
+        <label for="theme">Theme</label>
+        <select
+          id="theme"
+          class="blur shadow"
+          v-model="themeTmp"
+        >
+          <option
+            v-for="themeOption in supportedThemes"
+            :key="themeOption.code"
+            :value="themeOption.code"
+          >
+            {{ themeOption.name }}
+          </option>
+        </select>
       </div>
       <div class="setting-button">
         <button @click="close" class="cancel-button">Cancel</button>
@@ -421,6 +484,27 @@ const checkSettings = (): void => {
       line-break: keep-all;
 
       resize: none;
+
+      transition: all 0.1s ease-in-out;
+
+      &:focus {
+        border: none;
+        outline: 2px solid var(--primary-color);
+      }
+    }
+
+    select {
+      width: 100%;
+      padding: 0.5rem;
+      border: none;
+      border-radius: var(--border-radius);
+
+      background-color: var(--light-blur-color);
+
+      font-size: 1.2rem;
+      font-family: inherit;
+
+      cursor: pointer;
 
       transition: all 0.1s ease-in-out;
 

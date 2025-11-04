@@ -1,7 +1,13 @@
 import { ref, watch, Ref } from 'vue'
 import { defineStore } from 'pinia'
 import { IceServer } from '@/types'
-import { defaultMaxConnectionNumber, defaultIceServers } from '@/const'
+import {
+  defaultMaxConnectionNumber,
+  defaultIceServers,
+  defaultLanguage,
+  defaultSoundNotification,
+  defaultTheme,
+} from '@/const'
 
 export const useSettingStore = defineStore('setting', () => {
   // autoDisplayImage
@@ -90,11 +96,52 @@ export const useSettingStore = defineStore('setting', () => {
     )
   })
 
+  // language
+  const language: Ref<string> = ref(defaultLanguage)
+
+  if (localStorage.getItem('language')) {
+    language.value = localStorage.getItem('language') as string
+  }
+
+  watch(language, () => {
+    localStorage.setItem('language', language.value)
+  })
+
+  // soundNotification
+  const soundNotification: Ref<boolean> = ref(defaultSoundNotification)
+
+  if (localStorage.getItem('soundNotification')) {
+    soundNotification.value = JSON.parse(
+      localStorage.getItem('soundNotification') as string,
+    )
+  }
+
+  watch(soundNotification, () => {
+    localStorage.setItem(
+      'soundNotification',
+      JSON.stringify(soundNotification.value),
+    )
+  })
+
+  // theme
+  const theme: Ref<string> = ref(defaultTheme)
+
+  if (localStorage.getItem('theme')) {
+    theme.value = localStorage.getItem('theme') as string
+  }
+
+  watch(theme, () => {
+    localStorage.setItem('theme', theme.value)
+  })
+
   return {
     autoDisplayImage,
     directlyOpenLink,
     autoDownload,
     maxConnectionNumber,
     iceServers,
+    language,
+    soundNotification,
+    theme,
   }
 })
