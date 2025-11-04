@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { generateId, hasConfusingCharacters } from "../src/utils.js";
+import type { Socket } from "socket.io";
 
 describe("hasConfusingCharacters", () => {
   it("should return true for IDs containing 0", () => {
@@ -50,9 +51,9 @@ describe("generateId", () => {
 
   it("should not generate duplicate IDs when clients exist", () => {
     const mockClients = {
-      ABCD: {} as any,
-      EFGH: {} as any,
-      WXYZ: {} as any,
+      ABCD: {} as Socket,
+      EFGH: {} as Socket,
+      WXYZ: {} as Socket,
     };
 
     // Generate multiple IDs and ensure none match existing ones

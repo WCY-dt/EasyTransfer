@@ -5,12 +5,12 @@ import parserTypeScript from '@typescript-eslint/parser'
 export default [
   {
     name: 'app/files-to-lint',
-    files: ['server/*.{js,mjs,jsx,ts,tsx}'],
-    ignores: ['eslint.config.js'],
+    files: ['**/*.{js,mjs,jsx,ts,tsx}'],
+    ignores: ['eslint.config.js', '**/dist/**', '**/node_modules/**'],
     languageOptions: {
       parser: parserTypeScript,
       parserOptions: {
-        project: './tsconfig.json',
+        project: './tsconfig.lint.json',
       },
       globals: {
         console: true,
