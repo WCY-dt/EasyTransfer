@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { FileChunkManager } from '../src/utils/fileChunk'
+import { TRANSFER_CONFIG } from '@/config/transferConfig'
 
 describe('FileChunkManager', () => {
   describe('sliceFile', () => {
@@ -34,8 +35,7 @@ describe('FileChunkManager', () => {
 
   describe('calculateExpectedChunks', () => {
     it('should calculate correct number of chunks for exact multiples', () => {
-      const chunkSize = 65280 // Default chunk size
-      const fileSize = chunkSize * 3
+      const fileSize = TRANSFER_CONFIG.chunkSize * 3
 
       const expected = FileChunkManager.calculateExpectedChunks(fileSize)
 
@@ -43,8 +43,7 @@ describe('FileChunkManager', () => {
     })
 
     it('should round up for non-exact multiples', () => {
-      const chunkSize = 65280
-      const fileSize = chunkSize * 2 + 100
+      const fileSize = TRANSFER_CONFIG.chunkSize * 2 + 100
 
       const expected = FileChunkManager.calculateExpectedChunks(fileSize)
 
