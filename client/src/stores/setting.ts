@@ -99,8 +99,9 @@ export const useSettingStore = defineStore('setting', () => {
   // language
   const language: Ref<string> = ref(defaultLanguage)
 
-  if (localStorage.getItem('language')) {
-    language.value = localStorage.getItem('language') as string
+  const storedLanguage = localStorage.getItem('language')
+  if (storedLanguage) {
+    language.value = storedLanguage
   }
 
   watch(language, () => {
@@ -110,10 +111,9 @@ export const useSettingStore = defineStore('setting', () => {
   // soundNotification
   const soundNotification: Ref<boolean> = ref(defaultSoundNotification)
 
-  if (localStorage.getItem('soundNotification')) {
-    soundNotification.value = JSON.parse(
-      localStorage.getItem('soundNotification') as string,
-    )
+  const storedSoundNotification = localStorage.getItem('soundNotification')
+  if (storedSoundNotification) {
+    soundNotification.value = JSON.parse(storedSoundNotification)
   }
 
   watch(soundNotification, () => {
@@ -126,8 +126,9 @@ export const useSettingStore = defineStore('setting', () => {
   // theme
   const theme: Ref<string> = ref(defaultTheme)
 
-  if (localStorage.getItem('theme')) {
-    theme.value = localStorage.getItem('theme') as string
+  const storedTheme = localStorage.getItem('theme')
+  if (storedTheme) {
+    theme.value = storedTheme
   }
 
   watch(theme, () => {

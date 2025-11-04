@@ -49,4 +49,3 @@ export function playNotificationSound(): void {
     console.warn('[WARN] Failed to play notification sound:', error)
   }
 }
-
