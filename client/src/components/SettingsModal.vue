@@ -278,11 +278,13 @@ const checkSettings = (): void => {
 }
 
 .settings-cluster {
-  display: felx;
+  display: flex;
   flex-direction: column;
   gap: 0;
 
   min-width: min(60rem, 90vw);
+  max-height: 90vh;
+  overflow: hidden;
 
   border-radius: var(--border-radius);
 
@@ -318,15 +320,20 @@ const checkSettings = (): void => {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 1.5rem;
+    align-items: center;
 
     width: 100%;
     padding: 2rem 1.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     label {
       font-size: 1.2rem;
       font-weight: 700;
 
       text-align: right;
+      align-self: start;
+      padding-top: 0.4rem;
     }
 
     .switch-input {

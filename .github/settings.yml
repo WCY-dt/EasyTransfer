@@ -1,0 +1,24 @@
+repository:
+  # Branch protection rules
+  # These settings help ensure code quality by requiring checks to pass before merging
+  
+  # Note: The following settings should be configured in GitHub repository settings:
+  # 1. Go to Settings > Branches
+  # 2. Add branch protection rule for 'main'
+  # 3. Enable "Require status checks to pass before merging"
+  # 4. Select "Check Lint and Format" (lint-and-format job)
+  # 5. Enable "Require branches to be up to date before merging"
+
+# Alternatively, use Probot Settings App or configure via GitHub API
+# Example configuration (requires github/settings or probot/settings app):
+branches:
+  - name: main
+    protection:
+      required_status_checks:
+        strict: true
+        contexts:
+          - lint-and-format
+      enforce_admins: false
+      required_pull_request_reviews:
+        required_approving_review_count: 0
+      restrictions: null

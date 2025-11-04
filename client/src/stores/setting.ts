@@ -97,6 +97,8 @@ export const useSettingStore = defineStore('setting', () => {
   })
 
   // language
+  // Note: This setting is stored and ready for future i18n implementation.
+  // Currently stores user preference but translation implementation is pending.
   const language: Ref<string> = ref(defaultLanguage)
 
   const storedLanguage = localStorage.getItem('language')
