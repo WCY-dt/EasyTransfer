@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import { generateId } from "./utils.js";
 
 const port = process.env.PORT || 3000;
 const io = new Server(Number(port), {
@@ -19,27 +20,11 @@ interface MaxConnectionNumbers {
 const clients: Clients = {}; // Store client IDs and their corresponding sockets
 const maxConnectionNumbers: MaxConnectionNumbers = {}; // Store client IDs and their corresponding max connection numbers
 
-const generateId = (): string => {
-  // Generate a random 4 character string
-  let id: string;
-  do {
-    id = Math.random().toString(36).substring(2, 6).toUpperCase();
-  } while (
-    id.includes("0") ||
-    id.includes("1") ||
-    id.includes("O") ||
-    id.includes("I") ||
-    id.includes("L") ||
-    Object.keys(clients).includes(id)
-  );
-  return id;
-};
-
 io.on("connection", (socket: Socket) => {
   console.log("[client connected] ", socket.id);
 
   socket.on("register", (maxConnectionNumber: number) => {
-    const clientId = generateId();
+    const clientId = generateId(clients);
     console.log(
       "[register] ",
       clientId,

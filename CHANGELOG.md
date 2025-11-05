@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.1] - 2025-11-04
+
+### Added
+
+- Comprehensive unit tests
+- Automated testing in GitHub Actions CI/CD pipeline
+
+### Changed
+
+- Improved ID generation algorithm for better reliability
+- Refactored server code to extract testable utility functions
+
 ## [3.4.0] - 2025-11-04
 
 **New Features:** The new version introduces settings for language preference and theme preference.

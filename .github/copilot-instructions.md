@@ -38,22 +38,75 @@ EasyTransfer is a free, anonymous, encrypted, and easy-to-use E2EE file transfer
 ### Client (in `/client` directory)
 
 ```bash
-npm run dev       # Start development server
-npm run build     # Build for production
-npm run preview   # Preview production build
-npm run lint      # Run ESLint with auto-fix
-npm run format    # Format code with Prettier
+npm run dev         # Start development server
+npm run build       # Build for production
+npm run preview     # Preview production build
+npm run lint        # Run ESLint with auto-fix
+npm run format      # Format code with Prettier
+npm test            # Run tests
+npm run test:watch  # Run tests in watch mode
+npm run test:ui     # Run tests with UI
 ```
 
 ### Server (in `/server` directory)
 
 ```bash
-npm run dev       # Build and start with nodemon
-npm run build     # Compile TypeScript
-npm run start     # Start production server
-npm run lint      # Run ESLint with auto-fix
-npm run format    # Format code with Prettier
+npm run dev         # Build and start with nodemon
+npm run build       # Compile TypeScript
+npm run start       # Start production server
+npm run lint        # Run ESLint with auto-fix
+npm run format      # Format code with Prettier
+npm test            # Run tests
+npm run test:watch  # Run tests in watch mode
+npm run test:ui     # Run tests with UI
 ```
+
+## Commit Message Guidelines
+
+Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for semantic commit messages:
+
+### Format
+
+```plaintext
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+
+- **feat**: A new feature
+- **fix**: A bug fix
+- **docs**: Documentation only changes
+- **style**: Changes that don't affect code meaning (formatting, whitespace)
+- **refactor**: Code change that neither fixes a bug nor adds a feature
+- **perf**: Performance improvement
+- **test**: Adding or updating tests
+- **build**: Changes to build system or dependencies
+- **ci**: Changes to CI configuration files and scripts
+- **chore**: Other changes that don't modify src or test files
+
+### Examples
+
+```
+feat(client): add dark mode theme support
+fix(server): resolve connection timeout issue
+docs(readme): update installation instructions
+test(client): add FileChunkManager unit tests
+refactor(utils): extract ID generation to utils
+ci: add automated testing to GitHub Actions
+chore(dependencies): update dependencies to latest versions
+```
+
+### Best Practices
+
+- Use present tense (`add` not `added`)
+- Use imperative mood (`move` not `moves`)
+- Keep first line under 72 characters
+- Reference issues/PRs in footer: `Fixes #123`
+- Break long descriptions into body paragraphs
 
 ## Code Style Guidelines
 
@@ -123,11 +176,33 @@ npm run format    # Format code with Prettier
 
 ## Testing Considerations
 
-- Test WebRTC connection establishment
-- Verify file transfer integrity
-- Test connection across different networks
-- Validate encryption implementation
-- Test edge cases (large files, network interruptions)
+The project uses Vitest for unit testing:
+
+- **Client**: 157 tests covering utilities, protocol handling, retry logic, theming, and WebRTC
+- **Server**: 13 tests covering ID generation and validation
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with UI
+npm run test:ui
+```
+
+### Test Coverage Areas
+
+- WebRTC connection establishment
+- File transfer integrity and chunking
+- Protocol message encoding/decoding
+- Retry mechanisms and timeout handling
+- Theme management
+- ID generation and validation
+- Edge cases (large files, network interruptions)
 
 ## Security Considerations
 

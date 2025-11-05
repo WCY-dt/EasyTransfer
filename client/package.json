@@ -1,14 +1,17 @@
 {
   "name": "client",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/ index.html"
+    "format": "prettier --write src/ tests/ index.html"
   },
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",
@@ -24,17 +27,21 @@
     "@typescript-eslint/parser": "^8.38.0",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitejs/plugin-vue-jsx": "^5.1.1",
+    "@vitest/ui": "^4.0.7",
     "@vue/cli-plugin-typescript": "^5.0.9",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/runtime-core": "^3.5.18",
+    "@vue/test-utils": "^2.4.6",
     "eslint": "^9.36.0",
     "eslint-plugin-vue": "^10.4.0",
+    "happy-dom": "^20.0.10",
     "prettier": "^3.6.2",
     "sass": "^1.93.2",
     "sass-loader": "^16.0.6",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.46.2",
     "vite": "^7.1.12",
-    "vite-plugin-vue-devtools": "^8.0.3"
+    "vite-plugin-vue-devtools": "^8.0.3",
+    "vitest": "^4.0.7"
   }
 }
