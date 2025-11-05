@@ -67,7 +67,7 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 
 ### Format
 
-```
+```plaintext
 <type>(<scope>): <description>
 
 [optional body]
@@ -97,12 +97,13 @@ docs(readme): update installation instructions
 test(client): add FileChunkManager unit tests
 refactor(utils): extract ID generation to utils
 ci: add automated testing to GitHub Actions
+chore(dependencies): update dependencies to latest versions
 ```
 
 ### Best Practices
 
-- Use present tense ("add" not "added")
-- Use imperative mood ("move" not "moves")
+- Use present tense (`add` not `added`)
+- Use imperative mood (`move` not `moves`)
 - Keep first line under 72 characters
 - Reference issues/PRs in footer: `Fixes #123`
 - Break long descriptions into body paragraphs

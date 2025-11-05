@@ -6,14 +6,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Comprehensive unit tests (170 total: 13 server, 157 client)
-- Vitest testing framework for both client and server
-- Test scripts in package.json (test, test:watch, test:ui)
+- Comprehensive unit tests
 - Automated testing in GitHub Actions CI/CD pipeline
 
 ### Changed
 
-- GitHub Actions workflow now includes build and test steps
 - Improved ID generation algorithm for better reliability
 - Refactored server code to extract testable utility functions
 

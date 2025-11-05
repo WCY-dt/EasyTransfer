@@ -7,11 +7,9 @@ We release patches for security vulnerabilities in the following versions:
 | Component | Version | Supported          |
 | --------- | ------- | ------------------ |
 | Client    | 3.4.x   | :white_check_mark: |
-| Client    | 3.3.x   | :white_check_mark: |
-| Client    | < 3.3   | :x:                |
+| Client    | < 3.4   | :x:                |
 | Server    | 3.4.x   | :white_check_mark: |
-| Server    | 3.3.x   | :white_check_mark: |
-| Server    | < 3.3   | :x:                |
+| Server    | < 3.4   | :x:                |
 
 ## Reporting a Vulnerability
 

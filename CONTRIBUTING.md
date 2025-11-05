@@ -64,6 +64,7 @@ npm run build
 ## Making Changes
 
 1. **Follow the project's coding standards**:
+
    - Use TypeScript for type safety
    - Follow existing code patterns and conventions
    - Keep functions small and focused
@@ -71,7 +72,7 @@ npm run build
 
 2. **Write semantic commit messages** following [Conventional Commits](https://www.conventionalcommits.org/):
 
-   ```
+   ```plaintext
    <type>(<scope>): <description>
    
    [optional body]
@@ -82,6 +83,7 @@ npm run build
    **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`
 
    **Examples**:
+
    ```bash
    feat(client): add support for drag-and-drop file upload
    fix(server): resolve WebRTC connection timeout
@@ -90,11 +92,13 @@ npm run build
    ```
 
 3. **Write tests** for new features or bug fixes:
+
    - Add unit tests in the appropriate test file
    - Ensure all tests pass before submitting
    - Aim for comprehensive test coverage
 
 4. **Test your changes thoroughly**:
+
    - Test WebRTC connections on different networks
    - Verify file transfers work correctly
    - Check UI responsiveness
@@ -111,17 +115,20 @@ npm run build
 2. **Open a pull request** on the original repository.
 
 3. **Provide a clear description**:
+
    - Explain what changes you made and why
    - Reference any related issues (e.g., "Fixes #123")
    - Include screenshots for UI changes
    - List any breaking changes
 
 4. **Ensure CI checks pass**:
+
    - All tests must pass
    - Code must be properly linted and formatted
    - Build must succeed
 
 5. **Respond to review feedback**:
+
    - Address reviewer comments promptly
    - Make requested changes
    - Re-request review after updates

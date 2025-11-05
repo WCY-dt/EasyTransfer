@@ -92,7 +92,7 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 
 ### Format
 
-```
+```plaintext
 <type>(<scope>): <description>
 
 [optional body]
@@ -116,18 +116,19 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/) specific
 ### Examples
 
 ```bash
-feat(client): add dark mode theme support
+feature(client): add dark mode theme support
 fix(server): resolve connection timeout issue
 docs(readme): update installation instructions
 test(client): add FileChunkManager unit tests
 refactor(utils): extract ID generation to utils
 ci: add automated testing to GitHub Actions
+chore(dependencies): update dependencies to latest versions
 ```
 
 ### Best Practices
 
-- Use present tense ("add" not "added")
-- Use imperative mood ("move" not "moves")
+- Use present tense (`add` not `added`)
+- Use imperative mood (`move` not `moves`)
 - Keep first line under 72 characters
 - Reference issues/PRs in footer when applicable
 - Break long descriptions into body paragraphs
