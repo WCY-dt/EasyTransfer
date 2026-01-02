@@ -30,7 +30,7 @@
     "@vitest/ui": "^4.0.7",
     "@vue/cli-plugin-typescript": "^5.0.9",
     "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/runtime-core": "^3.5.18",
+    "@vue/runtime-core": "^3.5.26",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^9.36.0",
     "eslint-plugin-vue": "^10.4.0",
