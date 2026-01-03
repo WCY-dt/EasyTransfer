@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.2] - 2026-01-03
+
+### Changed
+
+- Bump dependencies to fix security vulnerabilities
+
 ## [3.4.1] - 2025-11-04
 
 ### Added

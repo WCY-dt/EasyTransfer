@@ -49,7 +49,7 @@ export default {
     auto: '자동',
   },
   footer: {
-    copyright: '© 2025 EasyTransfer. 모든 권리 보유.',
+    copyright: '© 2026 EasyTransfer. 모든 권리 보유.',
     about: '정보',
     feedback: '피드백',
     github: 'GitHub',

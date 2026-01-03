@@ -49,7 +49,7 @@ export default {
     auto: 'Auto',
   },
   footer: {
-    copyright: '© 2025 EasyTransfer. All rights reserved.',
+    copyright: '© 2026 EasyTransfer. All rights reserved.',
     about: 'About',
     feedback: 'Feedback',
     github: 'GitHub',

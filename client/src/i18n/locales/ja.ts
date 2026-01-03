@@ -49,7 +49,7 @@ export default {
     auto: '自動',
   },
   footer: {
-    copyright: '© 2025 EasyTransfer. 全著作権所有。',
+    copyright: '© 2026 EasyTransfer. 全著作権所有。',
     about: '概要',
     feedback: 'フィードバック',
     github: 'GitHub',
