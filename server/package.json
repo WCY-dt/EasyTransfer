@@ -33,6 +33,6 @@
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "typescript": "^5.8.3",
-    "vitest": "^4.0.7"
+    "vitest": "^4.1.2"
   }
 }
