@@ -27,6 +27,12 @@ jobs:
           npm install
 
       - name: Build project
+        env:
+          VITE_SIGNAL_SERVER_URL: ${{ vars.VITE_SIGNAL_SERVER_URL }}
+          VITE_TURN_URL: ${{ vars.VITE_TURN_URL }}
+          VITE_TURN_USERNAME: ${{ vars.VITE_TURN_USERNAME }}
+          VITE_TURN_CREDENTIAL: ${{ secrets.VITE_TURN_CREDENTIAL }}
+          VITE_STUN_URL: ${{ vars.VITE_STUN_URL }}
         run: |
           cd client
           npm run build

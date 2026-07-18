@@ -1,0 +1,31 @@
+services:
+  signal:
+    build:
+      context: ../server
+    container_name: easytransfer-signal
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  coturn:
+    image: coturn/coturn:latest
+    container_name: easytransfer-coturn
+    restart: unless-stopped
+    network_mode: host
+    command:
+      - --listening-port=3478
+      - --listening-ip=${PUBLIC_IP}
+      - --relay-ip=${PUBLIC_IP}
+      - --fingerprint
+      - --lt-cred-mech
+      - --user=${TURN_USER}:${TURN_PASSWORD}
+      - --realm=${TURN_REALM}
+      - --server-name=${TURN_DOMAIN}
+      - --external-ip=${PUBLIC_IP}
+      - --min-port=${RELAY_MIN_PORT}
+      - --max-port=${RELAY_MAX_PORT}
+      - --no-tls
+      - --no-dtls
+      - --log-file=stdout

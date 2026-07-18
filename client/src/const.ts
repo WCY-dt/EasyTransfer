@@ -1,23 +1,21 @@
 import { IceServer } from '@/types'
 
+const turnUrl = process.env.VITE_TURN_URL || 'turn:turn.ch3nyang.top:3478'
+const turnUsername = process.env.VITE_TURN_USERNAME || 'easytransfer'
+const turnCredential =
+  process.env.VITE_TURN_CREDENTIAL || 'change-this-turn-password'
+const stunUrl = process.env.VITE_STUN_URL || 'stun:turn.ch3nyang.top:3478'
+
 export const defaultMaxConnectionNumber: number = 10
 
 export const defaultIceServers: IceServer[] = [
   {
-    urls: 'turn:82.29.67.202:3478',
-    username: 'easytransfer',
-    credential: 'sharesimplyandstayanonymous',
+    urls: turnUrl,
+    username: turnUsername,
+    credential: turnCredential,
   },
   {
-    urls: 'stun:stun.relay.metered.ca:80',
-  },
-  {
-    urls: 'turn:global.relay.metered.ca:80',
-    username: 'cf841207b56ebddc17948dde',
-    credential: '0dGvvEm7eq2UaqlW',
-  },
-  {
-    urls: 'stun:stun.l.google.com:19302',
+    urls: stunUrl,
   },
 ]
 

@@ -9,7 +9,9 @@ export const useConnectStore = defineStore('connect', () => {
   const settingStore = useSettingStore()
   const { maxConnectionNumber, iceServers } = storeToRefs(settingStore)
 
-  const signalServerUrl = process.env.VITE_SIGNAL_SERVER_URL as string
+  const signalServerUrl =
+    (process.env.VITE_SIGNAL_SERVER_URL as string | undefined) ||
+    'https://signal.ch3nyang.top'
   let socket: Socket | null = null
   const peerConnection: Ref<RTCPeerConnection | null> = ref(null)
   const registered: Ref<boolean> = ref(false)
